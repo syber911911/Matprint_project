@@ -1,0 +1,34 @@
+package com.example.final_project_17team.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.ToString;
+import java.time.LocalDateTime;
+
+@Data
+@Table
+@ToString(exclude = "posts")
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private String content;
+    @Column(nullable = false)
+    private String status;
+    private LocalDateTime visit_date;
+    private String prefer;
+    private LocalDateTime created_at;
+    private LocalDateTime deleted_at;
+    private LocalDateTime modified_at;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+}
