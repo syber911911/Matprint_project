@@ -16,7 +16,7 @@ public class Categories {
     private String ref_url; // youtube 등 url
     private String content; // 연예인, 인플루언서 등 소개
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private List<Restaurant> restaurants = new ArrayList<>();
 }
