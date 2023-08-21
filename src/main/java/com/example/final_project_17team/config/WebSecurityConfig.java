@@ -24,10 +24,8 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authHttpRequest -> authHttpRequest
-                        .requestMatchers("")
-                        .permitAll()
                         .anyRequest()
-                        .authenticated())
+                        .permitAll())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
