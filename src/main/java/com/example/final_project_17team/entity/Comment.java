@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+@Entity
 @Data
-@Table
-@ToString(exclude = "comments")
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.ToString;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
-@ToString(exclude = {"users"})
+@Data
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
