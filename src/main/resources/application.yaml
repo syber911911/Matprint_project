@@ -1,11 +1,4 @@
 spring:
-  redis:
-    pool:
-      min-idle: 0
-      max-idle: 8
-      max-active: 8
-      port: 6379
-      host: 127.0.0.1
   datasource:
     url: jdbc:mysql://localhost:3306/db?createDatabaseIfNotExist=true
     username: root
@@ -30,12 +23,12 @@ spring:
     web:
       resources:
         static-locations: file:media/,classpath:/static
-
-
   jackson:
     serialization:
       fail-on-empty-beans: false
-
+  redis:
+    port: 6379
+    host: localhost
 jwt:
   secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve
 
