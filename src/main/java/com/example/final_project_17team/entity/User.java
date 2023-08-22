@@ -2,7 +2,6 @@ package com.example.final_project_17team.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,6 +13,7 @@ public class User {
     private Long id;
     @Column(nullable = false, unique = true)
     private String username;
+
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)

@@ -41,6 +41,16 @@ dependencies {
     // httpClient
     implementation 'org.apache.httpcomponents:httpclient:4.3.4'
 
+    // jsonSimple - jsonParser
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+
+    // Standard Commons Logging discovery in action with spring-jcl:
+    // please remove commons-logging.jar from classpath in order to avoid potential conflicts
+    configurations.all {
+        exclude group: "commons-logging", module: "commons-logging"
+    }
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'

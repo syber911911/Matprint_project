@@ -2,18 +2,24 @@ package com.example.final_project_17team.service;
 
 import com.example.final_project_17team.dto.UserDto;
 import com.example.final_project_17team.entity.User;
+import com.example.final_project_17team.exception.ErrorCode;
+import com.example.final_project_17team.exception.UserException;
 import com.example.final_project_17team.jwt.JwtRequestDto;
 import com.example.final_project_17team.jwt.JwtTokenDto;
 import com.example.final_project_17team.jwt.JwtTokenUtils;
 import com.example.final_project_17team.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -27,10 +33,21 @@ public class UserService implements UserDetailsManager {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtils = jwtTokenUtils;
+
+        createUser(UserDto.builder()
+                .username("user1")
+                .password(passwordEncoder.encode("1234"))
+                .email("user1@gmail.com")
+                .phone("010-0000-0000")
+                .gender(true)
+                .age(Long.valueOf(20))
+                .created_at(LocalDateTime.now())
+                .build());
     }
 
     public JwtTokenDto loginUser(JwtRequestDto dto) {
         UserDto user = this.loadUserByUsername(dto.getUsername());
+        log.info(user.getUsername());
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
             throw new BadCredentialsException(dto.getUsername());
 
@@ -39,11 +56,18 @@ public class UserService implements UserDetailsManager {
         return response;
     }
 
-    @Override
-    public void createUser(UserDetails user) {
+    public void createUser(UserDto user) {
         if (this.userExists(user.getUsername()))
-            throw new
+            throw new UserException(ErrorCode.DUPLICATED_USER_NAME, String.format("Username : ", user.getUsername()));
+
+        try {
+            this.userRepository.save(user.newEntity());
+        } catch (ClassCastException e) {
+            log.error("failed to cast to {}", UserDto.class);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     @Override
     public void updateUser(UserDetails user) {
@@ -67,17 +91,18 @@ public class UserService implements UserDetailsManager {
 
     @Override
     public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
-        return UserDto.fromEntity(optionalUser.get());
+
+        log.info(optionalUser.get().getUsername());
+        UserDto dto = UserDto.fromEntity(optionalUser.get());
+        log.info("dto " + dto.getUsername());
+        return dto;
     }
-/*
+
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> optionalUser
-                = userRepository.findByUsername(username);
-        if (optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return CustomUserDetails.fromEntity(optionalUser.get());
-    }*/
+    public void createUser(UserDetails user) {
+
+    }
 }
