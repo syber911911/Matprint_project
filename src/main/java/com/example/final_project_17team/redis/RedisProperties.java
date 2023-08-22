@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 @Setter
 @PropertySource("application.yaml")
 public class RedisProperties {
-    @Value("${spring.data.redis.port}")
+    @Value("${spring.redis.port}")
     private int port;
-    @Value("${spring.data.redis.host}")
+    @Value("${spring.redis.host}")
     private String host;
 
     public int getPort() {
