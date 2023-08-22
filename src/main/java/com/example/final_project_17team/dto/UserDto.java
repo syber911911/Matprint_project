@@ -9,8 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+@Setter
 @Getter
-@Builder
+//@Builder
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,11 +27,10 @@ public class UserDto implements UserDetails {
     private LocalDateTime created_at;
     private LocalDateTime modified_at;
 
-    public static UserDto fromEntity(User user) {
-        UserDto dto = new UserDto();
+/*    public static UserDto fromEntity(User user) {
+*//*        UserDto dto = new UserDto();
         dto.id = user.getId();
         dto.username = user.getUsername();
-        log.info("in dto " + dto.username);
         dto.password = user.getPassword();
         dto.email = user.getEmail();
         dto.phone = user.getPhone();
@@ -38,9 +38,22 @@ public class UserDto implements UserDetails {
         dto.age = user.getAge();
         dto.img_url = user.getImg_url();
         dto.created_at = user.getCreated_at();
-        dto.modified_at = user.getModified_at();
-        return dto;
-    }
+        dto.modified_at = user.getModified_at();*//*
+        //log.info("in fromEntity() username : " + dto.username);
+        //log.info("in fromEntity() id : " + dto.getId());
+        return UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .gender(user.isGender())
+                .age(user.getAge())
+                .img_url(user.getImg_url())
+                .created_at(user.getCreated_at())
+                .modified_at(user.getModified_at())
+                .build();
+    }*/
 
     public User newEntity() {
         User entity = new User();

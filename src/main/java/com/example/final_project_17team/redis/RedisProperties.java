@@ -2,8 +2,7 @@ package com.example.final_project_17team.redis;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 

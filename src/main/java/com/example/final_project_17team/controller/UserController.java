@@ -21,7 +21,7 @@ public class UserController {
     private final UserService service;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public JwtTokenDto login(@RequestBody JwtRequestDto dto) {
         return service.loginUser(dto);
     }
@@ -30,6 +30,16 @@ public class UserController {
     public void register(@RequestBody UserDto dto, @RequestBody String passwordCheck) {
         if (!passwordCheck.equals(dto.getPassword()))
             throw new UserException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : ", dto.getUsername()));
-        service.createUser(dto);
+
+        /*service.createUser(UserDto.builder()
+                    .username(dto.getUsername())
+                    .password(passwordEncoder.encode(dto.getPassword()))
+                    .email(dto.getEmail())
+                    .phone(dto.getPhone())
+                    .gender(dto.isGender())
+                    .age(dto.getAge())
+                    .created_at(LocalDateTime.now())
+                    .build()
+        );*/
     }
 }
