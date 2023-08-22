@@ -27,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public void register(@RequestBody UserDto dto, @RequestBody String passwordCheck) {
-        if (!passwordCheck.equals(dto.getPassword()))
+    public void join(@RequestBody UserDto.join dto) {
+        if (!dto.getPasswordCheck().equals(dto.getPassword()))
             throw new UserException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : ", dto.getUsername()));
 
         service.createUser(UserDto.builder()

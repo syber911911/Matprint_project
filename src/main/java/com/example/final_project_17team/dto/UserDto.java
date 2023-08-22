@@ -25,6 +25,17 @@ public class UserDto implements UserDetails {
     private LocalDateTime created_at;
     private LocalDateTime modified_at;
 
+    @Data
+    public static class join {
+        private String username;
+        private String password;
+        private String passwordCheck;
+        private String email;
+        private String phone;
+        private boolean gender;
+        private Long age;
+    }
+
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
                 .id(user.getId())
