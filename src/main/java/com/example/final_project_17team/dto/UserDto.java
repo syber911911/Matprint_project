@@ -9,11 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-@Setter
 @Getter
-//@Builder
+@Builder
 @Slf4j
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserDto implements UserDetails {
     private Long id;
@@ -27,20 +25,7 @@ public class UserDto implements UserDetails {
     private LocalDateTime created_at;
     private LocalDateTime modified_at;
 
-/*    public static UserDto fromEntity(User user) {
-*//*        UserDto dto = new UserDto();
-        dto.id = user.getId();
-        dto.username = user.getUsername();
-        dto.password = user.getPassword();
-        dto.email = user.getEmail();
-        dto.phone = user.getPhone();
-        dto.gender = user.isGender();
-        dto.age = user.getAge();
-        dto.img_url = user.getImg_url();
-        dto.created_at = user.getCreated_at();
-        dto.modified_at = user.getModified_at();*//*
-        //log.info("in fromEntity() username : " + dto.username);
-        //log.info("in fromEntity() id : " + dto.getId());
+    public static UserDto fromEntity(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -53,7 +38,7 @@ public class UserDto implements UserDetails {
                 .created_at(user.getCreated_at())
                 .modified_at(user.getModified_at())
                 .build();
-    }*/
+    }
 
     public User newEntity() {
         User entity = new User();
@@ -77,12 +62,12 @@ public class UserDto implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class UserService implements UserDetailsManager {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtils = jwtTokenUtils;
 
-        /*createUser(UserDto.builder()
+        createUser(UserDto.builder()
                 .username("user1")
                 .password(passwordEncoder.encode("1234"))
                 .email("user1@gmail.com")
@@ -41,37 +41,16 @@ public class UserService implements UserDetailsManager {
                 .gender(true)
                 .age(Long.valueOf(20))
                 .created_at(LocalDateTime.now())
-                .build());*/
+                .build());
     }
 
     public JwtTokenDto loginUser(JwtRequestDto dto) {
-        //UserDto user = this.loadUserByUsername(dto.getUsername());
-
-        Optional<User> optionalUser = userRepository.findByUsername(dto.getUsername());
-        if (optionalUser.isEmpty()) throw new UsernameNotFoundException(dto.getUsername());
-        User user = optionalUser.get();
-
-        UserDto dto1 = new UserDto();
-        dto1.setId(user.getId());
-        dto1.setUsername(user.getUsername());
-        dto1.setPassword(user.getPassword());
-        dto1.setEmail(user.getEmail());
-        dto1.setPhone(user.getPhone());
-        dto1.setGender(user.isGender());
-        dto1.setAge(user.getAge());
-        dto1.setImg_url(user.getImg_url());
-        dto1.setCreated_at(user.getCreated_at());
-        dto1.setModified_at(user.getModified_at());
-        log.info("method:loginUser " + dto1.getUsername());
-        log.info("method:loginUser " + dto1.getPassword());
-
-        //------------------------------------------------------------------
-
-        if (!passwordEncoder.matches(dto.getPassword(), dto1.getPassword()))
+        UserDto user = this.loadUserByUsername(dto.getUsername());
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
             throw new BadCredentialsException(dto.getUsername());
 
         JwtTokenDto response = new JwtTokenDto();
-        response.setToken(jwtTokenUtils.generateToken(dto1));
+        response.setToken(jwtTokenUtils.generateToken(user));
         return response;
     }
 
@@ -112,36 +91,7 @@ public class UserService implements UserDetailsManager {
     public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
-        User user = optionalUser.get();
-
-        UserDto dto = new UserDto();
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setPassword(user.getPassword());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        dto.setGender(user.isGender());
-        dto.setAge(user.getAge());
-        dto.setImg_url(user.getImg_url());
-        dto.setCreated_at(user.getCreated_at());
-        dto.setModified_at(user.getModified_at());
-/*                UserDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .gender(user.isGender())
-                .age(user.getAge())
-                .img_url(user.getImg_url())
-                .created_at(user.getCreated_at())
-                .modified_at(user.getModified_at())
-                .build();*/
-
-        log.info("dto " + dto.getUsername());
-
-        return dto;
-        // return UserDto.fromEntity(optionalUser.get());
+        return UserDto.fromEntity(optionalUser.get());
     }
 
     @Override

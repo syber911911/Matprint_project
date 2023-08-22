@@ -54,16 +54,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                         .getSubject();
 
                 // 사용자 인증 정보 생성
-               /* AbstractAuthenticationToken authenticationToken
+                AbstractAuthenticationToken authenticationToken
                         = new UsernamePasswordAuthenticationToken(
                         UserDto.builder()
                                 .username(username)
                                 .build(),
                         token, new ArrayList<>()
-                );*/
+                );
 
                 // SecurityContext에 사용자 정보 설정
-                //context.setAuthentication(authenticationToken);
+                context.setAuthentication(authenticationToken);
 
                 // SecurityContextHolder에 SecurityContext 설정
                 SecurityContextHolder.setContext(context);

@@ -31,7 +31,7 @@ public class UserController {
         if (!passwordCheck.equals(dto.getPassword()))
             throw new UserException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : ", dto.getUsername()));
 
-        /*service.createUser(UserDto.builder()
+        service.createUser(UserDto.builder()
                     .username(dto.getUsername())
                     .password(passwordEncoder.encode(dto.getPassword()))
                     .email(dto.getEmail())
@@ -40,6 +40,6 @@ public class UserController {
                     .age(dto.getAge())
                     .created_at(LocalDateTime.now())
                     .build()
-        );*/
+        );
     }
 }
