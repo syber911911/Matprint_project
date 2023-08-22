@@ -26,9 +26,15 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
-  redis:
-    port: 6379
-    host: localhost
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 2
+      port: 6379
+      host: localhost
 jwt:
   secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve
 
