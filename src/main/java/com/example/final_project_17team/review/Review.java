@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.final_project_17team.review;
 
 import com.example.final_project_17team.restaurant.Restaurant;
 import com.example.final_project_17team.user.User;
