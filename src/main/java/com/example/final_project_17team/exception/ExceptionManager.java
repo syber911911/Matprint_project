@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ExceptionManager {
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<?> userExceptionHandler(UserException e) {
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<?> userExceptionHandler(CustomException e) {
         return ResponseEntity.status(e.getErrorCode().getStatus())
                 .body(Response.error(e.getErrorCode().name()));
     }

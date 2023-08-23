@@ -26,9 +26,9 @@ spring:
     hibernate:
       ddl-auto: create
       format_sql: true
-# show-sql: true
-# database-platform: org.hibernate.community.dialect.MySQL8Dialect
-# defer-datasource-initialization: true
+#     show-sql: true
+#     database-platform: org.hibernate.community.dialect.MySQL8Dialect
+#     defer-datasource-initialization: true
   servlet:
     multipart:
       enabled: true
@@ -41,10 +41,10 @@ spring:
     web:
       resources:
         static-locations: file:media/,classpath:/static
-
   jackson:
     serialization:
       fail-on-empty-beans: false
-
+    deserialization:
+      fail-on-unknown-properties: false
 jwt:
   secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve

@@ -2,7 +2,7 @@ package com.example.final_project_17team.controller;
 
 import com.example.final_project_17team.dto.UserDto;
 import com.example.final_project_17team.exception.ErrorCode;
-import com.example.final_project_17team.exception.UserException;
+import com.example.final_project_17team.exception.CustomException;
 import com.example.final_project_17team.jwt.JwtRequestDto;
 import com.example.final_project_17team.jwt.JwtTokenDto;
 import com.example.final_project_17team.service.UserService;
@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping("/join")
     public void join(@RequestBody UserDto.join dto) {
         if (!dto.getPasswordCheck().equals(dto.getPassword()))
-            throw new UserException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : ", dto.getUsername()));
+            throw new CustomException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : ", dto.getUsername()));
 
         service.createUser(UserDto.builder()
                     .username(dto.getUsername())

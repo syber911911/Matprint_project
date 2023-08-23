@@ -3,7 +3,7 @@ package com.example.final_project_17team.service;
 import com.example.final_project_17team.dto.UserDto;
 import com.example.final_project_17team.entity.User;
 import com.example.final_project_17team.exception.ErrorCode;
-import com.example.final_project_17team.exception.UserException;
+import com.example.final_project_17team.exception.CustomException;
 import com.example.final_project_17team.jwt.JwtRequestDto;
 import com.example.final_project_17team.jwt.JwtTokenDto;
 import com.example.final_project_17team.jwt.JwtTokenUtils;
@@ -56,7 +56,7 @@ public class UserService implements UserDetailsManager {
 
     public void createUser(UserDto user) {
         if (this.userExists(user.getUsername()))
-            throw new UserException(ErrorCode.DUPLICATED_USER_NAME, String.format("Username : ", user.getUsername()));
+            throw new CustomException(ErrorCode.DUPLICATED_USER_NAME, String.format("Username : ", user.getUsername()));
 
         try {
             this.userRepository.save(user.newEntity());
