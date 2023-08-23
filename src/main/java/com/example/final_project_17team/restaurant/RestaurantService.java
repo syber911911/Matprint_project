@@ -1,9 +1,5 @@
-package com.example.final_project_17team.service;
+package com.example.final_project_17team.restaurant;
 
-import com.example.final_project_17team.dto.RestaurantSearchDto;
-import com.example.final_project_17team.exception.CustomException;
-import com.example.final_project_17team.exception.ErrorCode;
-import com.example.final_project_17team.repository.RestaurantRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +10,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package com.example.final_project_17team.jwt;
 
-import com.example.final_project_17team.dto.UserDto;
+import com.example.final_project_17team.user.UserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

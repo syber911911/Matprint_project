@@ -1,13 +1,10 @@
-package com.example.final_project_17team.service;
+package com.example.final_project_17team.user;
 
-import com.example.final_project_17team.dto.UserDto;
-import com.example.final_project_17team.entity.User;
 import com.example.final_project_17team.exception.ErrorCode;
 import com.example.final_project_17team.exception.CustomException;
 import com.example.final_project_17team.jwt.JwtRequestDto;
 import com.example.final_project_17team.jwt.JwtTokenDto;
 import com.example.final_project_17team.jwt.JwtTokenUtils;
-import com.example.final_project_17team.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;

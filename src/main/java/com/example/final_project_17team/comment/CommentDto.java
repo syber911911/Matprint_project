@@ -1,4 +1,4 @@
-package com.example.final_project_17team.dto;
+package com.example.final_project_17team.comment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

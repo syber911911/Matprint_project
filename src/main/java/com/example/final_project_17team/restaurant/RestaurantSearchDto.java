@@ -1,4 +1,4 @@
-package com.example.final_project_17team.dto;
+package com.example.final_project_17team.restaurant;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

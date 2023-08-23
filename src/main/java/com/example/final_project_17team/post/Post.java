@@ -1,8 +1,10 @@
-package com.example.final_project_17team.entity;
+package com.example.final_project_17team.post;
 
+import com.example.final_project_17team.restaurant.Restaurant;
+import com.example.final_project_17team.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
+
 import java.time.LocalDateTime;
 
 @Entity

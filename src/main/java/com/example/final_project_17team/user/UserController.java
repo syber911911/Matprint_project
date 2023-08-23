@@ -1,11 +1,11 @@
-package com.example.final_project_17team.controller;
+package com.example.final_project_17team.user;
 
-import com.example.final_project_17team.dto.UserDto;
+import com.example.final_project_17team.user.UserDto;
 import com.example.final_project_17team.exception.ErrorCode;
 import com.example.final_project_17team.exception.CustomException;
 import com.example.final_project_17team.jwt.JwtRequestDto;
 import com.example.final_project_17team.jwt.JwtTokenDto;
-import com.example.final_project_17team.service.UserService;
+import com.example.final_project_17team.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,26 +1,20 @@
-package com.example.final_project_17team.entity;
+package com.example.final_project_17team.restaurant;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.ToString;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
 @Data
-@Table(name = "restaurants")
-public class Restaurant {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RestaurantDto {
     private Long id;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
     private float lat;
-    @Column(nullable = false)
     private float lon;
-    private Long phone;
+    private String phone;
     private float avg_ratings;
     private String runtime;
     private String menu_info;

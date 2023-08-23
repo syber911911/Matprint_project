@@ -1,7 +1,5 @@
-package com.example.final_project_17team.controller;
+package com.example.final_project_17team.restaurant;
 
-import com.example.final_project_17team.dto.RestaurantSearchDto;
-import com.example.final_project_17team.service.RestaurantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;

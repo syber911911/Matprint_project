@@ -1,6 +1,5 @@
-package com.example.final_project_17team.dto;
+package com.example.final_project_17team.user;
 
-import com.example.final_project_17team.entity.User;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;

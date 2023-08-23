@@ -1,8 +1,9 @@
-package com.example.final_project_17team.entity;
+package com.example.final_project_17team.comment;
 
+import com.example.final_project_17team.post.Post;
+import com.example.final_project_17team.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 
 @Entity
 @Data
