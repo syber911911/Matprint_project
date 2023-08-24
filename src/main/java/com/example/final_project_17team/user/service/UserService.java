@@ -33,15 +33,15 @@ public class UserService implements UserDetailsManager {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtils = jwtTokenUtils;
 
-        createUser(UserDto.builder()
-                .username("user1")
-                .password(passwordEncoder.encode("1234"))
-                .email("user1@gmail.com")
-                .phone("010-0000-0000")
-                .gender(true)
-                .age(Long.valueOf(20))
-                .created_at(LocalDateTime.now())
-                .build());
+//        createUser(UserDto.builder()
+//                .username("user1")
+//                .password(passwordEncoder.encode("1234"))
+//                .email("user1@gmail.com")
+//                .phone("010-0000-0000")
+//                .gender(true)
+//                .age(Long.valueOf(20))
+//                .created_at(LocalDateTime.now())
+//                .build());
     }
 
     public JwtTokenDto loginUser(JwtRequestDto dto) {
