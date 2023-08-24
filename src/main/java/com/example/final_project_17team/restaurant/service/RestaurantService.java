@@ -2,8 +2,10 @@ package com.example.final_project_17team.restaurant.service;
 
 import com.example.final_project_17team.comment.entity.Comment;
 import com.example.final_project_17team.comment.repository.CommentRepository;
+import com.example.final_project_17team.myrestaurant.entity.MyRestaurant;
 import com.example.final_project_17team.myrestaurant.repository.MyRestaurantRepository;
 import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
+import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
 import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.review.repository.ReviewRepository;
@@ -99,42 +101,40 @@ public class RestaurantService {
         return true;
     }
 
-//    public int wishlistButton(Long restaurantId){
-//
-//        String username = SecurityContextHolder
-//                .getContext()
-//                .getAuthentication()
-//                .getName();
-//
-//        Optional<User> optionalUser = userRepository.findByUsername(username);
-//
-//        if(optionalUser.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//
-//        User user = optionalUser.get();
-//
-//        Optional<MyRestaurant> optionalArticle = myRestaurantRepository.findById(restaurantId);
-//
-//        if(optionalArticle.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//
-//        ArticleEntity articleEntity = optionalArticle.get();
-//
-//        if(articleEntity.getUser().getUsername().equals(userEntity.getUsername())){
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        }
-//        else{
-//            if(!likeArticleRepository.existsByUser(userEntity)) {
-//                LikeArticleEntity likeArticleEntity = new LikeArticleEntity();
-//                likeArticleEntity.setArticle(articleEntity);
-//                likeArticleEntity.setUser(userEntity);
-//                likeArticleRepository.save(likeArticleEntity);
-//                return 1;
-//            }
-//            else{
-//                likeArticleRepository.delete(likeArticleRepository.findByArticleIdAndUser(articleId, userEntity));
-//                return 2;
-//            }
-//        }
-//    }
+    public int wishlistButton(Long restaurantId){
+
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        if(optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        User user = optionalUser.get();
+
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId); // restaurant id 에 해당하는 음식점 찾기
+        if(optionalRestaurant.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Restaurant restaurant = optionalRestaurant.get();
+
+        Optional<MyRestaurant> optionalMyRestaurant = myRestaurantRepository.findByRestaurantIdAndUser(restaurantId, user); // 위시리스트에 있는지 확인
+
+        if(optionalMyRestaurant.isEmpty()){  // 만약 위시리스트에 유저와 맛집 id가 일치하는게 없다면 위시리스트에 없는 식당이므로 위시리스트에 넣어줌
+            MyRestaurant myRestaurant = new MyRestaurant();
+            myRestaurant.setUser(user);
+            myRestaurant.setRestaurant(restaurant);
+            myRestaurantRepository.save(myRestaurant);
+            return 1;
+        }
+        else{   // 이미 위시리스트에 있는데 버튼을 누른거라면 위시리스트에서 삭제시켜줌
+            MyRestaurant myRestaurant = optionalMyRestaurant.get();
+            myRestaurantRepository.delete(myRestaurant);
+            myRestaurantRepository.save(myRestaurant);
+            return 2;
+        }
+
+    }
 }
