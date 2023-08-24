@@ -2,11 +2,17 @@ package com.example.final_project_17team.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "users")
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,15 +22,21 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phone;
     @Column(nullable = false)
     private boolean gender;
     @Column(nullable = false)
     private Long age;
-    private String img_url;
-    private LocalDateTime created_at;
-    private LocalDateTime modified_at;
+    @Column(name = "img_url")
+    private String imgUrl;
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updateAt;
 }
