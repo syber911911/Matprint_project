@@ -38,19 +38,34 @@ public class RestaurantController {
     }
 
 
-
-    @DeleteMapping("/article/{articleId}/comment/{commentId}")
+    @DeleteMapping("/review")
     public ResponseEntity<Map<String, String>> deleteComment(
             @RequestParam("restaurantId") Long restaurantId,
-            @RequestParam("commentId") Long commentId
+            @RequestParam("reviewId") Long reviewId
     ) {
-        if (service.deleteReview(restaurantId,commentId)) {
+        if (service.deleteReview(restaurantId, reviewId)) {
 
             Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("message", "댓글을 삭제했습니다.");
+            responseBody.put("message", "리뷰를 삭제했습니다.");
 
             return ResponseEntity.ok(responseBody);
         }
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
+    // 버튼을 눌렀을 때 위시리스트에 안 들어있으면 위시리스트에 담고, 들어있으면 위시리스트에서 해제하기
+//    @PutMapping("/wishlist")
+//    public ResponseEntity<Map<String, String>> wishlist(
+//            @RequestParam("restaurantId") Long restaurantId
+//    ) {
+//        int result = service.wishlistButton(restaurantId);
+//
+//        Map<String, String> responseBody = new HashMap<>();
+//        switch (result) {
+//            case 1 -> responseBody.put("message", "위시리스트에 담겼습니다.");
+//            case 2 -> responseBody.put("message", "위시리스트에서 해제 되었습니다.");
+//            default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+//        return ResponseEntity.ok(responseBody);
+//    }
 }
