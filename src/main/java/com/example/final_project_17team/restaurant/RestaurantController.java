@@ -1,9 +1,11 @@
 package com.example.final_project_17team.restaurant;
 
+import com.example.final_project_17team.dataUpdate.service.CategoryUpdate;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class RestaurantController {
     private final RestaurantService service;
+    private final CategoryUpdate categoryUpdate;
+
+    @PostMapping("/test")
+    public void test() throws Exception {
+        categoryUpdate.insertPlaceData();
+    }
 
     // (지역명, 가게 이름을 통한) 음식점 검색
     @GetMapping("/search")

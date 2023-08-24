@@ -1,24 +1,31 @@
 package com.example.final_project_17team.category;
 
-import com.example.final_project_17team.restaurant.Restaurant;
+import com.example.final_project_17team.global.entity.Base;
+import com.example.final_project_17team.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
 @Table(name = "categories")
-public class Category {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Category extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String category;
-    private String ref_url; // youtube 등 url
-    private String content; // 연예인, 인플루언서 등 소개
+    private String name;
+    private String refUrl;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Restaurant restaurant;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    private List<Restaurant> restaurants = new ArrayList<>();
+    @Builder
+    public Category(String name, String refUrl, Restaurant restaurant) {
+        this.name = name;
+        this.refUrl = refUrl;
+        this.restaurant = restaurant;
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.final_project_17team.review;
 
-import com.example.final_project_17team.restaurant.Restaurant;
+import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.user.User;
 import jakarta.persistence.*;
 import lombok.Data;

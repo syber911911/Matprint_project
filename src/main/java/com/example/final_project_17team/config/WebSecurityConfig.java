@@ -1,6 +1,8 @@
 package com.example.final_project_17team.config;
 
 import com.example.final_project_17team.jwt.JwtTokenFilter;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

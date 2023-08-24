@@ -30,6 +30,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java:8.0.26'
 
+    // mysql
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    // jsoup, selenium
+    implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.11.0'
+
+    // webClient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 

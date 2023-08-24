@@ -1,5 +1,6 @@
 package com.example.final_project_17team.restaurant;
 
+import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
