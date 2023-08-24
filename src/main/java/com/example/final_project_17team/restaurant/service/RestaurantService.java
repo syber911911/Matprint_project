@@ -4,6 +4,7 @@ import com.example.final_project_17team.comment.entity.Comment;
 import com.example.final_project_17team.comment.repository.CommentRepository;
 import com.example.final_project_17team.myrestaurant.entity.MyRestaurant;
 import com.example.final_project_17team.myrestaurant.repository.MyRestaurantRepository;
+import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
@@ -70,7 +71,15 @@ public class RestaurantService {
         return restaurants;
     }
 
+    public RestaurantDto detailPage(Long id) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
 
+        if (optionalRestaurant.isPresent()) {
+            return RestaurantDto.fromEntity(optionalRestaurant.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
 
 
     // 리뷰 삭제 soft delete로 구현

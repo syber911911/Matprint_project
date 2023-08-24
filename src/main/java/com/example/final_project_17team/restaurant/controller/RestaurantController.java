@@ -1,6 +1,7 @@
 package com.example.final_project_17team.restaurant.controller;
 
 import com.example.final_project_17team.dataUpdate.service.CategoryUpdate;
+import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
 import com.example.final_project_17team.restaurant.service.RestaurantService;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,12 @@ public class RestaurantController {
             @RequestParam("page") int pageNum
     ) throws ParseException, IOException {
         return service.searchRestaurant(target, pageNum);
+    }
+
+    //상세페이지
+    @GetMapping("/detail")
+    public RestaurantDto detailPage(@RequestParam("id") Long id){
+        return service.detailPage(id);
     }
 
 
