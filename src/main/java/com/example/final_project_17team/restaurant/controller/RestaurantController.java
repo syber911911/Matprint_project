@@ -5,7 +5,6 @@ import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
 import com.example.final_project_17team.restaurant.service.RestaurantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +30,7 @@ public class RestaurantController {
     public List<RestaurantSearchDto> search(
             @RequestParam("target") String target,
             @RequestParam("page") int pageNum
-    ) throws ParseException, IOException {
+    ) throws IOException {
         return service.searchRestaurant(target, pageNum);
     }
 }

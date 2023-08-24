@@ -1,16 +1,13 @@
 package com.example.final_project_17team.user.service;
 
-import com.example.final_project_17team.global.exception.ErrorCode;
-import com.example.final_project_17team.global.exception.CustomException;
-import com.example.final_project_17team.global.jwt.JwtRequestDto;
 import com.example.final_project_17team.global.jwt.JwtTokenDto;
 import com.example.final_project_17team.global.jwt.JwtTokenUtils;
-import com.example.final_project_17team.user.dto.UserDto;
+import com.example.final_project_17team.user.dto.CustomUserDetails;
+import com.example.final_project_17team.user.dto.LoginDto;
 import com.example.final_project_17team.user.entity.User;
 import com.example.final_project_17team.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +15,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -32,36 +28,30 @@ public class UserService implements UserDetailsManager {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtils = jwtTokenUtils;
-
-        createUser(UserDto.builder()
-                .username("user1")
-                .password(passwordEncoder.encode("1234"))
-                .email("user1@gmail.com")
-                .phone("010-0000-0000")
-                .gender(true)
-                .age(Long.valueOf(20))
-                .created_at(LocalDateTime.now())
-                .build());
     }
 
-    public JwtTokenDto loginUser(JwtRequestDto dto) {
-        UserDto user = this.loadUserByUsername(dto.getUsername());
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
-            throw new BadCredentialsException(dto.getUsername());
+    public JwtTokenDto loginUser(LoginDto request) {
+        CustomUserDetails user = this.loadUserByUsername(request.getUsername());
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
 
         JwtTokenDto response = new JwtTokenDto();
-        response.setToken(jwtTokenUtils.generateToken(user));
+        response.setAccessToken(jwtTokenUtils.createAccessToken(request.getPassword()));
+        response.setRefreshToken(jwtTokenUtils.createRefreshToken());
         return response;
     }
 
-    public void createUser(UserDto user) {
-        if (this.userExists(user.getUsername()))
-            throw new CustomException(ErrorCode.DUPLICATED_USER_NAME, String.format("Username : ", user.getUsername()));
-
+    public void createUser(CustomUserDetails user) {
+        if (userRepository.existsByUsername(user.getUsername()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 아이디 입니다.", user.getUsername()));
+        if (userRepository.existsByEmail(user.getEmail()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 이메일 입니다.", user.getEmail()));
+        if (userRepository.existsByPhone(user.getPhone()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 전화번호 입니다.", user.getPhone()));
         try {
-            this.userRepository.save(user.newEntity());
+            this.userRepository.save(User.fromUserDetails(user));
         } catch (ClassCastException e) {
-            log.error("failed to cast to {}", UserDto.class);
+            log.error("Exception message : {} | failed to cast to {}",e.getMessage(), CustomUserDetails.class);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,10 +78,10 @@ public class UserService implements UserDetailsManager {
     }
 
     @Override
-    public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
-        return UserDto.fromEntity(optionalUser.get());
+        return CustomUserDetails.fromEntity(optionalUser.get());
     }
 
     @Override

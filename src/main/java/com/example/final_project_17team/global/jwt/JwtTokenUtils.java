@@ -56,17 +56,23 @@ public class JwtTokenUtils {
     }
 
     // 주어진 사용자 정보를 바탕으로 JWT를 문자열로 생성
-    public String generateToken(UserDetails userDetails) {
-        // Claims: JWT에 담기는 정보의 단위를 Claim이라 부른다.
-        //         Claims는 Claim들을 담기위한 Map의 상속 interface
+    public String createAccessToken(String username) {
         Claims jwtClaims = Jwts.claims()
                 // 사용자 정보 등록
-                .setSubject(userDetails.getUsername())
+                .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(3600)));
 
         return Jwts.builder()
                 .setClaims(jwtClaims)
+                .signWith(signingKey)
+                .compact();
+    }
+
+    public String createRefreshToken() {
+        return Jwts.builder()
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(3600 * 24)))
                 .signWith(signingKey)
                 .compact();
     }

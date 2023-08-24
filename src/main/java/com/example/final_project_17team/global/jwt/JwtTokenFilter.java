@@ -1,6 +1,6 @@
 package com.example.final_project_17team.global.jwt;
 
-import com.example.final_project_17team.user.dto.UserDto;
+import com.example.final_project_17team.user.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +56,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // 사용자 인증 정보 생성
                 AbstractAuthenticationToken authenticationToken
                         = new UsernamePasswordAuthenticationToken(
-                        UserDto.builder()
+                        CustomUserDetails.builder()
                                 .username(username)
                                 .build(),
                         token, new ArrayList<>()
