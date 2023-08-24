@@ -1,6 +1,6 @@
 package com.example.final_project_17team.restaurant.entity;
 
-import com.example.final_project_17team.category.Category;
+import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.global.entity.Base;
 import jakarta.persistence.*;
 import lombok.*;

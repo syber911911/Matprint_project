@@ -1,6 +1,6 @@
 package com.example.final_project_17team.dataUpdate.service;
 
-import com.example.final_project_17team.category.Category;
+import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.category.repository.CategoryRepository;
 import com.example.final_project_17team.dataUpdate.dto.PlaceDataDto;
 import com.example.final_project_17team.restaurant.repository.RestaurantImageRepository;
