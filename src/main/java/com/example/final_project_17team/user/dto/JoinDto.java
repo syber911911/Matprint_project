@@ -1,10 +1,8 @@
 package com.example.final_project_17team.user.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
+import jakarta.validation.constraints.*;
 
 @Getter
 @ToString
@@ -28,9 +26,11 @@ public class JoinDto {
     @Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "전화번호 형식이 잘못되었습니다.")
     private String phone;
 
-    @NotBlank(message = "성별 입력은 필수입니다.")
-    private boolean gender;
+    @NotNull(message = "성별 입력은 필수입니다.")
+    private Boolean gender;
 
-    @NotBlank(message = "나이 입력은 필수입니다.")
-    private Long age;
+    @NotNull(message = "나이 입력은 필수입니다.")
+    @Min(1)
+    @Max(100)
+    private Integer age;
 }

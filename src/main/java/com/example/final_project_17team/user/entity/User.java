@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(name = "users")
-@MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
@@ -34,7 +33,7 @@ public class User {
     @Column(nullable = false)
     private boolean gender;
     @Column(nullable = false)
-    private Long age;
+    private Integer age;
     @Column(name = "img_url")
     private String imgUrl;
 
@@ -46,7 +45,7 @@ public class User {
     private LocalDateTime updateAt;
 
     @Builder
-    public User(String username, String password, String email, String phone, boolean gender, Long age, String imgUrl) {
+    public User(String username, String password, String email, String phone, boolean gender, Integer age, String imgUrl) {
         this.username = username;
         this.password = password;
         this.email = email;

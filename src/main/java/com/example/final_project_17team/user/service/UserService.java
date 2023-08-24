@@ -36,7 +36,7 @@ public class UserService implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
 
         JwtTokenDto response = new JwtTokenDto();
-        response.setAccessToken(jwtTokenUtils.createAccessToken(request.getPassword()));
+        response.setAccessToken(jwtTokenUtils.createAccessToken(request.getUsername()));
         response.setRefreshToken(jwtTokenUtils.createRefreshToken());
         return response;
     }
@@ -49,6 +49,7 @@ public class UserService implements UserDetailsManager {
         if (userRepository.existsByPhone(user.getPhone()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 전화번호 입니다.", user.getPhone()));
         try {
+            user.setEncodedPassword(passwordEncoder.encode(user.getPassword()));
             this.userRepository.save(User.fromUserDetails(user));
         } catch (ClassCastException e) {
             log.error("Exception message : {} | failed to cast to {}",e.getMessage(), CustomUserDetails.class);

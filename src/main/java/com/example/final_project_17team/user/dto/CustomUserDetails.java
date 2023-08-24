@@ -16,11 +16,14 @@ public class CustomUserDetails implements UserDetails {
     private String email;
     private String phone;
     private boolean gender; // 남성 : true, 여성 : false
-    private Long age;
+    private Integer age;
     private String imgUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public void setEncodedPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
     public static CustomUserDetails fromEntity(User user) {
         return CustomUserDetails.builder()
                 .username(user.getUsername())
@@ -42,7 +45,7 @@ public class CustomUserDetails implements UserDetails {
                 .password(joinUser.getPassword())
                 .email(joinUser.getEmail())
                 .phone(joinUser.getPhone())
-                .gender(joinUser.isGender())
+                .gender(joinUser.getGender())
                 .age(joinUser.getAge())
                 .build();
     }
