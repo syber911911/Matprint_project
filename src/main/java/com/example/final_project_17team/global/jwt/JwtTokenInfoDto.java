@@ -10,5 +10,4 @@ import lombok.ToString;
 public class JwtTokenInfoDto {
     private String accessToken;
     private String refreshToken;
-    private Boolean logOut;
 }
