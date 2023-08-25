@@ -1,5 +1,7 @@
 package com.example.final_project_17team.restaurant.service;
 
+import com.example.final_project_17team.global.exception.CustomException;
+import com.example.final_project_17team.global.exception.ErrorCode;
 import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +14,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.json.Json;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,34 +28,34 @@ import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class RestaurantService {
-    private final RestaurantRepository restaurantRepository;
 
-    public List<RestaurantSearchDto> searchRestaurant(String target, int pageNum) throws IOException {
-        String request = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + target + "음식점";
-
-        // HttpClient 이용 외부 api 호출
+    public Page<RestaurantSearchDto> searchRestaurant(String target, int pageNum) throws IOException {
+        String request = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + target + "음식점&displayCount=100";
         CloseableHttpClient client = HttpClients.createDefault();
         HttpGet getRequest = new HttpGet(request);
 
         getRequest.addHeader("User-Agent", "Mozila/5.0");
         getRequest.addHeader("Content-type", "application/json");
         CloseableHttpResponse response = client.execute(getRequest);
-
-        return parseAndListed(EntityUtils.toString(response.getEntity(), "UTF-8"), pageNum);
+        return parseAndPaged(EntityUtils.toString(response.getEntity(), "UTF-8"), pageNum);
     }
 
-    public List<RestaurantSearchDto> parseAndListed(String response, int pageNum) throws JsonProcessingException {
-        JsonNode jsonNode = new ObjectMapper().readTree(response).get("result").get("place").get("list");
+    public Page<RestaurantSearchDto> parseAndPaged(String response, int pageNum) throws JsonProcessingException {
+        JsonNode listNode = new ObjectMapper().readTree(response).get("result").get("place").get("list");
         List<RestaurantSearchDto> restaurants = new ArrayList<>();
 
-        for(JsonNode node: jsonNode) {
+        if (listNode.size() <= pageNum * 10)
+            throw new CustomException(ErrorCode.PAGE_NUMBER_OUT_OF_BOUNDS, "The response only got " + listNode.size() + " places");
+
+        for(JsonNode node: listNode) {
             restaurants.add(new ObjectMapper().treeToValue(node, RestaurantSearchDto.class));
             restaurants.get(restaurants.size()-1).setBusinessHours(
                     node.get("businessStatus").get("businessHours").asText()
             );
         }
-        return restaurants;
+        Pageable pageResponse = PageRequest.of(pageNum, 10);
+        int endIdx = Math.min(pageNum * 10 + 10, restaurants.size());
+        return new PageImpl<>(restaurants.subList(pageNum * 10, endIdx), pageResponse, restaurants.size());
     }
 }
