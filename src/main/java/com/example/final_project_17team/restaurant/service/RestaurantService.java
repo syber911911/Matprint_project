@@ -8,6 +8,7 @@ import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
+import com.example.final_project_17team.review.dto.ReviewPageDto;
 import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.review.repository.ReviewRepository;
 import com.example.final_project_17team.user.entity.User;
@@ -22,6 +23,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,6 +86,20 @@ public class RestaurantService {
         }
     }
 
+    // 모든 사람이 볼 수 있음
+    public Page<ReviewPageDto> readReviewPage(Long restaurantId, Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(
+                pageNumber, pageSize, Sort.by("createdAt").descending()); // 댓글은 최신 순으로 나오게?
+
+        Page<Review> reviewPage
+                = reviewRepository.findAllByRestaurantId(restaurantId, pageable);
+
+        Page<ReviewPageDto> reviewPageDto
+                = reviewPage.map(ReviewPageDto::fromEntity);
+
+        return reviewPageDto;
+    }
 
     // 리뷰 삭제 soft delete로 구현
     public boolean deleteReview(Long restaurantId, Long reviewId){
