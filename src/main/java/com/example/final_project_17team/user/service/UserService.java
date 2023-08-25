@@ -1,6 +1,6 @@
 package com.example.final_project_17team.user.service;
 
-import com.example.final_project_17team.global.jwt.JwtTokenDto;
+import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.global.jwt.JwtTokenUtils;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import com.example.final_project_17team.user.dto.LoginDto;
@@ -30,15 +30,11 @@ public class UserService implements UserDetailsManager {
         this.jwtTokenUtils = jwtTokenUtils;
     }
 
-    public JwtTokenDto loginUser(LoginDto request) {
+    public JwtTokenInfoDto loginUser(LoginDto request) {
         CustomUserDetails user = this.loadUserByUsername(request.getUsername());
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
-
-        JwtTokenDto response = new JwtTokenDto();
-        response.setAccessToken(jwtTokenUtils.createAccessToken(request.getUsername()));
-        response.setRefreshToken(jwtTokenUtils.createRefreshToken());
-        return response;
+        return jwtTokenUtils.generatedToken(user.getUsername());
     }
 
     @Override

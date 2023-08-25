@@ -2,7 +2,7 @@ package com.example.final_project_17team.user.controller;
 
 import com.example.final_project_17team.global.exception.ErrorCode;
 import com.example.final_project_17team.global.exception.CustomException;
-import com.example.final_project_17team.global.jwt.JwtTokenDto;
+import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import com.example.final_project_17team.user.dto.JoinDto;
 import com.example.final_project_17team.user.dto.LoginDto;
@@ -10,7 +10,6 @@ import com.example.final_project_17team.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService service;
 
-    @PostMapping("/login")
-    public JwtTokenDto login(@RequestBody @Valid LoginDto request) {
+    @GetMapping("/login")
+    public JwtTokenInfoDto login(@RequestBody @Valid LoginDto request) {
         return service.loginUser(request);
     }
 

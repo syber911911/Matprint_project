@@ -1,5 +1,6 @@
 package com.example.final_project_17team.config;
 
+import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.global.redis.RedisProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +28,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, JwtTokenInfoDto> redisTemplate() {
+        RedisTemplate<String, JwtTokenInfoDto> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
