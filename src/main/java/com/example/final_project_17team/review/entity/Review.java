@@ -4,12 +4,14 @@ import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "reviews")
+@Where(clause = "deleted = false")
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,7 @@ public class Review {
     @Column(nullable = false)
     private Long ratings;
     private String img_url;
+    private boolean deleted;
     private LocalDateTime created_at;
     private LocalDateTime deleted_at;
     private LocalDateTime modified_at;

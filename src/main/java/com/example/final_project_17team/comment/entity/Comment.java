@@ -4,6 +4,7 @@ import com.example.final_project_17team.post.entity.Post;
 import com.example.final_project_17team.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Data
