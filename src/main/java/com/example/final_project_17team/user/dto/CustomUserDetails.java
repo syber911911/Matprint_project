@@ -37,7 +37,6 @@ public class CustomUserDetails implements UserDetails {
     public static CustomUserDetails fromDto(JoinDto joinUser) {
         return CustomUserDetails.builder()
                 .username(joinUser.getUsername())
-                .username(joinUser.getUsername())
                 .password(joinUser.getPassword())
                 .email(joinUser.getEmail())
                 .phone(joinUser.getPhone())
