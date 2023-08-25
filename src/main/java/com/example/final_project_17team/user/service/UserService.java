@@ -41,22 +41,23 @@ public class UserService implements UserDetailsManager {
         return response;
     }
 
-    public void createUser(CustomUserDetails user) {
-        if (userRepository.existsByUsername(user.getUsername()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 아이디 입니다.", user.getUsername()));
-        if (userRepository.existsByEmail(user.getEmail()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 이메일 입니다.", user.getEmail()));
-        if (userRepository.existsByPhone(user.getPhone()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 전화번호 입니다.", user.getPhone()));
+    @Override
+    public void createUser(UserDetails user) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) user;
+        if (userRepository.existsByUsername(customUserDetails.getUsername()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 아이디 입니다.", customUserDetails.getUsername()));
+        if (userRepository.existsByEmail(customUserDetails.getEmail()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 이메일 입니다.", customUserDetails.getEmail()));
+        if (userRepository.existsByPhone(customUserDetails.getPhone()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("%s 는 이미 사용중인 전화번호 입니다.", customUserDetails.getPhone()));
         try {
-            user.setEncodedPassword(passwordEncoder.encode(user.getPassword()));
-            this.userRepository.save(User.fromUserDetails(user));
+            customUserDetails.setEncodedPassword(passwordEncoder.encode(customUserDetails.getPassword()));
+            this.userRepository.save(User.fromUserDetails(customUserDetails));
         } catch (ClassCastException e) {
             log.error("Exception message : {} | failed to cast to {}",e.getMessage(), CustomUserDetails.class);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @Override
     public void updateUser(UserDetails user) {
@@ -83,10 +84,5 @@ public class UserService implements UserDetailsManager {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
         return CustomUserDetails.fromEntity(optionalUser.get());
-    }
-
-    @Override
-    public void createUser(UserDetails user) {
-
     }
 }

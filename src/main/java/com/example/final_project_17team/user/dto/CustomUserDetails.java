@@ -18,8 +18,6 @@ public class CustomUserDetails implements UserDetails {
     private boolean gender; // 남성 : true, 여성 : false
     private Integer age;
     private String imgUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public void setEncodedPassword(String encodedPassword) {
         this.password = encodedPassword;
@@ -33,8 +31,6 @@ public class CustomUserDetails implements UserDetails {
                 .gender(user.isGender())
                 .age(user.getAge())
                 .imgUrl(user.getImgUrl())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdateAt())
                 .build();
     }
 

@@ -19,9 +19,7 @@ import java.util.Date;
 public class JwtTokenUtils {
     private final Key signingKey;
     private final JwtParser jwtParser;
-    public JwtTokenUtils(
-            @Value("${jwt.secret}") String jwtSecret
-    ) {
+    public JwtTokenUtils(@Value("${jwt.secret}") String jwtSecret) {
         this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         // JWT 번역기 만들기
         this.jwtParser = Jwts
