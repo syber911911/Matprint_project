@@ -16,8 +16,8 @@ public class MyRestaurantController {
     private final MyRestaurantService service;
 
     @GetMapping("/myRestaurant")
-    public ResponseEntity<List<MyRestaurantDto>> getMyRestaurant(@RequestParam("userId") Long userId) {
-        List<MyRestaurantDto> wishlist = service.myRestaurantView(userId);
+    public ResponseEntity<List<MyRestaurantDto>> getMyRestaurant(@RequestParam("myRestaurantId") Long myRestaurantId) {
+        List<MyRestaurantDto> wishlist = service.myRestaurantView(myRestaurantId);
         return ResponseEntity.ok(wishlist);
     }
 
@@ -28,8 +28,8 @@ public class MyRestaurantController {
     }
 
     @DeleteMapping("/deleteMyRestaurant")
-    public void deleteMyRestaurant(@RequestParam("restaurantId") Long restaurantId){
-        service.deleteMyRestaurant(restaurantId);
+    public void deleteMyRestaurant(@RequestParam("myRestaurantId") Long myRestaurantId){
+        service.deleteMyRestaurant(myRestaurantId);
     }
 
 

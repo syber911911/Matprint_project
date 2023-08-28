@@ -26,29 +26,32 @@ public class MyRestaurantService {
     private final MyRestaurantRepository myRestaurantRepository;
     private final UserRepository userRepository;
 
-    public List<MyRestaurantDto> myRestaurantView(Long userId) {
-        List<MyRestaurant> userRestaurants = myRestaurantRepository.findByUserId(userId);
+    public List<MyRestaurantDto> myRestaurantView(Long myRestaurantId) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        User user = optionalUser.get();
+        Optional<MyRestaurant> optionalMyRestaurant = myRestaurantRepository.findByRestaurantIdAndUser(myRestaurantId, user);
+
+        if (optionalMyRestaurant.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        MyRestaurant myRestaurant = optionalMyRestaurant.get();
+        MyRestaurantDto restaurantDto = MyRestaurantDto.fromEntity(myRestaurant);
+
         List<MyRestaurantDto> restaurantDtoList = new ArrayList<>();
-        for (MyRestaurant restaurant : userRestaurants) {
-            MyRestaurantDto restaurantDto = MyRestaurantDto.fromEntity(restaurant);
-            restaurantDtoList.add(restaurantDto);
-        }
+        restaurantDtoList.add(restaurantDto);
+
         return restaurantDtoList;
     }
 
     public void setVisited(Long myRestaurantId) {
-        Optional<MyRestaurant> optionalMyRestaurant = myRestaurantRepository.findById(myRestaurantId);
-
-        if (optionalMyRestaurant.isPresent()) {
-            MyRestaurant myRestaurant = optionalMyRestaurant.get();
-            myRestaurant.setVisited(true);
-            myRestaurantRepository.save(myRestaurant);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    public void deleteMyRestaurant(Long restaurantId) {
         String username = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -60,10 +63,29 @@ public class MyRestaurantService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         User user = optionalUser.get();
-        Optional<MyRestaurant> optionalMyRestaurant = myRestaurantRepository.findByRestaurantIdAndUser(restaurantId, user);
+        Optional<MyRestaurant> optionalMyRestaurant = myRestaurantRepository.findByRestaurantIdAndUser(myRestaurantId, user);
+        MyRestaurant myRestaurant = optionalMyRestaurant.get();
+
+        myRestaurant.setVisited(true);
+        myRestaurantRepository.save(myRestaurant);
+    }
+
+    public void deleteMyRestaurant(Long myRestaurantId) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        if(optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        User user = optionalUser.get();
+        Optional<MyRestaurant> optionalMyRestaurant = myRestaurantRepository.findByRestaurantIdAndUser(myRestaurantId, user);
 
         if (optionalMyRestaurant.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        myRestaurantRepository.deleteById(restaurantId);
+        myRestaurantRepository.deleteById(myRestaurantId);
     }
 }
