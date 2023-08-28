@@ -2,6 +2,7 @@ package com.example.final_project_17team.restaurant.entity;
 
 import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.global.entity.Base;
+import com.example.final_project_17team.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,6 +43,10 @@ public class Restaurant extends Base {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "restaurant_id")
     private List<Category> categoryList = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "restaurant_id")
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public Restaurant(String status, String name, String tel, String openHours, String closeHours, String location, String address, String roadAddress,String menuInfo, BigDecimal mapX, BigDecimal mapY, Float avgRatings, List<RestaurantImage> restaurantImageList, List<Category> categoryList) {

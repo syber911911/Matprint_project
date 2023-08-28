@@ -1,16 +1,26 @@
 package com.example.final_project_17team.post.entity;
 
+import com.example.final_project_17team.comment.entity.Comment;
+import com.example.final_project_17team.global.entity.Base;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "posts")
-public class Post {
+@Where(clause = "deleted = false")
+public class Post extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,15 +32,15 @@ public class Post {
     private String status;
     private LocalDateTime visit_date;
     private String prefer;
-    private LocalDateTime created_at;
-    private LocalDateTime deleted_at;
-    private LocalDateTime modified_at;
+    private boolean deleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
+    @Column(name = "restaurant_id")
+    private Long restaurantId;
+
+    @OneToMany
+    @JoinColumn(name = "post_id")
+    private List<Comment> comments = new ArrayList<>();
 }

@@ -1,8 +1,11 @@
 package com.example.final_project_17team.user.entity;
 
+import com.example.final_project_17team.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,4 +30,9 @@ public class User {
     private String img_url;
     private LocalDateTime created_at;
     private LocalDateTime modified_at;
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Post> posts = new ArrayList<>();
+
 }
