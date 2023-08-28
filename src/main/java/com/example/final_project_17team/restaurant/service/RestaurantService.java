@@ -1,7 +1,5 @@
 package com.example.final_project_17team.restaurant.service;
 
-import com.example.final_project_17team.comment.entity.Comment;
-import com.example.final_project_17team.comment.repository.CommentRepository;
 import com.example.final_project_17team.myrestaurant.entity.MyRestaurant;
 import com.example.final_project_17team.myrestaurant.repository.MyRestaurantRepository;
 import com.example.final_project_17team.restaurant.dto.RestaurantDto;

@@ -28,9 +28,8 @@ public class Post extends Base {
     private String title;
     @Column(nullable = false)
     private String content;
-    @Column(nullable = false)
     private String status;
-    private LocalDateTime visit_date;
+    private LocalDateTime visitDate;
     private String prefer;
     private boolean deleted;
 
