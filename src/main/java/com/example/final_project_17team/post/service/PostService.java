@@ -8,7 +8,6 @@ import com.example.final_project_17team.post.entity.Post;
 import com.example.final_project_17team.post.repository.PostRepository;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
-import com.example.final_project_17team.review.dto.ReviewPageDto;
 import com.example.final_project_17team.review.dto.ReviewRequestDto;
 import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.user.entity.User;
