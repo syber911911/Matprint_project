@@ -36,7 +36,7 @@ public class JwtTokenUtils {
     // access token 유효성 검증
     // 헤더가 빈 경우, Bearer 토큰이 아닌 경우 혹은 jwt 를 해석하는 과정에서
     // 예외가 발생하는 경우 false 를 반환
-    public void validate(String authHeader) {
+    public void validate(String token) {
         // Bearer token 이 아닌 경우
 //        if (!authHeader.startsWith("Bearer ")) {
 //            log.warn("Bearer token 이 아님");
