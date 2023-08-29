@@ -12,19 +12,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Getter
-@Setter
 @PropertySource("application.yaml")
 public class RedisProperties {
     @Value("${spring.data.redis.port}")
     private int port;
     @Value("${spring.data.redis.host}")
     private String host;
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public String getHost() {
-        return this.host;
-    }
 }
