@@ -1,20 +1,21 @@
 package com.example.final_project_17team.global.redis;
 
-import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-@RedisHash(value = "refresh", timeToLive = 60)
+@RedisHash(value = "username", timeToLive = 3600 * 24 * 14)
 @AllArgsConstructor
 @Getter
+@Setter
 public class Redis {
     @Id
-    private String refreshToken;
-    @Indexed
     private String username;
+    @Indexed
+    private String refreshToken;
 }
 
 
