@@ -1,16 +1,22 @@
 package com.example.final_project_17team.user.entity;
 
+import com.example.final_project_17team.comment.entity.Comment;
+import com.example.final_project_17team.global.entity.Base;
 import com.example.final_project_17team.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @Table(name = "users")
-public class User {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class User extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,11 +34,13 @@ public class User {
     @Column(nullable = false)
     private Long age;
     private String img_url;
-    private LocalDateTime created_at;
-    private LocalDateTime modified_at;
 
     @OneToMany
     @JoinColumn(name = "user_id")
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Comment> comments = new ArrayList<>();
 
 }

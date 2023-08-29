@@ -33,6 +33,8 @@ public class Post extends Base {
     private String prefer;
     private boolean deleted;
 
+    private String userName;
+
     @Column(name = "user_id")
     private Long userId;
 
