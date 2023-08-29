@@ -1,5 +1,6 @@
 package com.example.final_project_17team.restaurant.controller;
 
+import com.example.final_project_17team.dataUpdate.dto.PlaceDataDto;
 import com.example.final_project_17team.dataUpdate.service.CategoryUpdate;
 import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
@@ -23,20 +24,15 @@ import java.util.Map;
 @AllArgsConstructor
 public class RestaurantController {
     private final RestaurantService service;
-    private final CategoryUpdate categoryUpdate;
 
-    @PostMapping("/test")
-    public void test() throws Exception {
-        categoryUpdate.insertPlaceData();
-    }
-
-    // (지역명, 가게 이름을 통한) 음식점 검색
+    // 음식점 검색 endPoint
     @GetMapping("/search")
-    public List<RestaurantSearchDto> search(
+    public Page<PlaceDataDto> search(
             @RequestParam("target") String target,
-            @RequestParam("page") int pageNum
-    ) throws IOException {
-        return service.searchRestaurant(target, pageNum);
+            @RequestParam(value = "page", defaultValue = "0") int pageNum,
+            @RequestParam(value = "limit", defaultValue = "10") int pageSize
+    )  {
+        return service.searchRestaurant(target, pageNum, pageSize);
     }
 
     //상세페이지

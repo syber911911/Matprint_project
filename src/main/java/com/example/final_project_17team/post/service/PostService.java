@@ -37,6 +37,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
+    // 동행 글 작성
     public PostDto createPost(PostDto dto, Long restaurantId){
 
         String username = SecurityContextHolder
@@ -189,11 +190,9 @@ public class PostService {
         commentRepository.save(comment);
 
         return CommentDto.fromEntity(comment);
-
     }
 
     //TODO 동행 조회(전체 조회와 제목, 내용에 키워드 포함 조회는 구현 했는데 gender, age, status 등으로 조회하는건 아직 구현 안함)
     //TODO 댓글 조회(동행 글 작성자와, 댓글 작성자 들만 볼 수 있게), 수정, 삭제
     //TODO stauts 변경(모집중 -> 모집완료)
-
 }

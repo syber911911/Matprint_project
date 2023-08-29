@@ -55,16 +55,13 @@ public class CategoryUpdate {
             }
             Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndMapXAndMapY(placeDataDto.getName(), placeDataDto.getX(), placeDataDto.getY());
             if (optionalRestaurant.isEmpty()) {
-                String openHours = placeDataDto.getBusinessHours() != null && !placeDataDto.getBusinessHours().isBlank() ? placeDataDto.getBusinessHours().split("~")[0].substring(8) : null;
-                String closeHours = placeDataDto.getBusinessHours() != null && !placeDataDto.getBusinessHours().isBlank() ? placeDataDto.getBusinessHours().split("~")[1].substring(8) : null;
-
                 Restaurant restaurant = restaurantRepository.save(
                         Restaurant.builder()
                                 .status("정상영업")
                                 .name(placeDataDto.getName())
                                 .tel(placeDataDto.getTel())
-                                .openHours(openHours)
-                                .closeHours(closeHours)
+                                .openHours(placeDataDto.getOpenHours())
+                                .closeHours(placeDataDto.getCloseHours())
                                 .location(placeDataDto.getShortAddress().isEmpty() ? null : placeDataDto.getShortAddress().get(0))
                                 .address(placeDataDto.getAddress())
                                 .roadAddress(placeDataDto.getRoadAddress())
@@ -136,10 +133,14 @@ public class CategoryUpdate {
                 .block();
         try {
             JsonNode originJson = new ObjectMapper().readTree(response);
-            JsonNode placeList = originJson.get("result").get("place").get("list").get(0);
+            JsonNode place = originJson.get("result").get("place").get("list").get(0);
 
-            PlaceDataDto placeDataDto = new ObjectMapper().treeToValue(placeList, PlaceDataDto.class);
-            placeDataDto.setBusinessHours(placeList.get("businessStatus").get("businessHours").textValue());
+            PlaceDataDto placeDataDto = new ObjectMapper().treeToValue(place, PlaceDataDto.class);
+            String businessHours = place.get("businessStatus").get("businessHours").textValue();
+            String openHours = businessHours != null && !businessHours.isBlank() ? businessHours.split("~")[0].substring(8) : null;
+            String closeHours = businessHours != null && !businessHours.isBlank() ? businessHours.split("~")[1].substring(8) : null;
+            placeDataDto.setOpenHours(openHours);
+            placeDataDto.setCloseHours(closeHours);
             return placeDataDto;
         } catch (Exception ex) {
             log.warn("Error Message : {} | {} : failed", ex.getMessage(), description);

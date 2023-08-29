@@ -17,8 +17,6 @@ public class RestaurantDto {
     private Long id;
     private String name;
     private String address;
-    //private float lat;
-    //private float lon;
     private String tel;
     private float avg_ratings;
     private String runtime;
