@@ -70,7 +70,7 @@ public class JwtTokenUtils {
                 .getSubject();
     }
 
-    public JwtTokenInfoDto generatedToken(String username) {
+    public JwtTokenInfoDto generateToken(String username) {
         JwtTokenInfoDto jwtTokenInfoDto = new JwtTokenInfoDto();
         String accessToken = this.createAccessToken(username);
         String refreshToken = this.createRefreshToken();
@@ -80,7 +80,7 @@ public class JwtTokenUtils {
         return jwtTokenInfoDto;
     }
 
-    public JwtTokenInfoDto regeneratedToken(String refreshToken) {
+    public JwtTokenInfoDto regenerateToken(String refreshToken) {
         try {
             this.validate(refreshToken);
         } catch (Exception ex) {
@@ -97,7 +97,7 @@ public class JwtTokenUtils {
         // username 추출
         Redis redis = optionalRedis.get();
         String username = redis.getUsername();
-        return this.generatedToken(username);
+        return this.generateToken(username);
     }
 
     // 사용자 정보를 바탕으로 accessToken 발급
@@ -106,8 +106,25 @@ public class JwtTokenUtils {
                 // 사용자 정보 등록
                 .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(60)));
+                .setExpiration(Date.from(Instant.now().plusSeconds(3600 * 24)));
+        //
 
+
+
+
+
+
+
+
+        // accessToken 만료 기간 수정 : 현재 24시간
+
+
+
+
+
+
+
+        //
         return Jwts.builder()
                 .setClaims(jwtClaims)
                 .signWith(signingKey)

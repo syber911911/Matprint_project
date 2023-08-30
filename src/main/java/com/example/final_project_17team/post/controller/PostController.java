@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,22 +24,16 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/mate")
 public class PostController {
-
     private final PostService postService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<Map<String, String>> create(
             @RequestBody PostDto dto,
-            @RequestParam("restaurantId") Long restaurantId
+            @RequestParam(name="restaurantId", defaultValue="0") Long restaurantId
     ){
-
         postService.createPost(dto, restaurantId);
-
         log.info(dto.toString());
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "동행 찾기 등록이 완료되었습니다.");
-
-        return ResponseEntity.ok(responseBody);
+        return setResponseEntity("동행 찾기 등록이 완료되었습니다.");
     }
 
     @PutMapping("/post/{postId}")
@@ -46,32 +41,21 @@ public class PostController {
             @RequestBody PostDto dto,
             @PathVariable("postId") Long postId
     ){
-
         postService.updatePost(dto, postId);
-
         log.info(dto.toString());
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "동행 찾기 등록이 수정되었습니다.");
-
-        return ResponseEntity.ok(responseBody);
+        return setResponseEntity("동행 찾기 등록이 수정되었습니다.");
     }
 
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<Map<String, String>> deletePost(
+    public ResponseEntity<Map<String, String>> delete(
             @PathVariable("postId") Long postId
     ) {
-        if (postService.deletePost(postId)) {
-
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("message", "동행 모집 글을 삭제했습니다.");
-
-            return ResponseEntity.ok(responseBody);
-        }
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        postService.deletePost(postId);
+        return setResponseEntity("동행 모집 글을 삭제했습니다.");
     }
 
     @GetMapping("/readAll")
-    public Page<PostDto> readAllPosts(
+    public Page<PostDto> readAll(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "50") Integer limit
     ){
@@ -79,8 +63,10 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public List<PostDto> readFilter(
-            @RequestParam("target") String targets
+    public Page<PostDto> search(
+            @RequestParam("target") String targets,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "50") Integer limit
     ){
         return postService.searchPost(targets);
     }
@@ -90,15 +76,14 @@ public class PostController {
             @RequestBody CommentDto dto,
             @PathVariable("postId") Long postId
     ) {
-       postService.crateComment(dto, postId);
-
+        postService.crateComment(dto, postId);
         log.info(dto.toString());
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "댓글이 등록되었습니다.");
-
-        return ResponseEntity.ok(responseBody);
-
+        return setResponseEntity("댓글이 등록되었습니다.");
     }
 
-
+    public ResponseEntity<Map<String, String>> setResponseEntity(String message) {
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", message);
+        return ResponseEntity.ok(responseBody);
+    }
 }
