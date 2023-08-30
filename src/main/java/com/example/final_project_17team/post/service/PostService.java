@@ -6,193 +6,188 @@ import com.example.final_project_17team.comment.repository.CommentRepository;
 import com.example.final_project_17team.post.dto.PostDto;
 import com.example.final_project_17team.post.entity.Post;
 import com.example.final_project_17team.post.repository.PostRepository;
-import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
-import com.example.final_project_17team.review.dto.ReviewPageDto;
-import com.example.final_project_17team.review.dto.ReviewRequestDto;
-import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.user.entity.User;
 import com.example.final_project_17team.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class PostService {
-
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    // 동행 글 작성
     public PostDto createPost(PostDto dto, Long restaurantId){
-
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty())
+        User user = loadUserByAuth();
+        if (restaurantRepository.findById(restaurantId).isEmpty() && restaurantId != 0)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User user = optionalUser.get();
-
-        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
-        if(optionalRestaurant.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Restaurant restaurant = optionalRestaurant.get();
 
         Post post = new Post();
         post.setTitle(dto.getTitle());
-        post.setUserName(username);
         post.setContent(dto.getContent());
         post.setStatus("모집 중");
-        post.setVisitDate(post.getVisitDate());
-        post.setPrefer(post.getPrefer());
+        post.setVisitDate(dto.getVisitDate());
+        post.setPrefer(dto.getPrefer());
         post.setUserId(user.getId());
-        post.setRestaurantId(restaurantId);
+        if (restaurantId != 0) post.setRestaurantId(restaurantId);
 
         postRepository.save(post);
-
         return PostDto.fromEntity(post);
     }
 
-    // 수정은 제목, 내용, 방문날짜, 선호에 한해서만 됨
+    // [제목, 내용, 방문날짜, 선호, 모집현황]만 수정 가능
     public PostDto updatePost(PostDto dto, Long postId){
+        User user = loadUserByAuth();
+        Post post = loadPostById(postId, user.getId());
 
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+        post.setPrefer(dto.getPrefer());
+        post.setVisitDate(dto.getVisitDate());
 
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User user = optionalUser.get();
+        if (dto.getStatus().equals("모집 중") || dto.getStatus().equals("모집 완료"))
+            post.setStatus(dto.getStatus());
 
-        Optional<Post> optionalPost = postRepository.findByIdAndUserId(postId, user.getId());
-        if(optionalPost.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Post post = optionalPost.get();
-
-        if (!Objects.equals(dto.getTitle(), post.getTitle())) {
-            post.setTitle(dto.getTitle());
-        }
-
-        if (!Objects.equals(dto.getContent(), post.getContent())) {
-            post.setContent(dto.getContent());
-        }
-
-        if (!Objects.equals(dto.getVisitDate(), post.getVisitDate())) {
-            post.setVisitDate(dto.getVisitDate());
-        }
-
-        if (!Objects.equals(dto.getPrefer(), post.getPrefer())) {
-            post.setPrefer(dto.getPrefer());
-        }
-
-        post.setStatus("모집 중");
         postRepository.save(post);
-
         return PostDto.fromEntity(post);
     }
 
-    public boolean deletePost(Long postId){
+    public void deletePost(Long postId){
+        User user = loadUserByAuth();
+        Post post = loadPostById(postId, user.getId());
 
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User user = optionalUser.get();
-
-        Optional<Post> optionalPost = postRepository.findByIdAndUserId(postId, user.getId());
-        if(optionalPost.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Post post = optionalPost.get();
-
-        post.setDeleted(true);
+        post.setDeletedAt(LocalDateTime.now());
         postRepository.save(post);
-
-        return true;
     }
 
-    public Page<PostDto> readAllPostPage(Integer pageNumber, Integer pageSize) {
-
-        Pageable pageable = PageRequest.of(
-                pageNumber, pageSize, Sort.by("createdAt").descending()); // 댓글은 최신 순으로 나오게?
-
-        Page<Post> postPage
-                = postRepository.findAll(pageable);
-
-        Page<PostDto> postDto
-                = postPage.map(PostDto::fromEntity);
-
-        return postDto;
-    }
-
-    public List<PostDto> searchPost(String targets) {
-
-        List<String> targetList = Arrays.asList(targets.split(" ")); // 사용자가 검색한 것을 공백을 기준으로 나눔
-
-        List<Post> posts = postRepository.findAll();
-
+    // [검색어, 성별, 나이, 모집현황]으로 검색 가능
+    // gender = male/female, status = 모집 중/모집 완료, age = 1/2/... (10대, 20대, ...)
+    public Page<PostDto> searchPost(String targets, Integer pageNumber, Integer pageSize, String gender, Integer age, String status) {
+        List<String> targetList = Arrays.asList(targets.split(" "));
+        List<Post> postList = postRepository.findAllByDeletedAtIsNull();
         List<PostDto> postDtoList = new ArrayList<>();
-        Post targetPost = new Post();
+        List<PostDto> searched;
 
-        for (Post post : posts){
+        for (Post post : postList){
+            int cnt = 0;
             for (String target : targetList) {
-                if (post.getTitle().contains(target) || post.getContent().contains(target)) { // 제목이나 내용에 키워드가 포함되어 있는 글만 가져오기
-                    targetPost = post;
-                    PostDto postDto = PostDto.fromEntity(targetPost);
-                    postDtoList.add(postDto);
-                }
-                else throw new ResponseStatusException(HttpStatus.NOT_FOUND); // targets에 해당하는 글 없음
+                if (post.getTitle().contains(target) || post.getContent().contains(target)) {
+                    if (++cnt == targetList.size()) postDtoList.add(PostDto.fromEntity(post));
+                } else break;
             }
         }
+        if (gender.equals("") && status.equals("") && age == 0) searched = postDtoList;
+        else searched = searchByGenderAgeStatus(postDtoList, gender, age, status);
 
-        return postDtoList;
+        if (pageNumber > searched.size() / pageSize)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "page number out of bounds");
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), searched.size());
+        return new PageImpl<>(searched.subList(start, end), pageRequest, searched.size());
     }
 
     public CommentDto crateComment(CommentDto dto, Long postId) {
-
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User user = optionalUser.get();
+        User user = loadUserByAuth();
+        Post post = loadPostById(postId, user.getId());
 
         Comment comment = new Comment();
         comment.setContent(dto.getContent());
         comment.setUserId(user.getId());
-        comment.setUserName(username);
-        comment.setPostId(postId);
-        commentRepository.save(comment);
+        comment.setPostId(post.getId());
 
+        commentRepository.save(comment);
         return CommentDto.fromEntity(comment);
     }
 
     //TODO 동행 조회(전체 조회와 제목, 내용에 키워드 포함 조회는 구현 했는데 gender, age, status 등으로 조회하는건 아직 구현 안함)
     //TODO 댓글 조회(동행 글 작성자와, 댓글 작성자 들만 볼 수 있게), 수정, 삭제
     //TODO stauts 변경(모집중 -> 모집완료)
+    public List<PostDto> searchByGenderAgeStatus(List<PostDto> list, String genderStr, Integer age, String status) {
+        Boolean gender = genderStr.equals("male")? true : false;
+        List<PostDto> responseList = new ArrayList<>();
+
+        for (PostDto post : list) {
+            User user = loadUserById(post.getUserId());
+            if (!genderStr.equals("") && (user.isGender() != gender)) continue;
+            if (age != 0 && (user.getAge()/10 != age)) continue;
+            if (!status.equals("") && !post.getStatus().equals(status)) continue;
+            responseList.add(post);
+        }
+        return responseList;
+    }
+
+    public Page<CommentDto> readComment(Long postId, Integer pageNumber, Integer pageSize) {
+        User user = loadUserByAuth();
+        Post post = loadPostById(postId, user.getId());
+
+        Pageable pageable = PageRequest.of(
+                pageNumber, pageSize, Sort.by("createdAt").ascending()); // 오름차순 정렬
+
+        return commentRepository.findAllByPostId(post.getId(), pageable)
+                .map(CommentDto::fromEntity);
+    }
+
+    public CommentDto updateComment(CommentDto dto, Long commentId) {
+        User user = loadUserByAuth();
+        Comment comment = loadCommentById(commentId, user.getId());
+        comment.setContent(dto.getContent());
+        commentRepository.save(comment);
+        return CommentDto.fromEntity(comment);
+    }
+
+    public void deleteComment(Long commentId) {
+        User user = loadUserByAuth();
+        Comment comment = loadCommentById(commentId, user.getId());
+
+        comment.setDeletedAt(LocalDateTime.now());
+        commentRepository.save(comment);
+    }
+
+    public User loadUserByAuth() {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
+        return optionalUser.get();
+    }
+
+    public User loadUserById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
+        return optionalUser.get();
+    }
+
+    public Post loadPostById(Long postId, Long userId) {
+        Optional<Post> optionalPost = postRepository.findByIdAndUserId(postId, userId);
+        if(optionalPost.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "post not found");
+        return optionalPost.get();
+    }
+
+    public Comment loadCommentById(Long commentId, Long userId) {
+        Optional<Comment> optionalComment = commentRepository.findByIdAndUserId(commentId, userId);
+        if (optionalComment.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return optionalComment.get();
+    }
 }
