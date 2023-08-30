@@ -59,19 +59,22 @@ public class PostController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer limit
     ){
-        return postService.searchPost("", page, limit);
+        return postService.searchPost("", page, limit, "", 0, "");
     }
 
     @GetMapping("/search")
     public Page<PostDto> search(
-            @RequestParam(name="target", defaultValue = "") String target,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer limit
+            @RequestParam(name="target", defaultValue="") String target,
+            @RequestParam(name="gender", defaultValue="") String gender,
+            @RequestParam(name="age", defaultValue="") Integer age,
+            @RequestParam(name="status", defaultValue="") String status,
+            @RequestParam(defaultValue="0") Integer page,
+            @RequestParam(defaultValue="10") Integer limit
     ){
-        return postService.searchPost(target, page, limit);
+        return postService.searchPost(target, page, limit, gender, age, status);
     }
 
-    @PostMapping("/comment")
+    @PostMapping("/{postId}/comment")
     public ResponseEntity<Map<String, String>> createComment(
             @RequestBody CommentDto dto,
             @PathVariable("postId") Long postId
