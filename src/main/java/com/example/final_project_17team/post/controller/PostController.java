@@ -81,6 +81,33 @@ public class PostController {
         return setResponseEntity("댓글이 등록되었습니다.");
     }
 
+    @GetMapping("/comment")
+    public Page<CommentDto> readAllComment(
+            @PathVariable("postId") Long postId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit
+    ) {
+        return postService.readComment(postId,page,limit);
+    }
+
+    @PutMapping("/comment/{commentId}")
+    public ResponseEntity<Map<String, String>> updateComment(
+            @PathVariable("commentId") Long commentId,
+            @RequestBody CommentDto dto
+    ) {
+        postService.updateComment(dto, commentId);
+        log.info(dto.toString());
+        return setResponseEntity("댓글이 수정되었습니다.");
+    }
+
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<Map<String, String>> deleteComment(
+            @PathVariable("commentId") Long commentId
+    ) {
+        postService.deleteComment(commentId);
+        return setResponseEntity("댓글이 삭제되었습니다.");
+    }
+
     public ResponseEntity<Map<String, String>> setResponseEntity(String message) {
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("message", message);
