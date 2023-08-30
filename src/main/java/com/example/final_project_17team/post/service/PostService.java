@@ -77,11 +77,11 @@ public class PostService {
     // gender = male/female, status = 모집 중/모집 완료, age = 1/2/... (10대, 20대, ...)
     public Page<PostDto> searchPost(String targets, Integer pageNumber, Integer pageSize, String gender, Integer age, String status) {
         List<String> targetList = Arrays.asList(targets.split(" "));
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postRepository.findAllByDeletedAtIsNull();
         List<PostDto> postDtoList = new ArrayList<>();
+        List<PostDto> searched;
 
         for (Post post : postList){
-            if (targets.equals("")) break;
             int cnt = 0;
             for (String target : targetList) {
                 if (post.getTitle().contains(target) || post.getContent().contains(target)) {
@@ -89,7 +89,12 @@ public class PostService {
                 } else break;
             }
         }
-        List<PostDto> searched = searchByGenderAgeStatus(postDtoList, gender, age, status);
+        if (gender.equals("") && status.equals("") && age == 0) searched = postDtoList;
+        else searched = searchByGenderAgeStatus(postDtoList, gender, age, status);
+
+        if (pageNumber > searched.size() / pageSize)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "page number out of bounds");
+
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), searched.size());
@@ -116,13 +121,12 @@ public class PostService {
         for (PostDto post : list) {
             User user = loadUserById(post.getUserId());
             if (!genderStr.equals("") && (user.isGender() != gender)) continue;
-            if (!age.equals("") && (user.getAge()/10 != age || age != 0)) continue;
-            if (!status.equals("") && (post.getStatus().equals(status))) continue;
+            if (age != 0 && (user.getAge()/10 != age)) continue;
+            if (!status.equals("") && !post.getStatus().equals(status)) continue;
             responseList.add(post);
         }
         return responseList;
     }
-
 
     public Page<CommentDto> readComment(Long postId, Integer pageNumber, Integer pageSize) {
         User user = loadUserByAuth();
