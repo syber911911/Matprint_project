@@ -66,7 +66,7 @@ public class PostController {
     public Page<PostDto> search(
             @RequestParam(name="target", defaultValue="") String target,
             @RequestParam(name="gender", defaultValue="") String gender,
-            @RequestParam(name="age", defaultValue="") Integer age,
+            @RequestParam(name="age", defaultValue="0") Integer age,
             @RequestParam(name="status", defaultValue="") String status,
             @RequestParam(defaultValue="0") Integer page,
             @RequestParam(defaultValue="10") Integer limit
