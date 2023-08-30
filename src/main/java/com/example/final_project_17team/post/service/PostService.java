@@ -110,33 +110,6 @@ public class PostService {
     //TODO 동행 조회(전체 조회와 제목, 내용에 키워드 포함 조회는 구현 했는데 gender, age, status 등으로 조회하는건 아직 구현 안함)
     //TODO 댓글 조회(동행 글 작성자와, 댓글 작성자 들만 볼 수 있게), 수정, 삭제
 
-    public Page<CommentDto> readComment(Long postId, Integer pageNumber, Integer pageSize) {
-        User user = getUserByAuth();
-        Post post = getPostById(postId, user.getId());
-
-        Pageable pageable = PageRequest.of(
-                pageNumber, pageSize, Sort.by("createdAt").ascending()); // 오름차순 정렬
-
-        return commentRepository.findAllByPostId(post.getId(), pageable)
-                .map(CommentDto::fromEntity);
-    }
-
-    public CommentDto updateComment(CommentDto dto, Long commentId) {
-        User user = getUserByAuth();
-        Comment comment = getCommentById(commentId, user.getId());
-        comment.setContent(dto.getContent());
-        commentRepository.save(comment);
-        return CommentDto.fromEntity(comment);
-    }
-
-    public void deleteComment(Long commentId) {
-        User user = getUserByAuth();
-        Comment comment = getCommentById(commentId, user.getId());
-
-        comment.setDeletedAt(LocalDateTime.now());
-        commentRepository.save(comment);
-    }
-
     public User getUserByAuth() {
         String username = SecurityContextHolder
                 .getContext()
@@ -154,13 +127,5 @@ public class PostService {
         if(optionalPost.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return optionalPost.get();
-    }
-
-    public Comment getCommentById(Long commentId, Long userId) {
-        Optional<Comment> optionalComment = commentRepository.findByIdAndUserId(commentId, userId);
-        if (optionalComment.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return optionalComment.get();
     }
 }
