@@ -57,18 +57,18 @@ public class PostController {
     @GetMapping("/readAll")
     public Page<PostDto> readAll(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "50") Integer limit
+            @RequestParam(defaultValue = "10") Integer limit
     ){
-        return postService.readAllPostPage(page, limit);
+        return postService.searchPost("", page, limit);
     }
 
     @GetMapping("/search")
     public Page<PostDto> search(
-            @RequestParam("target") String targets,
+            @RequestParam(name="target", defaultValue = "") String target,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "50") Integer limit
+            @RequestParam(defaultValue = "10") Integer limit
     ){
-        return postService.searchPost(targets);
+        return postService.searchPost(target, page, limit);
     }
 
     @PostMapping("/comment")

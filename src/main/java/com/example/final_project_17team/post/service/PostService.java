@@ -11,10 +11,7 @@ import com.example.final_project_17team.user.entity.User;
 import com.example.final_project_17team.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -42,8 +39,8 @@ public class PostService {
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
         post.setStatus("모집 중");
-        post.setVisitDate(post.getVisitDate());
-        post.setPrefer(post.getPrefer());
+        post.setVisitDate(dto.getVisitDate());
+        post.setPrefer(dto.getPrefer());
         post.setUserId(user.getId());
         if (restaurantId != 0) post.setRestaurantId(restaurantId);
 
@@ -61,8 +58,7 @@ public class PostService {
         post.setPrefer(dto.getPrefer());
         post.setVisitDate(dto.getVisitDate());
 
-        if (!Objects.equals(dto.getStatus(), post.getStatus())
-                && (dto.getStatus().equals("모집 중") || dto.getStatus().equals("모집 완료")))
+        if (dto.getStatus().equals("모집 중") || dto.getStatus().equals("모집 완료"))
             post.setStatus(dto.getStatus());
 
         postRepository.save(post);
@@ -77,36 +73,25 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public Page<PostDto> readAllPostPage(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(
-                pageNumber, pageSize, Sort.by("createdAt").descending()
-        ); // 댓글은 최신 순
-
-        Page<Post> postPage = postRepository.findAllByDeletedAtIsNull(pageable);
-        Page<PostDto> postDto = postPage.map(PostDto::fromEntity);
-
-        return postDto;
-    }
-
-    public Page<PostDto> searchPost(String targets) {
-        List<String> targetList = Arrays.asList(targets.split(" ")); // 사용자가 검색한 것을 공백을 기준으로 나눔
-        List<Post> posts = postRepository.findAll();
-
+    public Page<PostDto> searchPost(String targets, Integer pageNumber, Integer pageSize) {
+        List<String> targetList = Arrays.asList(targets.split(" "));
+        List<Post> postList = postRepository.findAll();
         List<PostDto> postDtoList = new ArrayList<>();
-        Post targetPost = new Post();
 
-        for (Post post : posts){
+        for (Post post : postList){
+            int cnt = 0;
             for (String target : targetList) {
-                if (post.getTitle().contains(target) || post.getContent().contains(target)) { // 제목이나 내용에 키워드가 포함되어 있는 글만 가져오기
-                    targetPost = post;
-                    PostDto postDto = PostDto.fromEntity(targetPost);
-                    postDtoList.add(postDto);
-                }
-                else throw new ResponseStatusException(HttpStatus.NOT_FOUND); // targets에 해당하는 글 없음
+                if (post.getTitle().contains(target) || post.getContent().contains(target)) {
+                    if (++cnt == targetList.size()) {
+                        postDtoList.add(PostDto.fromEntity(post));
+                    }
+                } else break;
             }
         }
-
-        return postDtoList;
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), postDtoList.size());
+        return new PageImpl<>(postDtoList.subList(start, end), pageRequest, postDtoList.size());
     }
 
     public CommentDto crateComment(CommentDto dto, Long postId) {
