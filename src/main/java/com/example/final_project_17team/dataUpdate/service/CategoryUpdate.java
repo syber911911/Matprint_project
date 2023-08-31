@@ -42,91 +42,150 @@ public class CategoryUpdate {
         this.restaurantImageRepository = restaurantImageRepository;
     }
 
-    public void insertPlaceData() throws InterruptedException {
+    // naver maps api 조회 결과를 DB 에 저장
+    public void saveRestaurant(PlaceDataDto placeDataDto) {
+        Restaurant restaurant = restaurantRepository.save(
+                Restaurant.builder()
+                        .status("정상영업")
+                        .name(placeDataDto.getName())
+                        .tel(placeDataDto.getTel())
+                        .openHours(placeDataDto.getOpenHours())
+                        .closeHours(placeDataDto.getCloseHours())
+                        .location(placeDataDto.getShortAddress().isEmpty() ? null : placeDataDto.getShortAddress().get(0))
+                        .address(placeDataDto.getAddress())
+                        .roadAddress(placeDataDto.getRoadAddress())
+                        .mapX(placeDataDto.getX())
+                        .mapY(placeDataDto.getY())
+                        .menuInfo(placeDataDto.getMenuInfo())
+                        .avgRatings(null)
+                        .build()
+        );
+        log.info("{} restaurant 생성", placeDataDto.getName());
+
+        List<Category> categoryList = new ArrayList<>();
+        for (String category : placeDataDto.getCategory()) {
+            categoryList.add(
+                    Category.builder()
+                            .name(category)
+                            .refUrl(null)
+                            .restaurant(restaurant)
+                            .build()
+            );
+            log.info("{} category 생성", category);
+        }
+        categoryRepository.saveAll(categoryList);
+
+        List<RestaurantImage> restaurantImageList = new ArrayList<>();
+        for (String restaurantImage : placeDataDto.getThumUrls()) {
+            restaurantImageList.add(
+                    RestaurantImage.builder()
+                            .url(restaurantImage)
+                            .restaurant(restaurant)
+                            .build()
+            );
+        }
+        restaurantImageRepository.saveAll(restaurantImageList);
+    }
+
+    // naver maps api 조회 결과와 검색어, 출처 url 을 함께 DB 에 저장
+    public void saveRestaurant(PlaceDataDto placeDataDto, String searchTopic, String refUrl) {
+        Restaurant restaurant = restaurantRepository.save(
+                Restaurant.builder()
+                        .status("정상영업")
+                        .name(placeDataDto.getName())
+                        .tel(placeDataDto.getTel())
+                        .openHours(placeDataDto.getOpenHours())
+                        .closeHours(placeDataDto.getCloseHours())
+                        .location(placeDataDto.getShortAddress().isEmpty() ? null : placeDataDto.getShortAddress().get(0))
+                        .address(placeDataDto.getAddress())
+                        .roadAddress(placeDataDto.getRoadAddress())
+                        .mapX(placeDataDto.getX())
+                        .mapY(placeDataDto.getY())
+                        .menuInfo(placeDataDto.getMenuInfo())
+                        .avgRatings(null)
+                        .build()
+        );
+        log.info("{} restaurant 생성", placeDataDto.getName());
+
+        List<Category> categoryList = new ArrayList<>();
+        for (String category : placeDataDto.getCategory()) {
+            categoryList.add(
+                    Category.builder()
+                            .name(category)
+                            .refUrl(null)
+                            .restaurant(restaurant)
+                            .build()
+            );
+            log.info("{} category 생성", category);
+        }
+        if (!searchTopic.isBlank()) {
+            categoryList.add(
+                    Category.builder()
+                            .name(searchTopic)
+                            .refUrl(refUrl)
+                            .restaurant(restaurant)
+                            .build()
+            );
+            log.info("{} category 생성", "성시경 먹을텐데");
+        }
+        categoryRepository.saveAll(categoryList);
+
+        List<RestaurantImage> restaurantImageList = new ArrayList<>();
+        for (String restaurantImage : placeDataDto.getThumUrls()) {
+            restaurantImageList.add(
+                    RestaurantImage.builder()
+                            .url(restaurantImage)
+                            .restaurant(restaurant)
+                            .build()
+            );
+        }
+        restaurantImageRepository.saveAll(restaurantImageList);
+    }
+
+    // 크롤링한 맛집 데이터를 기반으로
+    // naver maps api 호출 후
+    // DB 저장
+    public void searchAndSaveRestaurant() throws InterruptedException {
         List<List<String>> descriptionAndUrlList = this.getDescriptionAndUrl(this.process());
 
         for (List<String> descriptionAndUrl : descriptionAndUrlList) {
-            PlaceDataDto placeDataDto = this.getPlaceData(descriptionAndUrl.get(0));
-            Thread.sleep(3000);
-            if (placeDataDto == null) {
-                // 해당 가게의 검색 결과가 없음.
+            List<PlaceDataDto> placeDataDtoList = this.getPlaceList(descriptionAndUrl.get(0) , 1);
+            if (placeDataDtoList == null) {
                 log.info("{} : 검색 불가", descriptionAndUrl.get(0));
                 continue;
             }
+            PlaceDataDto placeDataDto = placeDataDtoList.get(0);
+            Thread.sleep(3000);
+
             Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndMapXAndMapY(placeDataDto.getName(), placeDataDto.getX(), placeDataDto.getY());
             if (optionalRestaurant.isEmpty()) {
-                String openHours = placeDataDto.getBusinessHours() != null && !placeDataDto.getBusinessHours().isBlank() ? placeDataDto.getBusinessHours().split("~")[0].substring(8) : null;
-                String closeHours = placeDataDto.getBusinessHours() != null && !placeDataDto.getBusinessHours().isBlank() ? placeDataDto.getBusinessHours().split("~")[1].substring(8) : null;
-
-                Restaurant restaurant = restaurantRepository.save(
-                        Restaurant.builder()
-                                .status("정상영업")
-                                .name(placeDataDto.getName())
-                                .tel(placeDataDto.getTel())
-                                .openHours(openHours)
-                                .closeHours(closeHours)
-                                .location(placeDataDto.getShortAddress().isEmpty() ? null : placeDataDto.getShortAddress().get(0))
-                                .address(placeDataDto.getAddress())
-                                .roadAddress(placeDataDto.getRoadAddress())
-                                .mapX(placeDataDto.getX())
-                                .mapY(placeDataDto.getY())
-                                .menuInfo(placeDataDto.getMenuInfo())
-                                .avgRatings(null)
-                                .build()
-                );
-                log.info("{} restaurant 생성", placeDataDto.getName());
-
-                List<Category> categoryList = new ArrayList<>();
-                for (String category : placeDataDto.getCategory()) {
-                    categoryList.add(
-                            Category.builder()
-                                    .name(category)
-                                    .refUrl(null)
-                                    .restaurant(restaurant)
-                                    .build()
-                    );
-                    log.info("{} category 생성", category);
-                }
-                categoryList.add(
-                        Category.builder()
-                                .name("성시경 먹을텐데")
-                                .refUrl(descriptionAndUrl.get(1))
-                                .restaurant(restaurant)
-                                .build()
-                );
-                log.info("{} category 생성", "성시경 먹을텐데");
-                categoryRepository.saveAll(categoryList);
-
-                List<RestaurantImage> restaurantImageList = new ArrayList<>();
-                for (String restaurantImage : placeDataDto.getThumUrls()) {
-                    restaurantImageList.add(
-                            RestaurantImage.builder()
-                                    .url(restaurantImage)
-                                    .restaurant(restaurant)
-                                    .build()
-                    );
-                }
-                restaurantImageRepository.saveAll(restaurantImageList);
+                this.saveRestaurant(placeDataDto, "성시경 먹을텐데", descriptionAndUrl.get(1));
             }
         }
     }
 
-    // 리팩토링 진행 후 맛집 찾기 기능에서도 활용 하도록 변경 필요
-    public PlaceDataDto getPlaceData(String description) {
-        log.info("search description : {}", description);
-        String url = "https://map.naver.com/v5/api/search";
+    // target 을 query 로
+    // naver maps api 호출
+    // 결과를 리스트에 저장해 반환
+    public List<PlaceDataDto> getPlaceList(String target, Integer displayCount) {
+        List<PlaceDataDto> placeDataDtoList = new ArrayList<>();
+        String url = "https://map.naver.com/v5/api";
         WebClient webClient = WebClient.builder()
-                .baseUrl("https://map.naver.com/v5/api")
+                .baseUrl(url)
                 .defaultHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Whale/3.21.192.22 Safari/537.36")
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(10 * 1024 * 1024)
+                )
                 .build();
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search")
                         .queryParam("caller", "pcweb")
-                        .queryParam("query", description)
+                        .queryParam("query", target)
                         .queryParam("type", "all")
-                        .queryParam("page", "1")
-                        .queryParam("displayCount", "1")
+                        .queryParam("page", 1)
+                        .queryParam("displayCount", displayCount)
                         .queryParam("lang", "ko")
                         .build()
                 )
@@ -136,17 +195,28 @@ public class CategoryUpdate {
                 .block();
         try {
             JsonNode originJson = new ObjectMapper().readTree(response);
-            JsonNode placeList = originJson.get("result").get("place").get("list").get(0);
+            JsonNode placeList = originJson.get("result").get("place").get("list");
 
-            PlaceDataDto placeDataDto = new ObjectMapper().treeToValue(placeList, PlaceDataDto.class);
-            placeDataDto.setBusinessHours(placeList.get("businessStatus").get("businessHours").textValue());
-            return placeDataDto;
+            for (JsonNode place : placeList) {
+                PlaceDataDto placeDataDto = new ObjectMapper().treeToValue(place, PlaceDataDto.class);
+                if (placeDataDto == null)
+                    continue;
+                String businessHours = place.get("businessStatus").get("businessHours").textValue();
+                String openHours = businessHours != null && !businessHours.isBlank() ? businessHours.split("~")[0].substring(8) : null;
+                String closeHours = businessHours != null && !businessHours.isBlank() ? businessHours.split("~")[1].substring(8) : null;
+                placeDataDto.setOpenHours(openHours);
+                placeDataDto.setCloseHours(closeHours);
+                placeDataDtoList.add(placeDataDto);
+            }
+            return placeDataDtoList;
         } catch (Exception ex) {
-            log.warn("Error Message : {} | {} : failed", ex.getMessage(), description);
+            log.warn("Error message : {} | {} : failed", ex.getMessage(), target);
         }
         return null;
     }
 
+    // chrome webDriver 실행
+    // 영상 url 크롤링 후 webDriver 종료
     public List<String> process() {
         System.setProperty("webdriver.chrome.driver", "/Users/hjun/Desktop/chromedriver-mac-arm64/chromedriver");
         List<String> urlList = new ArrayList<>();
@@ -163,6 +233,8 @@ public class CategoryUpdate {
         return urlList;
     }
 
+    // chrome webDriver 를 통해
+    // 유튜브 재생목록의 모든 영상 url 을 크롤링
     private List<String> getVideoList() throws InterruptedException {
         List<String> urllist = new ArrayList<>();
         driver.get(playlistUrl);
@@ -175,6 +247,10 @@ public class CategoryUpdate {
         return urllist;
     }
 
+    // 유튜브 재생목록의 각 영상의 url 을 통해
+    // 크롤링 진행
+    // 현재는 성시경의 먹을텐데 재생목록에 맞춰져서 진행되었음
+    // [description(가게이름 + 주소), url(영상 url)]
     public List<List<String>> getDescriptionAndUrl(List<String> urlList) {
         List<List<String>> result = new ArrayList<>();
         List<String> descriptionAndUrl;
@@ -225,6 +301,7 @@ public class CategoryUpdate {
         return result;
     }
 
+    // rowString 에 target 문자열이 얼마나 포함되어 있는지 반환
     public int countChar(String rowString, String target) {
         return rowString.length() - rowString.replaceAll(target, "").length();
     }

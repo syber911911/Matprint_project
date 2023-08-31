@@ -19,7 +19,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "posts")
-@Where(clause = "deleted = false")
+// @Where(clause = "deleted = false")
 public class Post extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +31,8 @@ public class Post extends Base {
     private String status;
     private LocalDateTime visitDate;
     private String prefer;
-    private boolean deleted;
-
-    private String userName;
+    // private boolean deleted;
+    // private String userName;
 
     @Column(name = "user_id")
     private Long userId;

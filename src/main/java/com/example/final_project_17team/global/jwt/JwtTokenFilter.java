@@ -32,7 +32,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     public JwtTokenFilter(JwtTokenUtils jwtTokenUtils) {
         this.jwtTokenUtils = jwtTokenUtils;
     }
-
 //    private static final List<String> WHITELIST = Arrays.stream(new String[]{"/users/login", "/users/join", "/users/reissue"}).toList();
 
     @Override

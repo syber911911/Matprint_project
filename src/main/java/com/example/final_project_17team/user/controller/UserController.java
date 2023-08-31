@@ -43,7 +43,7 @@ public class UserController {
 
     @PostMapping("/reissue")
     public JwtTokenInfoDto reissue(@CookieValue("REFRESH_TOKEN") String refreshToken, @CookieValue("AUTO_LOGIN") String autoLogin, HttpServletResponse response) {
-        JwtTokenInfoDto jwtTokenInfoDto = jwtTokenUtils.regeneratedToken(refreshToken);
+        JwtTokenInfoDto jwtTokenInfoDto = jwtTokenUtils.regenerateToken(refreshToken);
         service.setRefreshCookie(jwtTokenInfoDto.getRefreshToken(), autoLogin, response);
         service.setAutoLoginCookie(autoLogin, response);
         return jwtTokenInfoDto;

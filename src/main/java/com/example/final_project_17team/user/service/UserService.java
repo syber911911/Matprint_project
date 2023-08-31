@@ -100,7 +100,7 @@ public class UserService implements UserDetailsManager {
         if (redisRepository.existsById(user.getUsername()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 로그인 된 기기가 존재함");
 
-        return jwtTokenUtils.generatedToken(user.getUsername());
+        return jwtTokenUtils.generateToken(user.getUsername());
     }
     // case 1
     // 1. client -> 서버 : 로그인 요청 (다른 기기에 로그인 된 상태)

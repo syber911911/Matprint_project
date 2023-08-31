@@ -1,66 +1,65 @@
 package com.example.final_project_17team.restaurant.dto;
 
+import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.entity.RestaurantImage;
+import com.example.final_project_17team.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
+@ToString
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RestaurantDto {
     private Long id;
     private String name;
-    private String address;
-    //private float lat;
-    //private float lon;
     private String tel;
-    private float avg_ratings;
-    private String runtime;
-    private String menu_info;
-    private String img_url;
-    private LocalDateTime created_at;
-    private LocalDateTime deleted_at;
-    private LocalDateTime modified_at;
+    private String openHours;
+    private String closeHours;
+    private String address;
+    private String roadAddress;
+    private String menuInfo;
+    private BigDecimal mapX;
+    private BigDecimal mapY;
+    private Float avgRatings;
+    private List<String> restaurantImageList;
+    private List<String> categoryList;
 
-    public static RestaurantDto fromEntity(Restaurant entity) {
-        RestaurantDto dto = new RestaurantDto();
-        dto.setName(entity.getName());
-        dto.setAddress(entity.getAddress());
-        dto.setTel(entity.getTel());
-
-        //평점
-        Float avgRatings = entity.getAvgRatings();
-        if (avgRatings != null) {
-            dto.setAvg_ratings(avgRatings);
-        } else {
-            dto.setAvg_ratings(0.0f);
+    public static RestaurantDto fromEntity(Restaurant restaurant) {
+        List<String> imageList = new LinkedList<>();
+        for (RestaurantImage restaurantImage : restaurant.getRestaurantImageList()) {
+            imageList.add(restaurantImage.getUrl());
         }
 
-        // 영업시간
-        String openHours = entity.getOpenHours();
-        String closeHours = entity.getCloseHours();
-        if (openHours != null && closeHours != null) {
-            LocalTime openTime = LocalTime.parse(openHours, DateTimeFormatter.ofPattern("HHmm"));
-            LocalTime closeTime = LocalTime.parse(closeHours, DateTimeFormatter.ofPattern("HHmm"));
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            String runtime = openTime.format(outputFormatter) + " ~ " + closeTime.format(outputFormatter);
-            dto.setRuntime(runtime);
+        List<String> categoryList = new LinkedList<>();
+        for (Category category : restaurant.getCategoryList()) {
+            categoryList.add(category.getName());
         }
 
-        dto.setMenu_info(entity.getMenuInfo());
-
-        //이미지 url
-        List<RestaurantImage> restaurantImages = entity.getRestaurantImageList();
-        if (!restaurantImages.isEmpty()) {
-            dto.setImg_url(restaurantImages.get(0).getUrl());
-        }
-
-        return dto;
+        return RestaurantDto.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .tel(restaurant.getTel())
+                .openHours(restaurant.getOpenHours())
+                .closeHours(restaurant.getCloseHours())
+                .address(restaurant.getAddress())
+                .roadAddress(restaurant.getRoadAddress())
+                .menuInfo(restaurant.getMenuInfo())
+                .mapX(restaurant.getMapX())
+                .mapY(restaurant.getMapY())
+                .avgRatings(restaurant.getAvgRatings() == null ? 0.0f : restaurant.getAvgRatings())
+                .restaurantImageList(imageList)
+                .categoryList(categoryList)
+                .build();
     }
 }

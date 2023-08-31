@@ -13,6 +13,7 @@ public class RestaurantSearchDto {
     private String tel;
     @Setter
     private String businessHours;
+    private String address;
     private String roadAddress;
     private BigDecimal x;
     private BigDecimal y;

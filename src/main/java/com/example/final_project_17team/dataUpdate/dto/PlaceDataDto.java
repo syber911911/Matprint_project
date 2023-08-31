@@ -9,12 +9,14 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PlaceDataDto {
     private String name;
     private String tel;
     private List<String> category;
-    private String businessHours;
+    private String openHours;
+    private String closeHours;
     private String address;
     private String roadAddress;
     private List<String> shortAddress;
