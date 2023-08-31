@@ -1,16 +1,9 @@
 package com.example.final_project_17team.post.dto;
 
 import com.example.final_project_17team.post.entity.Post;
-import com.example.final_project_17team.restaurant.entity.Restaurant;
-import com.example.final_project_17team.review.dto.ReviewPageDto;
-import com.example.final_project_17team.review.entity.Review;
-import com.example.final_project_17team.reviewImages.entity.ReviewImages;
-import com.example.final_project_17team.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)

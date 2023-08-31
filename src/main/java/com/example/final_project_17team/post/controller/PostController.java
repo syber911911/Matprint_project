@@ -3,14 +3,11 @@ package com.example.final_project_17team.post.controller;
 import com.example.final_project_17team.comment.dto.CommentDto;
 import com.example.final_project_17team.post.dto.PostDto;
 import com.example.final_project_17team.post.service.PostService;
-import com.example.final_project_17team.review.dto.ReviewPageDto;
-import com.example.final_project_17team.review.dto.ReviewRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
