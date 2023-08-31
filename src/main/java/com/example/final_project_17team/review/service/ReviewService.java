@@ -1,9 +1,11 @@
 package com.example.final_project_17team.review.service;
 
+import com.example.final_project_17team.global.dto.ResponseDto;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
-import com.example.final_project_17team.review.dto.ReviewRequestDto;
-import com.example.final_project_17team.review.dto.ReviewUpdateDto;
+import com.example.final_project_17team.review.dto.ReadReviewDto;
+import com.example.final_project_17team.review.dto.CreateReviewDto;
+import com.example.final_project_17team.review.dto.UpdateReviewDto;
 import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.review.repository.ReviewRepository;
 import com.example.final_project_17team.reviewImages.entity.ReviewImages;
@@ -12,15 +14,22 @@ import com.example.final_project_17team.user.entity.User;
 import com.example.final_project_17team.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,187 +45,285 @@ public class ReviewService {
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
 
-    public ReviewRequestDto createReview(Long restaurantId, ReviewRequestDto dto){
-
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-
+    public ResponseDto createReview(String username, Long restaurantId, CreateReviewDto request) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
-
-        if(optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "존재하지 않는 사용자입니다.");
         User user = optionalUser.get();
 
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
-        if(optionalRestaurant.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (optionalRestaurant.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 음식점을 찾을 수 없습니다.");
         Restaurant restaurant = optionalRestaurant.get();
 
-        List<ReviewImages> imagesList = new ArrayList<>();
-
-        Review review = new Review();
-        review.setRestaurant(restaurant);
-        review.setUser(user);
-        review.setRatings(dto.getRatings());
-        review.setTitle(dto.getTitle());
-        review.setContent(dto.getContent());
-        review.setReviewImages(imagesList);
-
-        // 실제 저장되는 디렉토리 경로 : media/
-        // 웹브라우저에서 불러올때 경로 : static/
-        if(!(dto.getImageList() == null)){
-
-            // media/restaurantId/1/review/1  식당 별 리뷰
-            String reviewImageDir = String.format("media/restaurantId/%d/review/%d/",review.getRestaurant().getId(), review.getId());
-            try {
-                Files.createDirectories(Path.of(reviewImageDir));
-            } catch (IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-            int i = 1;
-
-            for(MultipartFile img : dto.getImageList()) {
-
-                ReviewImages reviewImages = new ReviewImages();
-
-                // 확장자를 포함한 이미지 이름 만들기
-                String originalFilename = img.getOriginalFilename();   // 원래 이미지 이름
-                String[] fileNameSplit = originalFilename.split("\\.");
-                String extension = fileNameSplit[fileNameSplit.length - 1]; // 원래 이미지 확장자 .jpg
-                String reviewImageFilename = username + "_" + i + "." + extension;  // 새로 만들어준 파일 이름
-                i ++; // i를 증가시켜 다음 이미지에 대한 파일 이름 생성
-
-                // 폴더와 파일 경로를 포함한 이름 만들기
-                // media/restaurantId/1/review/1/user_1
-                String reviewImagePath = reviewImageDir + reviewImageFilename;
-
-                // MultipartFile 을 저장하기
-                try {
-                    img.transferTo(Path.of(reviewImagePath));
-                } catch (IOException e) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-
-                // /static/restaurant/1/review/user_1.jpg
-                reviewImages.setImage_url(String.format("/static/restaurantId/%d/review/%s", review.getRestaurant().getId(), reviewImageFilename));
-                reviewImages.setReview(review);
-                reviewImagesRepository.save(reviewImages);
-
-            }
+        // 첨부한 이미지가 존재하지 않는 경우
+        if (CollectionUtils.isEmpty(request.getImageList()) || request.getImageList().get(0).isEmpty()) {
+            reviewRepository.save(
+                    Review.builder()
+                            .content(request.getContent())
+                            .ratings(request.getRatings())
+                            .user(user)
+                            .restaurant(restaurant)
+                            .build()
+            );
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setStatus(HttpStatus.OK);
+            responseDto.setMessage("리뷰 등록이 완료되었습니다.");
+            return responseDto;
         }
 
-        reviewRepository.save(review);
+        // 첨부한 이미지가 존재하는 경우
+        Review review = reviewRepository.save(
+                Review.builder()
+                        .content(request.getContent())
+                        .ratings(request.getRatings())
+                        .user(user)
+                        .restaurant(restaurant)
+                        .build()
+        );
+        this.saveImage(request.getImageList(), user.getId(), review);
 
-        return ReviewRequestDto.fromEntity(review);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setStatus(HttpStatus.OK);
+        responseDto.setMessage("리뷰 등록이 완료되었습니다.");
+        return responseDto;
     }
+
+    public ReadReviewDto.ReadReviewWithUser readReviewPage(String username, Long restaurantId, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()); // 댓글은 최신 순으로 나오게?
+        Page<Review> reviewPage = reviewRepository.findAllByRestaurantId(restaurantId, pageable);
+
+        ReadReviewDto.ReadReviewWithUser readReviewWithUser = new ReadReviewDto.ReadReviewWithUser();
+        // 현재 해당 요청을 보낸 사용자의 정보를 포함해 함께 반환
+        // 사용자에 따라 ui 변화를 주기 위해
+        readReviewWithUser.setAccessUsername(username);
+        readReviewWithUser.setReviewPage(reviewPage.map(ReadReviewDto::fromEntity));
+        return readReviewWithUser;
+    }
+
+    // 리뷰 삭제
+    public ResponseDto deleteReview(String username, Long restaurantId, Long reviewId) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자를 찾을 수 없습니다.");
+        User user = optionalUser.get();
+
+        Optional<Review> optionalReview = reviewRepository.findByRestaurantIdAndIdAndUser(restaurantId, reviewId, user);
+        if (optionalReview.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 항목을 찾을 수 없습니다.");
+        Review review = optionalReview.get();
+        this.deleteDir(user.getId(), review);
+        reviewRepository.delete(review);
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setStatus(HttpStatus.OK);
+        responseDto.setMessage("리뷰 삭제가 완료되었습니다.");
+        return responseDto;
+    }
+
+    public ResponseDto updateReview(String username, Long restaurantId, Long reviewId, UpdateReviewDto request) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "해당 사용자가 존재하지 않습니다.");
+        User user = optionalUser.get();
+
+        Optional<Review> optionalReview = reviewRepository.findByRestaurantIdAndIdAndUser(restaurantId, reviewId, user);
+        if (optionalReview.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 항목을 찾을 수 없습니다.");
+        Review review = optionalReview.get();
+
+        if (request.isNotModified(review))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "피드의 수정사항이 없습니다.");
+
+        if (!request.contentIsNotModified(review.getContent()))
+            review.updateContent(request.getContent());
+
+        if (!request.ratingsIsNotModified(review.getRatings()))
+            review.updateRatings(request.getRatings());
+
+        if (!request.addImageIsNull())
+            this.saveImage(request.getAddImageList(), user.getId(), review);
+
+        if (!request.deleteImageIsNull()) {
+            this.deleteImage(request.getDeleteImageList(), user.getId(), review);
+        }
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("리뷰 수정이 완료되었습니다.");
+        responseDto.setStatus(HttpStatus.OK);
+        return responseDto;
+    }
+
+
+    public void saveImage(List<MultipartFile> imageList, Long userId, Review review) {
+        // 이미지 저장 디렉토리 생성
+        String imageDir = String.format("media/%d/review/%d/", userId, review.getId());
+        try {
+            Files.createDirectories(Path.of(imageDir));
+        } catch (IOException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "디렉토리 생성에 실패");
+        }
+        // 이미지 저장
+        List<ReviewImages> reviewImagesList = new ArrayList<>();
+
+        for (MultipartFile image : imageList) {
+            LocalDateTime createTime = LocalDateTime.now();
+            String originalFileName = image.getOriginalFilename();
+            String[] fileNameSplit = originalFileName.split("\\.");
+            String extension = fileNameSplit[fileNameSplit.length - 1];
+            String reviewImageFileName = String.format("%s_%s.%s", createTime.toString(), review.getId(), extension);
+            String reviewImagePath = imageDir + reviewImageFileName;
+
+            try {
+                image.transferTo(Path.of(reviewImagePath));
+            } catch (IOException ex) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드 실패");
+            }
+
+            ReviewImages reviewImages = ReviewImages.builder()
+                    .imageUrl(String.format("/static/%d/review/%d/%s", userId, review.getId(), reviewImageFileName))
+                    .review(review)
+                    .build();
+            reviewImagesList.add(reviewImages);
+        }
+        reviewImagesRepository.saveAll(reviewImagesList);
+    }
+
+    public void deleteImage(List<String> imageList, Long userId, Review review) {
+        List<ReviewImages> deleteReviewImagesList = new ArrayList<>();
+        for (String image : imageList) {
+            Optional<ReviewImages> optionalReviewImages = reviewImagesRepository.findByReviewAndImageUrl(review, image);
+            if (optionalReviewImages.isEmpty())
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제 항목이 옳바르지 않습니다.");
+            ReviewImages reviewImages = optionalReviewImages.get();
+
+            String[] splitFilePath = image.split("/");
+            String filename = splitFilePath[splitFilePath.length - 1];
+            String targetPath = String.format("media/%d/review/%d/%s", userId, review.getId(), filename);
+            File file = new File(targetPath);
+            if (!file.delete()) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제에 실패했습니다");
+            deleteReviewImagesList.add(reviewImages);
+        }
+        reviewImagesRepository.deleteAll(deleteReviewImagesList);
+    }
+
+    public void deleteDir(Long userId, Review review) {
+        String imageDir = String.format("media/%d/review/%d", userId, review.getId());
+        File targetDir = new File(imageDir);
+        if (targetDir.exists()) { // 해당 경로에 파일 or 디렉토리가 존재하는지
+            File[] images = targetDir.listFiles();
+            assert images != null; // 디렉토리는 존재하지만 파일은 없는 경우도 존재 가능
+            for (File image : images) {
+                if (!image.delete()) log.warn("{} 파일의 삭제가 정상적으로 처리되지 않았습니다.", image.getPath());
+            }
+        } else log.info("{} 해당 경로에 디렉토리 혹은 파일이 존재하지 않습니다.", targetDir.getPath());
+        if (!targetDir.delete()) log.warn("{} 디렉토리의 삭제가 정상적으로 처리되지 않았습니다.", targetDir.getPath());
+    }
+
+
 
     // 요청 받은 dto 내용으로 title, content 수정, 이미지는 추가로 들어감
-    public void updateArticle(Long restaurantId, Long reviewId, ReviewUpdateDto dto){
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-
-        if(optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User user = optionalUser.get();
-
-        Optional<Review> optionalReview = reviewRepository.findByRestaurantIdAndIdAndUser(restaurantId, reviewId, user);
-        if(optionalReview.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Review review = optionalReview.get();
-
-        review.setTitle(dto.getTitle());   // title. content, rating 수정, 이전과 내용이 같다면 안바꿔도 되지만 그냥 set 하였음
-        review.setContent(dto.getContent());
-        review.setRatings(dto.getRatings());
-
-        int lastImageIndex = review.getReviewImages().size();
-
-        if(!(dto.getUpdateImageList() == null))
-            for(MultipartFile img : dto.getUpdateImageList()){
-                String postImageDir = String.format("media/restaurantId/%d/review/%d/",review.getRestaurant().getId(), review.getId());
-
-                try {
-                    Files.createDirectories(Path.of(postImageDir));
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-
-                // 확장자를 포함한 이미지 이름 만들기
-                String originalFilename = img.getOriginalFilename();
-                String[] fileNameSplit = originalFilename.split("\\.");
-                String extension = fileNameSplit[fileNameSplit.length - 1];
-                String reviewImageFilename = username + "_" + lastImageIndex + "." + extension;
-                lastImageIndex ++; // lastImageIndex를 증가시켜 다음 이미지에 대한 파일 이름 생성
-
-
-                String postImagePath = postImageDir + reviewImageFilename;
-                try {
-                    img.transferTo(Path.of(postImagePath));
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-
-                ReviewImages images = new ReviewImages();
-                images.setImage_url(String.format("/static/restaurantId/%d/review/%s", review.getRestaurant().getId(), reviewImageFilename));
-                images.setReview(review);
-                reviewImagesRepository.save(images);
-                review.getReviewImages().add(images);
-            }
-
-        reviewRepository.save(review);
-
-
-    }
+//    public void updateArticle(Long restaurantId, Long reviewId, UpdateReviewDto dto) {
+//        String username = SecurityContextHolder
+//                .getContext()
+//                .getAuthentication()
+//                .getName();
+//
+//        Optional<User> optionalUser = userRepository.findByUsername(username);
+//
+//        if (optionalUser.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        User user = optionalUser.get();
+//
+//        Optional<Review> optionalReview = reviewRepository.findByRestaurantIdAndIdAndUser(restaurantId, reviewId, user);
+//        if (optionalReview.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        Review review = optionalReview.get();
+//
+//        review.setTitle(dto.getTitle());   // title. content, rating 수정, 이전과 내용이 같다면 안바꿔도 되지만 그냥 set 하였음
+//        review.setContent(dto.getContent());
+//        review.setRatings(dto.getRatings());
+//
+//        int lastImageIndex = review.getReviewImages().size();
+//
+//        if (!(dto.getUpdateImageList() == null))
+//            for (MultipartFile img : dto.getUpdateImageList()) {
+//                String postImageDir = String.format("media/restaurantId/%d/review/%d/", review.getRestaurant().getId(), review.getId());
+//
+//                try {
+//                    Files.createDirectories(Path.of(postImageDir));
+//                } catch (IOException e) {
+//                    log.error(e.getMessage());
+//                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//                }
+//
+//                // 확장자를 포함한 이미지 이름 만들기
+//                String originalFilename = img.getOriginalFilename();
+//                String[] fileNameSplit = originalFilename.split("\\.");
+//                String extension = fileNameSplit[fileNameSplit.length - 1];
+//                String reviewImageFilename = username + "_" + lastImageIndex + "." + extension;
+//                lastImageIndex++; // lastImageIndex를 증가시켜 다음 이미지에 대한 파일 이름 생성
+//
+//
+//                String postImagePath = postImageDir + reviewImageFilename;
+//                try {
+//                    img.transferTo(Path.of(postImagePath));
+//                } catch (IOException e) {
+//                    log.error(e.getMessage());
+//                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//                }
+//
+//                ReviewImages images = new ReviewImages();
+//                images.setImage_url(String.format("/static/restaurantId/%d/review/%s", review.getRestaurant().getId(), reviewImageFilename));
+//                images.setReview(review);
+//                reviewImagesRepository.save(images);
+//                review.getReviewImages().add(images);
+//            }
+//
+//        reviewRepository.save(review);
+//
+//
+//    }
 
     // 리뷰의 이미지 삭제하는 메소드
-    public void deleteImage(Long restaurantId, Long reviewId, Long imageId) {
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
-
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-
-        if(optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User user = optionalUser.get();
-
-        Optional<Review> optionalReview = reviewRepository.findByRestaurantIdAndIdAndUser(restaurantId, reviewId, user);
-        if(optionalReview.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Review review = optionalReview.get();
-
-        Optional<ReviewImages> optionalReviewImages = reviewImagesRepository.findById(imageId);
-        if (optionalReviewImages.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        ReviewImages reviewImage = optionalReviewImages.get();
-
-        if (!Objects.equals(reviewId, reviewImage.getReview().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        String[] split = reviewImage.getImage_url().split("/");  // /static/restaurant/1/review/user_1.jpg
-        String name = split[split.length - 1];   //user_1.jpg
-        String imagePath = "media/restaurantId" + restaurantId + "review/" + reviewId + "/" + name;  //"media/restaurantId/1/review/1/user_1.jpg"
-
-        // 실제 서버에서 이미지 삭제
-        try {
-            Files.delete(Path.of(imagePath));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-       reviewImagesRepository.deleteById(imageId); // 이미지는 서버에서도 삭제하므로 soft delete 안함
-
-    }
-
+//    public void deleteImage(Long restaurantId, Long reviewId, Long imageId) {
+//        String username = SecurityContextHolder
+//                .getContext()
+//                .getAuthentication()
+//                .getName();
+//
+//        Optional<User> optionalUser = userRepository.findByUsername(username);
+//
+//        if (optionalUser.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        User user = optionalUser.get();
+//
+//        Optional<Review> optionalReview = reviewRepository.findByRestaurantIdAndIdAndUser(restaurantId, reviewId, user);
+//        if (optionalReview.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        Review review = optionalReview.get();
+//
+//        Optional<ReviewImages> optionalReviewImages = reviewImagesRepository.findById(imageId);
+//        if (optionalReviewImages.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        }
+//        ReviewImages reviewImage = optionalReviewImages.get();
+//
+//        if (!Objects.equals(reviewId, reviewImage.getReview().getId())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//        }
+//
+//        String[] split = reviewImage.getImage_url().split("/");  // /static/restaurant/1/review/user_1.jpg
+//        String name = split[split.length - 1];   //user_1.jpg
+//        String imagePath = "media/restaurantId" + restaurantId + "review/" + reviewId + "/" + name;  //"media/restaurantId/1/review/1/user_1.jpg"
+//
+//        // 실제 서버에서 이미지 삭제
+//        try {
+//            Files.delete(Path.of(imagePath));
+//        } catch (IOException e) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        reviewImagesRepository.deleteById(imageId); // 이미지는 서버에서도 삭제하므로 soft delete 안함
+//
+//    }
 }

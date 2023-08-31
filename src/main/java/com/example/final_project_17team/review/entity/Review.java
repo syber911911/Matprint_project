@@ -5,7 +5,7 @@ import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.reviewImages.entity.ReviewImages;
 import com.example.final_project_17team.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
@@ -13,31 +13,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "reviews")
-@Where(clause = "deleted = false")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String title;
-    @Column(nullable = false)
     private String content;
     @Column(nullable = false)
-    private Long ratings;
-    private String img_url;
-    private boolean deleted;
+    private Float ratings;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "review_id")
     private List<ReviewImages> reviewImages = new ArrayList<>();
+
+    @Builder
+    public Review(String content, Float ratings, User user, Restaurant restaurant, List<ReviewImages> reviewImages) {
+        this.content = content;
+        this.ratings = ratings;
+        this.user = user;
+        this.restaurant = restaurant;
+        this.reviewImages = reviewImages;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateRatings(Float ratings) {
+        this.ratings = ratings;
+    }
 }
