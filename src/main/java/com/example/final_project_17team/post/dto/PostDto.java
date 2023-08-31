@@ -11,7 +11,7 @@ public class PostDto {
     private Long id;
     private String title;
     private String content;
-    private String userName;
+    // private String userName;
     private String status;
     private LocalDateTime visitDate;
     private String prefer;
@@ -20,7 +20,7 @@ public class PostDto {
 
     public static PostDto fromEntity(Post post){
         PostDto dto = new PostDto();
-        dto.setUserName(post.getUserName());
+        // dto.setUserName(post.getUserName());
         dto.setTitle(post.getTitle());
         dto.setContent(post.getContent());
         dto.setStatus("모집 중");
