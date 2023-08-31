@@ -17,4 +17,5 @@ public interface MyRestaurantRepository extends JpaRepository<MyRestaurant, Long
 
     List<MyRestaurant> findByUserId(Long userId);
 
+    void deleteAllByUser(User user);
 }

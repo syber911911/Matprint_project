@@ -6,10 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByRestaurantIdAndIdAndUser(Long restaurantId, Long reviewId, User user);
 
     Page<Review> findAllByRestaurantId(Long restaurantId, Pageable pageable);
+
+    void deleteAllByUser(User user);
+
+    List<Review> findAllByUser(User user);
 }

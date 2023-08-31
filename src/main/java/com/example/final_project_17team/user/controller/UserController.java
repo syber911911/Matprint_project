@@ -5,6 +5,8 @@ import com.example.final_project_17team.global.exception.ErrorCode;
 import com.example.final_project_17team.global.exception.CustomException;
 import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.global.jwt.JwtTokenUtils;
+import com.example.final_project_17team.post.entity.Post;
+import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import com.example.final_project_17team.user.dto.JoinDto;
 import com.example.final_project_17team.user.dto.LoginDto;
@@ -13,8 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -55,4 +61,39 @@ public class UserController {
         log.info(username);
         return service.logout(username);
     }
+
+    @GetMapping("/reviews")
+    public List<Review> getReviews(@AuthenticationPrincipal String username){
+        log.info(username);
+        return service.readReview(username);
+    }
+
+    @GetMapping("/post")
+    public List<Post> getPost(@AuthenticationPrincipal String username){
+        log.info(username);
+        return service.readPost(username);
+    }
+
+    //회원정보조회
+    @GetMapping("/profile")
+    public ResponseEntity<CustomUserDetails> getProfile(@AuthenticationPrincipal String username) {
+        log.info(username);
+        CustomUserDetails customUserDetails = service.readUser(username);
+        return ResponseEntity.ok(customUserDetails);
+    }
+
+    //회원정보수정
+    @PutMapping("/profile")
+    public void update(@RequestBody @Valid JoinDto request){
+        if (!request.getPasswordCheck().equals(request.getPassword()))
+            throw new CustomException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : %s", request.getUsername()));
+        service.updateUser(CustomUserDetails.fromDto(request));
+    }
+
+    //회원탈퇴
+    @DeleteMapping("/profile")
+    public void delete(@AuthenticationPrincipal String username) {
+        service.deleteUser(username);
+    }
+
 }

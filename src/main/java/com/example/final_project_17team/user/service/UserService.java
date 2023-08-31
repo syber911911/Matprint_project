@@ -5,6 +5,11 @@ import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.global.jwt.JwtTokenUtils;
 import com.example.final_project_17team.global.redis.Redis;
 import com.example.final_project_17team.global.redis.RedisRepository;
+import com.example.final_project_17team.myrestaurant.repository.MyRestaurantRepository;
+import com.example.final_project_17team.post.entity.Post;
+import com.example.final_project_17team.post.repository.PostRepository;
+import com.example.final_project_17team.review.entity.Review;
+import com.example.final_project_17team.review.repository.ReviewRepository;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import com.example.final_project_17team.user.dto.LoginDto;
 import com.example.final_project_17team.user.entity.User;
@@ -13,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +26,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,12 +36,18 @@ public class UserService implements UserDetailsManager {
     private final RedisRepository redisRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
+    private final ReviewRepository reviewRepository;
+    private final MyRestaurantRepository myRestaurantRepository;
+    private final PostRepository postRepository;
 
-    public UserService(UserRepository userRepository, RedisRepository redisRepository, PasswordEncoder passwordEncoder, JwtTokenUtils jwtTokenUtils) {
+    public UserService(UserRepository userRepository, RedisRepository redisRepository, PasswordEncoder passwordEncoder, JwtTokenUtils jwtTokenUtils, ReviewRepository reviewRepository, MyRestaurantRepository myRestaurantRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
         this.redisRepository = redisRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtils = jwtTokenUtils;
+        this.reviewRepository = reviewRepository;
+        this.myRestaurantRepository = myRestaurantRepository;
+        this.postRepository = postRepository;
     }
 
     public void setRefreshCookie(String refreshToken, String autoLogin, HttpServletResponse response) {
@@ -113,6 +126,28 @@ public class UserService implements UserDetailsManager {
         return responseDto;
     }
 
+    public List<Review> readReview(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
+        User user = optionalUser.get();
+        return reviewRepository.findAllByUser(user);
+    }
+
+    public CustomUserDetails readUser(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isPresent())
+            return CustomUserDetails.fromEntity(optionalUser.get());
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    public List<Post> readPost(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
+        User user = optionalUser.get();
+        Long userId = user.getId();
+        return postRepository.findAllByUserId(userId);
+    }
+
     @Override
     public void createUser(UserDetails user) {
         CustomUserDetails customUserDetails = (CustomUserDetails) user;
@@ -133,12 +168,34 @@ public class UserService implements UserDetailsManager {
 
     @Override
     public void updateUser(UserDetails user) {
+        CustomUserDetails updatedUserDetails = (CustomUserDetails) user;
 
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        User FoundUser = optionalUser.get();
+
+        userRepository.save(FoundUser.fromUserDetails(updatedUserDetails));
     }
 
     @Override
     public void deleteUser(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
 
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
+        User user = optionalUser.get();
+
+        //사용자의 리뷰삭제
+        reviewRepository.deleteAllByUser(user);
+        //사용자의 즐겨찾기 삭제
+        myRestaurantRepository.deleteAllByUser(user);
+        //사용자삭제
+        userRepository.deleteById(user.getId());
     }
 
     @Override
