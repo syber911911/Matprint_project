@@ -106,7 +106,7 @@ public class JwtTokenUtils {
                 // 사용자 정보 등록
                 .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(60)));
+                .setExpiration(Date.from(Instant.now().plusSeconds(6000)));
 
         return Jwts.builder()
                 .setClaims(jwtClaims)

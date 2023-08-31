@@ -178,9 +178,10 @@ public class UserService implements UserDetailsManager {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        User FoundUser = optionalUser.get();
+        User foundUser = optionalUser.get();
 
-        userRepository.save(FoundUser.fromUserDetails(updatedUserDetails));
+        foundUser.update(updatedUserDetails.getEmail(), updatedUserDetails.getPhone(), updatedUserDetails.getAge());
+        userRepository.save(foundUser);
     }
 
     @Override

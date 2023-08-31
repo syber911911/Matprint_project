@@ -45,6 +45,14 @@ public class CustomUserDetails implements UserDetails {
                 .build();
     }
 
+    public static CustomUserDetails fromDto(UpdateDto updateDto) {
+        return CustomUserDetails.builder()
+                .email(updateDto.getEmail())
+                .phone(updateDto.getPhone())
+                .age(updateDto.getAge())
+                .build();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

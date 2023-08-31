@@ -10,6 +10,7 @@ import com.example.final_project_17team.review.entity.Review;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import com.example.final_project_17team.user.dto.JoinDto;
 import com.example.final_project_17team.user.dto.LoginDto;
+import com.example.final_project_17team.user.dto.UpdateDto;
 import com.example.final_project_17team.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -17,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -84,10 +84,8 @@ public class UserController {
 
     //회원정보수정
     @PutMapping("/profile")
-    public void update(@RequestBody @Valid JoinDto request){
-        if (!request.getPasswordCheck().equals(request.getPassword()))
-            throw new CustomException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : %s", request.getUsername()));
-        service.updateUser(CustomUserDetails.fromDto(request));
+    public void update(@RequestBody UpdateDto updateDto){
+        service.updateUser(CustomUserDetails.fromDto(updateDto));
     }
 
     //회원탈퇴

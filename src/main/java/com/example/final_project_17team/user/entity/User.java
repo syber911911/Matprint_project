@@ -65,4 +65,10 @@ public class User {
                 .age(userDetails.getAge())
                 .build();
     }
+
+    public void update(String email, String phone, Integer age){
+        this.email = email;
+        this.phone = phone;
+        this.age = age;
+    }
 }
