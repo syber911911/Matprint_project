@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+  <title>Login</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 400px;
+      padding: 20px;
+      background-color: #FFE08C;
+      border-radius: 5px;
+      display:flex;
+      flex-direction : column;
+      justify-content:center;
+      align-items:center;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      display: block;
+      font-weight:bold;
+      display:flex;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width :80%;
+      padding :5px;
+      border-radius :3px;
+    }
+    .form-group button[type="submit"]{
+      width :100%;
+      padding :10px;
+      background-color:#FFE08C;
+      font-weight:bold;
+      border:none;
+      display:flex;
+      justify-content:center;
+    }
+    h1{
+      font-family: "Black Han Sans";
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Login</h1>
+  <form action="/login" method="post">
+    <div class="form-group">
+      <label for="username">username:</label>
+      <input type="text" id ="username" name ="username" required />
+    </div>
+    <div class ="form-group">
+      <label for = "password">password:</label>
+      <input type = "password" id ="password" name = "password"
+             required />
+    </div>
+    <button type = "submit">로그인</button>
+    <a href="/register"><button type = "button">회원가입</button></a>
+  </form>
+</div>
+<script>
+  // 로그인 요청 함수
+  function login(username, password) {
+    // 서버로 보낼 데이터 생성
+    const data = { username, password };
+
+    // fetch API를 사용하여 서버에 로그인 요청 보내기
+    return fetch('/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.token) { // token이 반환되면 성공적으로 로그인된 것임.
+                localStorage.setItem('token', data.token); // token을 localStorage에 저장
+                window.location.href = "/main"; // 메인 페이지로 이동
+              } else {
+                alert('로그인 실패');
+              }
+            })
+  }
+
+  // 폼 제출 이벤트 리스너 추가하기
+  document.querySelector("form").addEventListener("submit", function(event) {
+    event.preventDefault(); // 폼 제출 기본 동작 방지
+
+    const username = document.querySelector("#username").value;
+    const password = document.querySelector("#password").value;
+
+    login(username, password);
+  });
+</script>
+</body>
+</html>
