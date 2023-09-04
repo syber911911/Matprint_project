@@ -78,15 +78,16 @@
   <div class="--logo">
     <div class="--logo-image">🍔 맛자국</div>
   </div>
-  <!-- 로그아웃 및 마이페이지 링크 -->
-  <div th:if="${loggedIn}" class="--login-container">
-    <a th:href="@{/mypage}">마이 페이지</a>
-    <!-- 여기서는 /logout 라우트로 가정합니다 -->
-    <a th:href="@{/users/logout}">로그아웃</a>
+  <!-- 로그인/로그아웃과 마이페이지 링크 -->
+  <div class="--login-container">
+    <!-- 마이페이지와 로그아웃 링크 -->
+    <a href="/mypage">마이 페이지</a>
+    <!-- 여기서 /logout 경로는 가정한 것입니다 -->
+    <a href="/users/logout">로그아웃</a>
   </div>
   <!-- 로그인 링크 -->
-  <div th:unless="${loggedIn}" class="--login-container">
-    <a th:href="@{/users/login}">로그인</a>
+  <div class="--not-login-container" style="display: none;">
+    <a href="/users/login">로그인</a>
   </div>
 </header>
 <main class="--main">
@@ -102,17 +103,20 @@
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
 <script>
+  // 로컬 스토리지 토큰 확인
   window.onload = function() {
     const token = localStorage.getItem('token');
+    const loginContainer = document.querySelector('.--login-container');
+    const notLoginContainer = document.querySelector('.--not-login-container');
 
     if (token) {
-      // Logged in
-      document.querySelector('.--login-container').style.display = 'none';
-      document.querySelector('.--logout-container').style.display = 'block';
+      // 로그인 상태
+      loginContainer.style.display = 'block';
+      notLoginContainer.style.display = 'none';
     } else {
-      // Not logged in
-      document.querySelector('.--login-container').style.display = 'block';
-      document.querySelector('.--logout-container').style.display = 'none';
+      // 로그아웃 상태
+      loginContainer.style.display = 'none';
+      notLoginContainer.style.display = 'block';
     }
   }
 </script>
