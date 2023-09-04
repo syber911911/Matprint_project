@@ -83,7 +83,7 @@
     <!-- 마이페이지와 로그아웃 링크 -->
     <a href="/mypage">마이 페이지</a>
     <!-- 여기서 /logout 경로는 가정한 것입니다 -->
-    <a href="/users/logout">로그아웃</a>
+    <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
   </div>
   <!-- 로그인 링크 -->
   <div class="--not-login-container" style="display: none;">
@@ -102,6 +102,44 @@
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
+<script src = "users.js"></script>
+
+<script>
+  document.getElementById('logout-button').addEventListener('click', function(event) {
+    event.preventDefault(); // 기본 클릭 동작 막기
+    logout(); // logout 함수 호출
+  });
+  function logout() {
+    // 로그아웃 처리 코드 작성
+    // 예: 로컬 스토리지에서 토큰 제거, 서버에 로그아웃 요청 등
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      fetch('/users/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+              .then(response => {
+                if (response.status === 200) {
+                  // 로그아웃 성공 시 처리
+                  localStorage.removeItem('token');
+                  window.location.href = '/main'; // 페이지 리다이렉트
+                } else {
+                  // 로그아웃 실패 시 처리
+                  console.error('로그아웃 실패:', response.statusText);
+                }
+              })
+              .catch(error => {
+                console.error('로그아웃 중 오류 발생:', error);
+              });
+    } else {
+      // 토큰이 로컬 스토리지에 없는 경우 처리
+      console.error('토큰이 로컬 스토리지에 없습니다.');
+    }
+  }
+</script>
 <script>
   // 로컬 스토리지 토큰 확인
   window.onload = function() {
