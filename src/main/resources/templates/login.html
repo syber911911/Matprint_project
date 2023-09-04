@@ -67,18 +67,24 @@
       <input type = "password" id ="password" name = "password"
              required />
     </div>
+    <label for="autoLogin">자동 로그인</label>
+    <input type="checkbox" id="autoLogin" name="autoLogin" value="F">
     <button type = "submit">로그인</button>
     <a href="/register"><button type = "button">회원가입</button></a>
   </form>
 </div>
 <script>
-  // 로그인 요청 함수
-  function login(username, password) {
-    // 서버로 보낼 데이터 생성
+  document.getElementById('autoLogin').addEventListener('change', function() {
+    if (this.checked) {
+      this.value = 'T';
+    } else {
+      this.value = 'F';
+    }
+  });
+  function login(username, password, autoLogin) { // autoLogin parameter added
     const data = { username, password };
 
-    // fetch API를 사용하여 서버에 로그인 요청 보내기
-    return fetch('/users/login', {
+    return fetch(`/users/login?autoLogin=${autoLogin}`, { // Query parameter added to URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -87,23 +93,28 @@
     })
             .then(response => response.json())
             .then(data => {
-              if (data.token) { // token이 반환되면 성공적으로 로그인된 것임.
-                localStorage.setItem('token', data.token); // token을 localStorage에 저장
+              if (data.accessToken) { // token이 반환되면 성공적으로 로그인된 것임.
+                localStorage.setItem('token', data.accessToken); // token을 localStorage에 저장
                 window.location.href = "/main"; // 메인 페이지로 이동
               } else {
                 alert('로그인 실패');
               }
             })
   }
-
-  // 폼 제출 이벤트 리스너 추가하기
   document.querySelector("form").addEventListener("submit", function(event) {
-    event.preventDefault(); // 폼 제출 기본 동작 방지
+    event.preventDefault();
 
     const username = document.querySelector("#username").value;
     const password = document.querySelector("#password").value;
+    let autoLogin;
 
-    login(username, password);
+    if(document.getElementById("autoLogin").checked){
+      autoLogin='T';
+    }else{
+      autoLogin='F';
+    }
+
+    login(username, password, autoLogin); // Pass in the value of the checkbox
   });
 </script>
 </body>
