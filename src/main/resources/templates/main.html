@@ -101,5 +101,20 @@
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
+<script>
+  window.onload = function() {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      // Logged in
+      document.querySelector('.--login-container').style.display = 'none';
+      document.querySelector('.--logout-container').style.display = 'block';
+    } else {
+      // Not logged in
+      document.querySelector('.--login-container').style.display = 'block';
+      document.querySelector('.--logout-container').style.display = 'none';
+    }
+  }
+</script>
 </body>
 </html>
