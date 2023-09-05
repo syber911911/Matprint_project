@@ -63,14 +63,14 @@ public class UserService implements UserDetailsManager {
     public void setAutoLoginCookie(String autoLogin, HttpServletResponse response) {
         ResponseCookie autoLoginCookie = null;
         if (autoLogin.equals("T")) {
-            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN","T")
+            autoLoginCookie = ResponseCookie.from("LOGIN","T")
                     .sameSite("Lax")
                     .domain("localhost")
                     .path("/")
                     .maxAge(3600 * 24 * 14)
                     .build();
         } else {
-            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "F")
+            autoLoginCookie = ResponseCookie.from("LOGIN", "F")
                     .sameSite("Lax")
                     .domain("localhost")
                     .path("/")

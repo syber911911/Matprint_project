@@ -8,26 +8,32 @@ import java.time.LocalDateTime;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDto {
-    private Long id;
     private String title;
     private String content;
-    // private String userName;
     private String status;
     private LocalDateTime visitDate;
     private String prefer;
-    private Long userId;
-    private Long restaurantId;
+    private String username;
+    private Integer age;
+    private Boolean gender;
 
     public static PostDto fromEntity(Post post){
         PostDto dto = new PostDto();
         // dto.setUserName(post.getUserName());
         dto.setTitle(post.getTitle());
         dto.setContent(post.getContent());
-        dto.setStatus("모집 중");
+        dto.setStatus(post.getStatus());
         dto.setVisitDate(post.getVisitDate());
         dto.setPrefer(post.getPrefer());
-        dto.setUserId(post.getUserId());
-        dto.setRestaurantId(post.getRestaurantId());
+        dto.setUsername(post.getUser().getUsername());
+        dto.setAge(post.getUser().getAge());
+        dto.setGender(post.getUser().isGender());
         return dto;
+    }
+
+    @Data
+    public static class PostWithUser {
+        private String accessUser;
+        private PostDto postDto;
     }
 }

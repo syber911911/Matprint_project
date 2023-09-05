@@ -23,7 +23,7 @@ public class Review extends Base {
     @Column(nullable = false)
     private String content;
     @Column(nullable = false)
-    private Float ratings;
+    private Integer ratings;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -36,7 +36,7 @@ public class Review extends Base {
     private List<ReviewImages> reviewImages = new ArrayList<>();
 
     @Builder
-    public Review(String content, Float ratings, User user, Restaurant restaurant, List<ReviewImages> reviewImages) {
+    public Review(String content, Integer ratings, User user, Restaurant restaurant, List<ReviewImages> reviewImages) {
         this.content = content;
         this.ratings = ratings;
         this.user = user;
@@ -44,11 +44,8 @@ public class Review extends Base {
         this.reviewImages = reviewImages;
     }
 
-    public void updateContent(String content) {
+    public void updateContentAndRatings(String content, Integer ratings) {
         this.content = content;
-    }
-
-    public void updateRatings(Float ratings) {
         this.ratings = ratings;
     }
 }

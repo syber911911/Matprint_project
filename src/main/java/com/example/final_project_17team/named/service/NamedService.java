@@ -25,46 +25,21 @@ public class NamedService {
     private final RestaurantRepository restaurantRepository;
 
     public Page<NamedPageDto> readNamedPage(String category, Integer pageNumber, Integer pageSize) {
-
-        Pageable pageable = PageRequest.of(
-                pageNumber, pageSize, Sort.by("id").ascending());
-
-        Page<Restaurant> NamedPage
-                = restaurantRepository.findAllByCategoryList_Name(category, pageable);
-
-        Page<NamedPageDto> NamedDtoPage
-                = NamedPage.map(NamedPageDto::fromEntity);
-
-        return NamedDtoPage;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
+        Page<Restaurant> NamedPage = restaurantRepository.findAllByCategoryList_Name(category, pageable);
+        return NamedPage.map(NamedPageDto::fromEntity);
     }
 
     public Page<NamedPageDto> readSortPage(String category, String sortBy, Integer pageNumber, Integer pageSize) {
-
-        if(sortBy.equals("이름순")) {
-            Pageable pageable = PageRequest.of(
-                    pageNumber, pageSize, Sort.by("name").ascending());
-
-            Page<Restaurant> NamedPage
-                    = restaurantRepository.findAllByCategoryList_Name(category, pageable);
-
-            Page<NamedPageDto> NamedDtoPage
-                    = NamedPage.map(NamedPageDto::fromEntity);
-
-            return NamedDtoPage;
-        }
-        /*   나중에 추가할 것들. 상세 페이지에 리뷰 카운트를 불러와서 정렬
-        if(sortBy.equals("리뷰많은순")) {
-            Pageable pageable = PageRequest.of(
-                    pageNumber, pageSize, Sort.by("").ascending());
-        }
-        */
-        /*  나중에 추가할 것들. 현재 내 위치와 좌표 비교하는 거리 알고리즘 이용해서 오름차순으로 정렬하면 될거 같음
-        if(sortBy.equals("가까운순")) {
-            Pageable pageable = PageRequest.of(
-                    pageNumber, pageSize, Sort.by("").ascending());
-        }
-        */
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
+        Pageable pageable = PageRequest.of(pageNumber, pageSize,
+                switch (sortBy) {
+                    case "이름" -> Sort.by("name").ascending();
+                    case "리뷰" -> Sort.by("reviewCount").descending();
+                    case "평점" -> Sort.by("avgRatings").descending();
+                    default -> Sort.by("id").ascending();
+                }
+        );
+        Page<Restaurant> NamedPage = restaurantRepository.findAllByCategoryList_Name(category, pageable);
+        return NamedPage.map(NamedPageDto::fromEntity);
     }
 }

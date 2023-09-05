@@ -10,7 +10,5 @@ import java.util.Optional;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Optional<Restaurant> findByNameAndMapXAndMapY(String name, BigDecimal mapX, BigDecimal mapY);
-
     Page<Restaurant> findAllByCategoryList_Name(String categoryName, Pageable pageable);
-
 }

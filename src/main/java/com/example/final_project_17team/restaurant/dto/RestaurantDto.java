@@ -6,6 +6,7 @@ import com.example.final_project_17team.restaurant.entity.RestaurantImage;
 import com.example.final_project_17team.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -57,7 +58,7 @@ public class RestaurantDto {
                 .menuInfo(restaurant.getMenuInfo())
                 .mapX(restaurant.getMapX())
                 .mapY(restaurant.getMapY())
-                .avgRatings(restaurant.getAvgRatings() == null ? 0.0f : restaurant.getAvgRatings())
+                .avgRatings(Math.round(restaurant.getAvgRatings() * 10.0f) / 10.0f)
                 .restaurantImageList(imageList)
                 .categoryList(categoryList)
                 .build();

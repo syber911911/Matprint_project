@@ -2,10 +2,10 @@ package com.example.final_project_17team.restaurant.entity;
 
 import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.global.entity.Base;
-import com.example.final_project_17team.post.entity.Post;
 import com.example.final_project_17team.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,8 +34,13 @@ public class Restaurant extends Base {
     private BigDecimal mapX;
     @Column(name = "map_y", precision = 20, scale = 18)
     private BigDecimal mapY;
-    @Column(name = "avg_ratings")
+
+    @Formula("(select avg(reviews.ratings) from reviews where reviews.restaurant_id = id)")
     private Float avgRatings;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Formula("(select count(*) from reviews where reviews.restaurant_id = id)")
+    private Integer reviewCount;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "restaurant_id")
@@ -44,10 +49,6 @@ public class Restaurant extends Base {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "restaurant_id")
     private List<Category> categoryList = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "restaurant_id")
-    private List<Post> postList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "restaurant_id")
@@ -60,9 +61,7 @@ public class Restaurant extends Base {
             String closeHours, String location,
             String address, String roadAddress,
             String menuInfo, BigDecimal mapX,
-            BigDecimal mapY, Float avgRatings,
-            List<RestaurantImage> restaurantImageList, List<Category> categoryList,
-            List<Post> postList, List<Review> reviewList
+            BigDecimal mapY
     ) {
         this.status = status;
         this.name = name;
@@ -75,10 +74,5 @@ public class Restaurant extends Base {
         this.menuInfo = menuInfo;
         this.mapX = mapX;
         this.mapY = mapY;
-        this.avgRatings = avgRatings;
-        this.restaurantImageList = restaurantImageList;
-        this.categoryList = categoryList;
-        this.postList = postList;
-        this.reviewList = reviewList;
     }
 }

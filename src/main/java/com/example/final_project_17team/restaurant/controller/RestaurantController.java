@@ -1,9 +1,8 @@
 package com.example.final_project_17team.restaurant.controller;
 
-import com.example.final_project_17team.dataUpdate.dto.PlaceDataDto;
+import com.example.final_project_17team.global.dto.PlaceDataDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.service.RestaurantService;
-import com.example.final_project_17team.review.dto.ReadReviewDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,21 +35,5 @@ public class RestaurantController {
     @GetMapping("/detail")
     public RestaurantDto detailPage(@RequestParam("name") String name, @RequestParam("address") String address, @RequestParam("mapX") BigDecimal mapX, @RequestParam("mapY") BigDecimal mapY){
         return restaurantService.detailPage(name, address, mapX, mapY);
-    }
-
-    // 버튼을 눌렀을 때 위시리스트에 안 들어있으면 위시리스트에 담고, 들어있으면 위시리스트에서 해제하기
-    @PostMapping("/wishlist")
-    public ResponseEntity<Map<String, String>> wishlist(
-            @RequestParam("restaurantId") Long restaurantId
-    ) {
-        int result = restaurantService.wishlistButton(restaurantId);
-
-        Map<String, String> responseBody = new HashMap<>();
-        switch (result) {
-            case 1 -> responseBody.put("message", "위시리스트에 담겼습니다.");
-            case 2 -> responseBody.put("message", "위시리스트에서 해제 되었습니다.");
-            default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(responseBody);
     }
 }

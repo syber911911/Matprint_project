@@ -2,9 +2,6 @@ package com.example.final_project_17team.named.controller;
 
 import com.example.final_project_17team.named.dto.NamedPageDto;
 import com.example.final_project_17team.named.service.NamedService;
-import com.example.final_project_17team.restaurant.dto.RestaurantSearchDto;
-import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
-import com.example.final_project_17team.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

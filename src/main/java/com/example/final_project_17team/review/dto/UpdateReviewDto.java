@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Data
-@ToString
 public class UpdateReviewDto {
     @NotBlank(message = "리뷰 내용을 작성해주세요.")
     private String content;
-    private Float ratings;
+    @NotBlank(message = "평점을 선택해주세요.")
+    private Integer ratings;
     private List<MultipartFile> addImageList;
     private List<String> deleteImageList;
 
@@ -23,7 +23,7 @@ public class UpdateReviewDto {
         return originContent.equals(this.content);
     }
 
-    public boolean ratingsIsNotModified(Float originRatings) {
+    public boolean ratingsIsNotModified(Integer originRatings) {
         return originRatings.equals(this.ratings);
     }
 

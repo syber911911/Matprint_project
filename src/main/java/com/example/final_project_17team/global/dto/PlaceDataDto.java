@@ -1,7 +1,6 @@
-package com.example.final_project_17team.dataUpdate.dto;
+package com.example.final_project_17team.global.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.math.BigDecimal;

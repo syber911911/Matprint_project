@@ -13,7 +13,7 @@ public class ReadReviewDto {
 
     private String username;
     private String content;
-    private Float ratings;
+    private Integer ratings;
     private List<String> imageUrl;
 
     public static ReadReviewDto fromEntity(Review review){

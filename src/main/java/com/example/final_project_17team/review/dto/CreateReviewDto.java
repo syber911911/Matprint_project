@@ -15,6 +15,6 @@ import java.util.List;
 public class CreateReviewDto {
     @NotBlank(message = "리뷰 내용을 작성해주세요.")
     private String content;
-    private Float ratings;
+    private Integer ratings;
     private List<MultipartFile> imageList;
 }

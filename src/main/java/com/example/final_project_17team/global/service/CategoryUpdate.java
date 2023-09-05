@@ -1,8 +1,8 @@
-package com.example.final_project_17team.dataUpdate.service;
+package com.example.final_project_17team.global.service;
 
 import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.category.repository.CategoryRepository;
-import com.example.final_project_17team.dataUpdate.dto.PlaceDataDto;
+import com.example.final_project_17team.global.dto.PlaceDataDto;
 import com.example.final_project_17team.restaurant.repository.RestaurantImageRepository;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
@@ -43,7 +43,7 @@ public class CategoryUpdate {
     }
 
     // naver maps api 조회 결과를 DB 에 저장
-    public void saveRestaurant(PlaceDataDto placeDataDto) {
+    public Restaurant saveRestaurant(PlaceDataDto placeDataDto) {
         Restaurant restaurant = restaurantRepository.save(
                 Restaurant.builder()
                         .status("정상영업")
@@ -57,7 +57,6 @@ public class CategoryUpdate {
                         .mapX(placeDataDto.getX())
                         .mapY(placeDataDto.getY())
                         .menuInfo(placeDataDto.getMenuInfo())
-                        .avgRatings(null)
                         .build()
         );
         log.info("{} restaurant 생성", placeDataDto.getName());
@@ -85,6 +84,7 @@ public class CategoryUpdate {
             );
         }
         restaurantImageRepository.saveAll(restaurantImageList);
+        return restaurant;
     }
 
     // naver maps api 조회 결과와 검색어, 출처 url 을 함께 DB 에 저장
@@ -102,7 +102,6 @@ public class CategoryUpdate {
                         .mapX(placeDataDto.getX())
                         .mapY(placeDataDto.getY())
                         .menuInfo(placeDataDto.getMenuInfo())
-                        .avgRatings(null)
                         .build()
         );
         log.info("{} restaurant 생성", placeDataDto.getName());
