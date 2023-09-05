@@ -1,8 +1,7 @@
 package com.example.final_project_17team.post.controller;
 
 import com.example.final_project_17team.global.dto.ResponseDto;
-import com.example.final_project_17team.post.dto.PostDto;
-import com.example.final_project_17team.post.dto.UpdatePostDto;
+import com.example.final_project_17team.post.dto.*;
 import com.example.final_project_17team.post.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseDto create(@RequestBody PostDto request, @AuthenticationPrincipal String username){
+    public ResponseDto create(@RequestBody PostDto request, @AuthenticationPrincipal String username) {
         return postService.createPost(request, username);
     }
 
@@ -50,58 +49,47 @@ public class PostController {
     @GetMapping("/search")
     public Page<PostDto> search(
             @RequestParam(name = "type", defaultValue = "제목") String type,
-            @RequestParam(name="target", defaultValue="") String keyword,
-            @RequestParam(name="gender", defaultValue = "") String gender,
-            @RequestParam(name="age", defaultValue = "0") Integer age,
-            @RequestParam(name="status", defaultValue = "") String status,
-            @RequestParam(defaultValue="0") Integer page,
-            @RequestParam(defaultValue="5") Integer limit
-    ){
+            @RequestParam(name = "target", defaultValue = "") String keyword,
+            @RequestParam(name = "gender", defaultValue = "") String gender,
+            @RequestParam(name = "age", defaultValue = "0") Integer age,
+            @RequestParam(name = "status", defaultValue = "") String status,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit
+    ) {
         return postService.searchPost(type, keyword, gender, age, status, page, limit);
     }
 
-//    @PostMapping("/{postId}/comment")
-//    public ResponseEntity<Map<String, String>> createComment(
-//            @RequestBody CommentDto dto,
-//            @PathVariable("postId") Long postId
-//    ) {
-//        postService.crateComment(dto, postId);
-//        log.info(dto.toString());
-//        return setResponseEntity("댓글이 등록되었습니다.");
-//    }
-//
-//    @GetMapping("/{postId}/comment")
-//    public Page<CommentDto> readAllComment(
-//            @PathVariable("postId") Long postId,
-//            @RequestParam(defaultValue = "0") Integer page,
-//            @RequestParam(defaultValue = "10") Integer limit
-//    ) {
-//        return postService.readComment(postId,page,limit);
-//    }
-//
-//    @PutMapping("/{postId}/comment/{commentId}")
-//    public ResponseEntity<Map<String, String>> updateComment(
-//            @PathVariable("postId") Long postId,
-//            @PathVariable("commentId") Long commentId,
-//            @RequestBody CommentDto dto
-//    ) {
-//        postService.updateComment(dto, commentId);
-//        log.info(dto.toString());
-//        return setResponseEntity("댓글이 수정되었습니다.");
-//    }
-//
-//    @DeleteMapping("/{postId}/comment/{commentId}")
-//    public ResponseEntity<Map<String, String>> deleteComment(
-//            @PathVariable("postId") Long postId,
-//            @PathVariable("commentId") Long commentId
-//    ) {
-//        postService.deleteComment(commentId);
-//        return setResponseEntity("댓글이 삭제되었습니다.");
-//    }
-//
-//    public ResponseEntity<Map<String, String>> setResponseEntity(String message) {
-//        Map<String, String> responseBody = new HashMap<>();
-//        responseBody.put("message", message);
-//        return ResponseEntity.ok(responseBody);
-//    }
+    @PostMapping("/{postId}/comment")
+    public ResponseDto createComment(@RequestBody CreateCommentDto request, @PathVariable("postId") Long postId, @AuthenticationPrincipal String username) {
+        return postService.crateComment(request, postId, username);
+    }
+
+    @GetMapping("/{postId}/comment")
+    public CommentDto.CommentWithUser readAllComment(
+            @PathVariable("postId") Long postId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @AuthenticationPrincipal String username
+    ) {
+        return postService.readCommentPage(postId, page, limit, username);
+    }
+
+    @PutMapping("/{postId}/comment/{commentId}")
+    public ResponseDto updateComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId,
+            @RequestBody UpdateCommentDto request,
+            @AuthenticationPrincipal String username
+    ) {
+        return postService.updateComment(request, postId, commentId, username);
+    }
+
+    @DeleteMapping("/{postId}/comment/{commentId}")
+    public ResponseDto deleteComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal String username
+    ) {
+        return postService.deleteComment(postId, commentId, username);
+    }
 }

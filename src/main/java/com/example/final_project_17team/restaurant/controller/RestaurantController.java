@@ -6,18 +6,13 @@ import com.example.final_project_17team.restaurant.service.RestaurantService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping("restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
 

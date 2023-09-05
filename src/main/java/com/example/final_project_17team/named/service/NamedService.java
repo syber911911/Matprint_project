@@ -24,15 +24,9 @@ public class NamedService {
 
     private final RestaurantRepository restaurantRepository;
 
-    public Page<NamedPageDto> readNamedPage(String category, Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
-        Page<Restaurant> NamedPage = restaurantRepository.findAllByCategoryList_Name(category, pageable);
-        return NamedPage.map(NamedPageDto::fromEntity);
-    }
-
-    public Page<NamedPageDto> readSortPage(String category, String sortBy, Integer pageNumber, Integer pageSize) {
+    public Page<NamedPageDto> readNamed(String category, String sortBy, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize,
-                switch (sortBy) {
+                switch (sortBy == null ? "NULL" : sortBy) {
                     case "이름" -> Sort.by("name").ascending();
                     case "리뷰" -> Sort.by("reviewCount").descending();
                     case "평점" -> Sort.by("avgRatings").descending();

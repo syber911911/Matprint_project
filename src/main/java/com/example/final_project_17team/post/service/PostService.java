@@ -1,10 +1,9 @@
 package com.example.final_project_17team.post.service;
 
-import com.example.final_project_17team.comment.entity.Comment;
-import com.example.final_project_17team.comment.repository.CommentRepository;
+import com.example.final_project_17team.post.dto.*;
+import com.example.final_project_17team.post.entity.Comment;
+import com.example.final_project_17team.post.repository.CommentRepository;
 import com.example.final_project_17team.global.dto.ResponseDto;
-import com.example.final_project_17team.post.dto.PostDto;
-import com.example.final_project_17team.post.dto.UpdatePostDto;
 import com.example.final_project_17team.post.entity.Post;
 import com.example.final_project_17team.post.repository.PostRepository;
 import com.example.final_project_17team.user.entity.User;
@@ -117,57 +116,69 @@ public class PostService {
         return searchResult.map(PostDto::fromEntity);
     }
 
-//    public CommentDto crateComment(CommentDto dto, Long postId, String username) {
-//        User user = getUser(username);
-//        Post post = getPost(postId, user);
-//
-//        Comment comment = new Comment();
-//        comment.setContent(dto.getContent());
-//        comment.setUserId(user.getId());
-//        comment.setPostId(post.getId());
-//
-//        commentRepository.save(comment);
-//        return CommentDto.fromEntity(comment);
-//    }
-//
-//    public Page<CommentDto> readComment(Long postId, Integer pageNumber, Integer pageSize) {
-//        User user = loadUserByAuth();
-//        Post post = loadPostById(postId, user.getId());
-//
-//        Pageable pageable = PageRequest.of(
-//                pageNumber, pageSize, Sort.by("createdAt").ascending()); // 오름차순 정렬
-//
-//        return commentRepository.findAllByPostId(post.getId(), pageable)
-//                .map(CommentDto::fromEntity);
-//    }
-//
-//    public CommentDto updateComment(CommentDto dto, Long commentId) {
-//        User user = loadUserByAuth();
-//        Comment comment = loadCommentById(commentId, user.getId());
-//        comment.setContent(dto.getContent());
-//        commentRepository.save(comment);
-//        return CommentDto.fromEntity(comment);
-//    }
-//
-//    public void deleteComment(Long commentId) {
-//        User user = loadUserByAuth();
-//        Comment comment = loadCommentById(commentId, user.getId());
-//
-//        comment.setDeletedAt(LocalDateTime.now());
-//        commentRepository.save(comment);
-//    }
+    public ResponseDto crateComment(CreateCommentDto request, Long postId, String username) {
+        User user = getUser(username);
+        Post post = getPost(postId, user);
+
+        commentRepository.save(
+                Comment.builder()
+                        .content(request.getContent())
+                        .post(post)
+                        .user(user)
+                        .build()
+        );
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글 등록이 완료되었습니다.");
+        responseDto.setStatus(HttpStatus.OK);
+        return responseDto;
+    }
+
+    public CommentDto.CommentWithUser readCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 동행 글이 존재하지 않습니다.");
+        Post post = optionalPost.get();
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()); // 내림차순 정렬
+        CommentDto.CommentWithUser commentWithUser = new CommentDto.CommentWithUser();
+        commentWithUser.setAccessUser(username);
+        commentWithUser.setComment(commentRepository.findAllByPost(post, pageable).map(CommentDto::fromEntity));
+        return commentWithUser;
+    }
+
+    public ResponseDto updateComment(UpdateCommentDto request, Long postId, Long commentId, String username) {
+        User user = this.getUser(username);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId, post, user);
+
+        if (request.contentIsNotModified(comment.getContent()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "댓글의 수정사항이 없습니다.");
+
+        comment.updateComment(request);
+        commentRepository.save(comment);
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글 수정이 완료되었습니다.");
+        responseDto.setStatus(HttpStatus.OK);
+        return responseDto;
+    }
+
+    public ResponseDto deleteComment(Long postId, Long commentId, String username) {
+        User user = this.getUser(username);
+        Post post = this.getPost(postId);
+        Comment comment = getComment(commentId, post, user);
+        commentRepository.delete(comment);
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글 삭제가 완료되었습니다.");
+        responseDto.setStatus(HttpStatus.OK);
+        return responseDto;
+    }
 
     public User getUser(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty())
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "해당 사용자를 찾을 수 없습니다.");
-        return optionalUser.get();
-    }
-
-    public User loadUserById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
         return optionalUser.get();
     }
 
@@ -178,10 +189,17 @@ public class PostService {
         return optionalPost.get();
     }
 
-    public Comment loadCommentById(Long commentId, Long userId) {
-        Optional<Comment> optionalComment = commentRepository.findByIdAndUserId(commentId, userId);
+    public Post getPost(Long postId) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "post not found");
+        return optionalPost.get();
+    }
+
+    public Comment getComment(Long commentId, Post post, User user) {
+        Optional<Comment> optionalComment = commentRepository.findByIdAndPostAndUser(commentId, post, user);
         if (optionalComment.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "comment not found");
         }
         return optionalComment.get();
     }

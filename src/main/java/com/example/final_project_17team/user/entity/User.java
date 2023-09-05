@@ -1,5 +1,6 @@
 package com.example.final_project_17team.user.entity;
 
+import com.example.final_project_17team.global.entity.Base;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,13 +37,6 @@ public class User {
     private Integer age;
     @Column(name = "img_url")
     private String imgUrl;
-
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updateAt;
 
     @Builder
     public User(String username, String password, String email, String phone, boolean gender, Integer age, String imgUrl) {

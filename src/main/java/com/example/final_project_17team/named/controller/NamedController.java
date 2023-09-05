@@ -20,24 +20,22 @@ public class NamedController {
     private final NamedService namedService;
 
     // 인플루언서 맛집 찾기/카테고리 선택 조회
-    @GetMapping("")
-    public Page<NamedPageDto> read(
-            @RequestParam("category") String category,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "50") Integer limit
-    ){
-        return namedService.readNamedPage(category, page, limit);
-    }
+//    @GetMapping
+//    public Page<NamedPageDto> read(
+//            @RequestParam("category") String category,
+//            @RequestParam(defaultValue = "0") Integer page,
+//            @RequestParam(defaultValue = "50") Integer limit
+//    ){
+//        return namedService.readNamedPage(category, page, limit);
+//    }
 
-    // 이름순, 리뷰순 등을 누르면 정렬되게
-    @GetMapping("/sort")
+    @GetMapping
     public Page<NamedPageDto> readSort(
             @RequestParam("category") String category,
-            @RequestParam("sortBy") String sortBy,
+            @RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "50") Integer limit
+            @RequestParam(defaultValue = "10") Integer limit
     ){
-        return namedService.readSortPage(category, sortBy, page, limit);
+        return namedService.readNamed(category, sortBy, page, limit);
     }
-
 }

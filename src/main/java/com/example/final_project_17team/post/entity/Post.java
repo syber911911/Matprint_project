@@ -1,13 +1,10 @@
 package com.example.final_project_17team.post.entity;
 
-import com.example.final_project_17team.comment.entity.Comment;
 import com.example.final_project_17team.global.entity.Base;
 import com.example.final_project_17team.post.dto.UpdatePostDto;
-import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

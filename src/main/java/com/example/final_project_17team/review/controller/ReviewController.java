@@ -25,43 +25,42 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/review")
 public class ReviewController {
-
     private ReviewService reviewService;
 
     // 리뷰작성
-    @PostMapping
+    @PostMapping("/{restaurantId}")
     public ResponseDto create(
             @AuthenticationPrincipal String username,
-            @RequestParam("restaurantId") Long restaurantId,
+            @PathVariable("restaurantId") Long restaurantId,
             @ModelAttribute("review") CreateReviewDto dto
     ){
         return reviewService.createReview(username, restaurantId, dto);
     }
 
-    @GetMapping
+    @GetMapping("/{restaurantId}")
     public ReadReviewDto.ReadReviewWithUser readReviews(
             @AuthenticationPrincipal String username,
-            @RequestParam("restaurantId") Long restaurantId,
+            @PathVariable("restaurantId") Long restaurantId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "5") Integer limit
     ){
         return reviewService.readReviewPage(username, restaurantId, page, limit);
     }
 
-    @DeleteMapping("/edit")
-    public ResponseDto deleteComment(
+    @DeleteMapping("/{restaurantId}/{reviewId}")
+    public ResponseDto deleteReview(
             @AuthenticationPrincipal String username,
-            @RequestParam("restaurantId") Long restaurantId,
-            @RequestParam("reviewId") Long reviewId
+            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("reviewId") Long reviewId
     ) {
         return reviewService.deleteReview(username, restaurantId, reviewId);
     }
 
-    @PutMapping("/edit")
+    @PutMapping("/{restaurantId}/{reviewId}")
     public ResponseDto updateReview(
             @AuthenticationPrincipal String username,
-            @RequestParam("restaurantId") Long restaurantId,
-            @RequestParam("reviewId") Long reviewId,
+            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("reviewId") Long reviewId,
             @ModelAttribute @Valid UpdateReviewDto request
     ) {
         return reviewService.updateReview(username, restaurantId, reviewId, request);
