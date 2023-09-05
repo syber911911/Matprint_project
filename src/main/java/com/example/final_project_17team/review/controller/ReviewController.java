@@ -23,12 +23,12 @@ import java.util.Map;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/review")
+@RequestMapping("/{restaurantId}/review")
 public class ReviewController {
     private ReviewService reviewService;
 
     // 리뷰작성
-    @PostMapping("/{restaurantId}")
+    @PostMapping
     public ResponseDto create(
             @AuthenticationPrincipal String username,
             @PathVariable("restaurantId") Long restaurantId,
@@ -37,7 +37,7 @@ public class ReviewController {
         return reviewService.createReview(username, restaurantId, dto);
     }
 
-    @GetMapping("/{restaurantId}")
+    @GetMapping
     public ReadReviewDto.ReadReviewWithUser readReviews(
             @AuthenticationPrincipal String username,
             @PathVariable("restaurantId") Long restaurantId,
@@ -47,7 +47,7 @@ public class ReviewController {
         return reviewService.readReviewPage(username, restaurantId, page, limit);
     }
 
-    @DeleteMapping("/{restaurantId}/{reviewId}")
+    @DeleteMapping("/{reviewId}")
     public ResponseDto deleteReview(
             @AuthenticationPrincipal String username,
             @PathVariable("restaurantId") Long restaurantId,
@@ -56,7 +56,7 @@ public class ReviewController {
         return reviewService.deleteReview(username, restaurantId, reviewId);
     }
 
-    @PutMapping("/{restaurantId}/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseDto updateReview(
             @AuthenticationPrincipal String username,
             @PathVariable("restaurantId") Long restaurantId,

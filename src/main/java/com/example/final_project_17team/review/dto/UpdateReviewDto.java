@@ -3,6 +3,7 @@ package com.example.final_project_17team.review.dto;
 import com.example.final_project_17team.review.entity.Review;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.util.CollectionUtils;
@@ -14,7 +15,7 @@ import java.util.List;
 public class UpdateReviewDto {
     @NotBlank(message = "리뷰 내용을 작성해주세요.")
     private String content;
-    @NotBlank(message = "평점을 선택해주세요.")
+    @NotNull(message = "평점을 선택해주세요.")
     private Integer ratings;
     private List<MultipartFile> addImageList;
     private List<String> deleteImageList;
