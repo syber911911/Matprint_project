@@ -100,42 +100,4 @@ public class WishlistService {
             return false;
         }
     }
-
-//    public void setVisited(Long myRestaurantId) {
-//        String username = SecurityContextHolder
-//                .getContext()
-//                .getAuthentication()
-//                .getName();
-//
-//        Optional<User> optionalUser = userRepository.findByUsername(username);
-//
-//        if(optionalUser.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//
-//        User user = optionalUser.get();
-//        Optional<Wishlist> optionalMyRestaurant = wishListRepository.findByRestaurantIdAndUser(myRestaurantId, user);
-//        Wishlist myRestaurant = optionalMyRestaurant.get();
-//
-//        myRestaurant.setVisited(true);
-//        wishListRepository.save(myRestaurant);
-//    }
-
-//    public void deleteMyWish(Long myRestaurantId) {
-//        String username = SecurityContextHolder
-//                .getContext()
-//                .getAuthentication()
-//                .getName();
-//
-//        Optional<User> optionalUser = userRepository.findByUsername(username);
-//
-//        if (optionalUser.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//
-//        User user = optionalUser.get();
-//        Optional<Wishlist> optionalMyRestaurant = wishListRepository.findByRestaurantIdAndUser(myRestaurantId, user);
-//
-//        if (optionalMyRestaurant.isEmpty())
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        wishListRepository.deleteById(myRestaurantId);
-//    }
 }
