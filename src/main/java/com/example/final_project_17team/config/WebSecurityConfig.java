@@ -42,7 +42,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authHttpRequest -> authHttpRequest
-                        .requestMatchers("/users/logout")
+                        .requestMatchers(HttpMethod.POST, "/users/logout")
                         .authenticated()
                         .anyRequest()
                         .permitAll()
