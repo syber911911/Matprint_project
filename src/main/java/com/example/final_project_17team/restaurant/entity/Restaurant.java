@@ -79,4 +79,9 @@ public class Restaurant extends Base {
         this.mapX = mapX;
         this.mapY = mapY;
     }
+
+    public void setCategoryAndImage(List<Category> categories, List<RestaurantImage> restaurantImages) {
+        this.categoryList = categories;
+        this.restaurantImageList = restaurantImages;
+    }
 }

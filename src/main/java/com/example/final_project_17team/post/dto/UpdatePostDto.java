@@ -3,6 +3,7 @@ package com.example.final_project_17team.post.dto;
 import com.example.final_project_17team.post.entity.Post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class UpdatePostDto {
     @NotBlank(message = "내용을 작성해주세요.")
     private String content;
     @NotBlank(message = "모집 상태를 선택해주세요.")
+    @Pattern(regexp = "모집 중|모집 완료")
     private String status;
     private LocalDateTime visitDate;
 

@@ -52,6 +52,7 @@ public class RestaurantService {
     // DB 조회
     // 조회된 결과가 없다면 해당 음식점의 name 과 address 로 api 호출 후 DB 저장
     // 조회된 결과가 있다면 update 일자를 확인하고 update 일자가 30일 이상이라면 api 호출 결과로 update 후 반환
+
     public RestaurantDetailDto detailPage(String name, String address) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndAddress(name, address);
 

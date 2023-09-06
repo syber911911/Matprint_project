@@ -72,7 +72,7 @@ public class CategoryUpdate {
             );
             log.info("{} category 생성", category);
         }
-        categoryRepository.saveAll(categoryList);
+        List<Category> categories = categoryRepository.saveAllAndFlush(categoryList);
 
         List<RestaurantImage> restaurantImageList = new ArrayList<>();
         for (String restaurantImage : placeDataDto.getThumUrls()) {
@@ -83,7 +83,8 @@ public class CategoryUpdate {
                             .build()
             );
         }
-        restaurantImageRepository.saveAll(restaurantImageList);
+        List<RestaurantImage> restaurantImages = restaurantImageRepository.saveAllAndFlush(restaurantImageList);
+        restaurant.setCategoryAndImage(categories, restaurantImages);
         return restaurant;
     }
 
