@@ -51,7 +51,7 @@
         // Function to create a marker and infowindow for a result
         function createMarker(result) {
             var marker = new naver.maps.Marker({
-                position: new naver.maps.LatLng(result.y, result.x),
+                position: new naver.maps.LatLng(result.mapY, result.mapX),
                 map: map,
                 title: result.name,
             });
@@ -62,9 +62,6 @@
                 <div class="iw_inner">
                     <p><b>${result.name}</b><br />
                     <b>주소: </b>${result.address}<br />
-                    <b>전화번호: </b>${result.tel}<br />
-                    <b>오픈시간: </b>${result.openHours}<br />
-                    <b>종료시간: </b>${result.closeHours}<br />
                     </p>
                 </div>`;
 
@@ -117,8 +114,8 @@
 
         for (var i = 0; i < search_result.search_result.length; i++) {
             var result = search_result.search_result[i];
-            totalLat += parseFloat(result.y);
-            totalLng += parseFloat(result.x);
+            totalLat += parseFloat(result.mapY);
+            totalLng += parseFloat(result.mapX);
         }
 
         var averageLat = totalLat / search_result.search_result.length;
