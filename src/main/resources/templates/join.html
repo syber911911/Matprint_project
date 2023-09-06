@@ -97,6 +97,11 @@
     function register(username, password, passwordCheck, email, phone, age, gender) {
         const data = { username, password, passwordCheck, email, phone, age, gender };
 
+        if (password != passwordCheck) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
         return fetch(`/users/join`, {
             method: 'POST',
             headers: {
@@ -108,13 +113,15 @@
                 if (response.ok) {
                     window.location.href = "/main";
                 }
-                response.json();
+                res.then((data) => {
+                    if (data.message) {
+                        alert(data.message);
+                    } else if (data.contentList[0].message) {
+                        alert(data.contentList[0].message.split("|"));
+                    }
+                });
             })
-            .then(data => {
-                /* if (data.message) {
-                    alert(data.message);
-                }*/
-            })
+            .then(data => data)
     }
     document.querySelector("form").addEventListener("submit", function(event) {
         event.preventDefault();
