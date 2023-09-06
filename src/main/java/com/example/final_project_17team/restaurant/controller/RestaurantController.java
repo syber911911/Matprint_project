@@ -1,6 +1,7 @@
 package com.example.final_project_17team.restaurant.controller;
 
 import com.example.final_project_17team.global.dto.PlaceDataDto;
+import com.example.final_project_17team.restaurant.dto.RestaurantDetailDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.service.RestaurantService;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class RestaurantController {
 
     // 음식점 검색 endPoint
     @GetMapping("/search")
-    public Page<PlaceDataDto> search(
+    public Page<RestaurantDto> search(
             @RequestParam("target") String target,
             @RequestParam(value = "page", defaultValue = "0") int pageNum,
             @RequestParam(value = "limit", defaultValue = "10") int pageSize
@@ -28,7 +29,7 @@ public class RestaurantController {
 
     //상세페이지
     @GetMapping("/detail")
-    public RestaurantDto detailPage(@RequestParam("name") String name, @RequestParam("address") String address, @RequestParam("mapX") BigDecimal mapX, @RequestParam("mapY") BigDecimal mapY){
+    public RestaurantDetailDto detailPage(@RequestParam("name") String name, @RequestParam("address") String address, @RequestParam("mapX") BigDecimal mapX, @RequestParam("mapY") BigDecimal mapY){
         return restaurantService.detailPage(name, address, mapX, mapY);
     }
 }

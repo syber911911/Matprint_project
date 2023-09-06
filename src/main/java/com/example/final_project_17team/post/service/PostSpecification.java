@@ -12,8 +12,7 @@ public class PostSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("content"), "%"+content+"%");
     }
     public static Specification<Post> equalGender(String gender) {
-        boolean booleanGender = gender.equals("남성");
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user").get("gender"), booleanGender);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user").get("gender"), gender);
     }
 
     public static Specification<Post> inBoundAge(Integer age) {

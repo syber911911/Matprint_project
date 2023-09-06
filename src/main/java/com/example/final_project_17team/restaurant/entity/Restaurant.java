@@ -35,6 +35,7 @@ public class Restaurant extends Base {
     @Column(name = "map_y", precision = 20, scale = 18)
     private BigDecimal mapY;
 
+    @Basic(fetch = FetchType.LAZY)
     @Formula("(select avg(reviews.ratings) from reviews where reviews.restaurant_id = id)")
     private Float avgRatings;
 

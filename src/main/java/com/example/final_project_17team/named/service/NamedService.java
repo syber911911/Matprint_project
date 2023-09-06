@@ -2,7 +2,7 @@ package com.example.final_project_17team.named.service;
 
 import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.category.repository.CategoryRepository;
-import com.example.final_project_17team.named.dto.NamedPageDto;
+import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
 import com.example.final_project_17team.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class NamedService {
 
     private final RestaurantRepository restaurantRepository;
 
-    public Page<NamedPageDto> readNamed(String category, String sortBy, Integer pageNumber, Integer pageSize) {
+    public Page<RestaurantDto> readNamed(String category, String sortBy, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize,
                 switch (sortBy == null ? "NULL" : sortBy) {
                     case "이름" -> Sort.by("name").ascending();
@@ -34,6 +34,6 @@ public class NamedService {
                 }
         );
         Page<Restaurant> NamedPage = restaurantRepository.findAllByCategoryList_Name(category, pageable);
-        return NamedPage.map(NamedPageDto::fromEntity);
+        return NamedPage.map(RestaurantDto::fromEntity);
     }
 }

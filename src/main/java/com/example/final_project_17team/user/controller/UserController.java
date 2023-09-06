@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,10 +44,15 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public void join(@RequestBody @Valid JoinDto request) {
+    public ResponseDto join(@RequestBody @Valid JoinDto request) {
         if (!request.getPasswordCheck().equals(request.getPassword()))
             throw new CustomException(ErrorCode.DIFF_PASSWORD_CHECK, String.format("Username : %s", request.getUsername()));
         service.createUser(CustomUserDetails.fromDto(request));
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("회원가입이 완료되었습니다.");
+        responseDto.setStatus(HttpStatus.OK);
+        return responseDto;
     }
 
     @PostMapping("/logout")

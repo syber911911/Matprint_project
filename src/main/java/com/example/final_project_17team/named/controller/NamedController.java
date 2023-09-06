@@ -1,7 +1,7 @@
 package com.example.final_project_17team.named.controller;
 
-import com.example.final_project_17team.named.dto.NamedPageDto;
 import com.example.final_project_17team.named.service.NamedService;
+import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ public class NamedController {
     private final NamedService namedService;
 
     @GetMapping
-    public Page<NamedPageDto> read(
+    public Page<RestaurantDto> read(
             @RequestParam("category") String category,
             @RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(defaultValue = "0") Integer page,

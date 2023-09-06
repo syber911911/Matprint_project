@@ -1,66 +1,36 @@
 package com.example.final_project_17team.restaurant.dto;
 
-import com.example.final_project_17team.category.entity.Category;
+import com.example.final_project_17team.global.dto.PlaceDataDto;
 import com.example.final_project_17team.restaurant.entity.Restaurant;
-import com.example.final_project_17team.restaurant.entity.RestaurantImage;
-import com.example.final_project_17team.review.entity.Review;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-import org.springframework.format.annotation.NumberFormat;
+import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
-@Setter
-@Getter
-@ToString
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
 public class RestaurantDto {
-    private Long id;
     private String name;
-    private String tel;
-    private String openHours;
-    private String closeHours;
     private String address;
     private String roadAddress;
-    private String menuInfo;
     private BigDecimal mapX;
     private BigDecimal mapY;
-    private Float avgRatings;
-    private List<String> restaurantImageList;
-    private List<String> categoryList;
 
     public static RestaurantDto fromEntity(Restaurant restaurant) {
-        List<String> imageList = new LinkedList<>();
-        for (RestaurantImage restaurantImage : restaurant.getRestaurantImageList()) {
-            imageList.add(restaurantImage.getUrl());
-        }
+        RestaurantDto restaurantDto = new RestaurantDto();
+        restaurantDto.setName(restaurant.getName());
+        restaurantDto.setAddress(restaurant.getAddress());
+        restaurantDto.setRoadAddress(restaurant.getRoadAddress());
+        restaurantDto.setMapX(restaurant.getMapX());
+        restaurantDto.setMapY(restaurant.getMapY());
+        return restaurantDto;
+    }
 
-        List<String> categoryList = new LinkedList<>();
-        for (Category category : restaurant.getCategoryList()) {
-            categoryList.add(category.getName());
-        }
-
-        return RestaurantDto.builder()
-                .id(restaurant.getId())
-                .name(restaurant.getName())
-                .tel(restaurant.getTel())
-                .openHours(restaurant.getOpenHours())
-                .closeHours(restaurant.getCloseHours())
-                .address(restaurant.getAddress())
-                .roadAddress(restaurant.getRoadAddress())
-                .menuInfo(restaurant.getMenuInfo())
-                .mapX(restaurant.getMapX())
-                .mapY(restaurant.getMapY())
-                .avgRatings(Math.round(restaurant.getAvgRatings() * 10.0f) / 10.0f)
-                .restaurantImageList(imageList)
-                .categoryList(categoryList)
-                .build();
+    public static RestaurantDto fromDto(PlaceDataDto placeDataDto) {
+        RestaurantDto restaurantDto = new RestaurantDto();
+        restaurantDto.setName(placeDataDto.getName());
+        restaurantDto.setAddress(placeDataDto.getAddress());
+        restaurantDto.setRoadAddress(placeDataDto.getRoadAddress());
+        restaurantDto.setMapX(placeDataDto.getX());
+        restaurantDto.setMapY(placeDataDto.getY());
+        return restaurantDto;
     }
 }

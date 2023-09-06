@@ -18,7 +18,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseDto create(@RequestBody PostDto request, @AuthenticationPrincipal String username) {
+    public ResponseDto create(@RequestBody CreatePostDto request, @AuthenticationPrincipal String username) {
         return postService.createPost(request, username);
     }
 

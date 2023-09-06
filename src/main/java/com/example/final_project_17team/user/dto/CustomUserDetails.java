@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private String email;
     private String phone;
-    private boolean gender; // 남성 : true, 여성 : false
+    private String gender;
     private Integer age;
     private String imgUrl;
 
@@ -28,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
                 .password(user.getPassword())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .gender(user.isGender())
+                .gender(user.getGender())
                 .age(user.getAge())
                 .imgUrl(user.getImgUrl())
                 .build();

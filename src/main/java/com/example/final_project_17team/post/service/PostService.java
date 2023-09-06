@@ -26,7 +26,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    public ResponseDto createPost(PostDto request, String username) {
+    public ResponseDto createPost(CreatePostDto request, String username) {
         User user = this.getUser(username);
         postRepository.save(Post.builder()
                 .title(request.getTitle())

@@ -15,11 +15,10 @@ public class PostDto {
     private String prefer;
     private String username;
     private Integer age;
-    private Boolean gender;
+    private String gender;
 
     public static PostDto fromEntity(Post post){
         PostDto dto = new PostDto();
-        // dto.setUserName(post.getUserName());
         dto.setTitle(post.getTitle());
         dto.setContent(post.getContent());
         dto.setStatus(post.getStatus());
@@ -27,7 +26,7 @@ public class PostDto {
         dto.setPrefer(post.getPrefer());
         dto.setUsername(post.getUser().getUsername());
         dto.setAge(post.getUser().getAge());
-        dto.setGender(post.getUser().isGender());
+        dto.setGender(post.getUser().getGender());
         return dto;
     }
 
