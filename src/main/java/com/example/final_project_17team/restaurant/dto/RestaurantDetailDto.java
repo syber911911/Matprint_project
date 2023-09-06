@@ -52,7 +52,7 @@ public class RestaurantDetailDto {
                 .menuInfo(restaurant.getMenuInfo())
                 .mapX(restaurant.getMapX())
                 .mapY(restaurant.getMapY())
-                .avgRatings(Math.round(restaurant.getAvgRatings() * 10.0f) / 10.0f)
+                .avgRatings(restaurant.getAvgRatings() == null ? (float) 0 : Math.round(restaurant.getAvgRatings() * 10.0f) / 10.0f)
                 .restaurantImageList(imageList)
                 .categoryList(categoryList)
                 .build();

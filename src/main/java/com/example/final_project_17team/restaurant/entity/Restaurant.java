@@ -21,18 +21,21 @@ public class Restaurant extends Base {
     private Long id;
     private String status;
     private String name;
+    @Column(unique = true)
     private String tel;
     private String openHours;
     private String closeHours;
     private String location;
+    @Column(unique = true)
     private String address;
+    @Column(unique = true)
     private String roadAddress;
     @Column(length = 1000)
     private String menuInfo;
 
-    @Column(name = "map_x", precision = 20, scale = 17)
+    @Column(name = "map_x", precision = 20, scale = 17, unique = true)
     private BigDecimal mapX;
-    @Column(name = "map_y", precision = 20, scale = 18)
+    @Column(name = "map_y", precision = 20, scale = 18, unique = true)
     private BigDecimal mapY;
 
     @Basic(fetch = FetchType.LAZY)

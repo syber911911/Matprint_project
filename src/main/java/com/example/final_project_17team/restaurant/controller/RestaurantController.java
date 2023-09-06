@@ -29,7 +29,7 @@ public class RestaurantController {
 
     //상세페이지
     @GetMapping("/detail")
-    public RestaurantDetailDto detailPage(@RequestParam("name") String name, @RequestParam("address") String address, @RequestParam("mapX") BigDecimal mapX, @RequestParam("mapY") BigDecimal mapY){
-        return restaurantService.detailPage(name, address, mapX, mapY);
+    public RestaurantDetailDto detailPage(@RequestParam("name") String name, @RequestParam("address") String address){
+        return restaurantService.detailPage(name, address);
     }
 }

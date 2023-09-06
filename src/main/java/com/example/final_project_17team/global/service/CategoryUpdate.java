@@ -156,7 +156,7 @@ public class CategoryUpdate {
             PlaceDataDto placeDataDto = placeDataDtoList.get(0);
             Thread.sleep(3000);
 
-            Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndMapXAndMapY(placeDataDto.getName(), placeDataDto.getX(), placeDataDto.getY());
+            Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndAddress(placeDataDto.getName(), placeDataDto.getAddress());
             if (optionalRestaurant.isEmpty()) {
                 this.saveRestaurant(placeDataDto, "성시경 먹을텐데", descriptionAndUrl.get(1));
             }
