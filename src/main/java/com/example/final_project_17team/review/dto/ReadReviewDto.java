@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 public class ReadReviewDto {
-
+    private Long id;
     private String username;
     private String content;
     private Integer ratings;
@@ -18,6 +18,7 @@ public class ReadReviewDto {
 
     public static ReadReviewDto fromEntity(Review review){
         ReadReviewDto dto = new ReadReviewDto();
+        dto.setId(review.getId());
         dto.setUsername(review.getUser().getUsername());
         dto.setRatings(review.getRatings());
         dto.setContent(review.getContent());
@@ -28,6 +29,17 @@ public class ReadReviewDto {
         }
         dto.setImageUrl(urlList);
         return dto;
+    }
+
+    public static List<ReadReviewDto> fromEntityList(List<Review> reviewList) {
+        List<ReadReviewDto> readReviewDtoList = new ArrayList<>();
+        if (reviewList.isEmpty())
+            return null;
+
+        for (Review review : reviewList) {
+            readReviewDtoList.add(fromEntity(review));
+        }
+        return readReviewDtoList;
     }
 
     @Data

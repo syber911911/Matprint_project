@@ -64,7 +64,7 @@ public class WishlistService {
 
         List<Wishlist> wishlists = wishListRepository.findAllByUser(user);
         if (wishlists.isEmpty())
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자가 등록한 위시리스트가 존재하지 않습니다.");
 
         return WishlistDto.fromEntityList(wishlists);
     }

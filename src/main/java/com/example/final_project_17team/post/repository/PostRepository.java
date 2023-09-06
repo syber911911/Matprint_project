@@ -12,6 +12,5 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
     Optional<Post> findByIdAndUser(Long PostId, User user);
-    List<Post> findAllByTitleContains(String title);
-    List<Post> findAllByContentContains(String content);
+    List<Post> findByUser(User user);
 }

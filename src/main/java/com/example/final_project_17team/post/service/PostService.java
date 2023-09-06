@@ -43,13 +43,13 @@ public class PostService {
         return responseDto;
     }
 
-    public Page<PostDto> readAllPost(Integer pageNumber, Integer pageSize) {
+    public Page<ReadPostDto> readAllPost(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
         Page<Post> postPage = postRepository.findAll(pageable);
-        return postPage.map(PostDto::fromEntity);
+        return postPage.map(ReadPostDto::fromEntity);
     }
 
-    public PostDto.PostWithUser readPost(Long postId, String username) {
+    public PostDto.PostWithUser readPostDetail(Long postId, String username) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 동행 글을 찾을 수 없습니다.");
@@ -61,6 +61,16 @@ public class PostService {
         postWithUser.setPostDto(postDto);
 
         return postWithUser;
+    }
+
+    public List<ReadPostDto> readMyPost(String username) {
+        User user = this.getUser(username);
+        List<Post> postList = postRepository.findByUser(user);
+
+        if (postList.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자가 작성한 동행 글이 존재하지 않습니다.");
+
+        return ReadPostDto.fromEntityList(postList);
     }
 
     public ResponseDto updatePost(UpdatePostDto request, Long postId, String username) {
@@ -91,7 +101,7 @@ public class PostService {
     }
 
     // 검색어를 통한 글 검색
-    public Page<PostDto> searchPost(String type, String keyword, String gender, Integer age, String status, Integer pageNumber, Integer pageSize) {
+    public Page<ReadPostDto> searchPost(String type, String keyword, String gender, Integer age, String status, Integer pageNumber, Integer pageSize) {
         Specification<Post> spec = (root, query, criteriaBuilder) -> null;
         if (keyword.isBlank() || keyword.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어를 입력해주세요.");
@@ -113,7 +123,7 @@ public class PostService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
         Page<Post> searchResult = postRepository.findAll(spec, pageable);
-        return searchResult.map(PostDto::fromEntity);
+        return searchResult.map(ReadPostDto::fromEntity);
     }
 
     public ResponseDto crateComment(CreateCommentDto request, Long postId, String username) {

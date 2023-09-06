@@ -23,7 +23,7 @@ public class PostController {
     }
 
     @GetMapping
-    public Page<PostDto> readAll(
+    public Page<ReadPostDto> readAllPost(
             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "limit", defaultValue = "5") Integer pageSize
     ) {
@@ -31,8 +31,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public PostDto.PostWithUser read(@PathVariable("postId") Long postId, @AuthenticationPrincipal String username) {
-        return postService.readPost(postId, username);
+    public PostDto.PostWithUser readPostDetail(@PathVariable("postId") Long postId, @AuthenticationPrincipal String username) {
+        return postService.readPostDetail(postId, username);
     }
 
     @PutMapping("/{postId}")
@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public Page<PostDto> search(
+    public Page<ReadPostDto> search(
             @RequestParam(name = "type", defaultValue = "제목") String type,
             @RequestParam(name = "target", defaultValue = "") String keyword,
             @RequestParam(name = "gender", defaultValue = "") String gender,

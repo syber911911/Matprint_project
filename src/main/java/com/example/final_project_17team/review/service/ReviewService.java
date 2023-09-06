@@ -101,6 +101,19 @@ public class ReviewService {
         return readReviewWithUser;
     }
 
+    public List<ReadReviewDto> readMyReview(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "해당 사용자를 찾을 수 없습니다.");
+        User user = optionalUser.get();
+
+        List<Review> reviewList = reviewRepository.findByUser(user);
+        if (reviewList.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자가 작성한 리뷰가 존재하지 않습니다.");
+
+        return ReadReviewDto.fromEntityList(reviewList);
+    }
+
     // 리뷰 삭제
     public ResponseDto deleteReview(String username, Long restaurantId, Long reviewId) {
         Optional<User> optionalUser = userRepository.findByUsername(username);

@@ -15,6 +15,7 @@ public class WishlistDto {
     private String restaurantName;
     private String address;
     private String roadAddress;
+    private Float avgRatings;
 
     public static List<WishlistDto> fromEntityList(List<Wishlist> entityList) {
         List<WishlistDto> wishlistDtoList = new ArrayList<>();
@@ -26,6 +27,7 @@ public class WishlistDto {
             wishlistDto.setRestaurantName(wishlist.getRestaurant().getName());
             wishlistDto.setAddress(wishlist.getRestaurant().getAddress());
             wishlistDto.setRoadAddress(wishlist.getRestaurant().getRoadAddress());
+            wishlistDto.setAvgRatings(wishlist.getRestaurant().getAvgRatings());
             wishlistDtoList.add(wishlistDto);
         }
         return wishlistDtoList;
