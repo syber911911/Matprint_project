@@ -72,17 +72,17 @@ public class UserController {
         return userService.logout(username);
     }
 
-    @GetMapping("/user/wishlist")
+    @GetMapping("/profile/wishlist")
     public List<WishlistDto> readMyWishlist(@AuthenticationPrincipal String username) {
         return wishlistService.readMyWishlist(username);
     }
 
-    @GetMapping("/user/post")
+    @GetMapping("/profile/post")
     public List<ReadPostDto> readMyPost(@AuthenticationPrincipal String username) {
         return postService.readMyPost(username);
     }
 
-    @GetMapping("/user/review")
+    @GetMapping("/profile/review")
     public List<ReadReviewDto> readMyReview(@AuthenticationPrincipal String username) {
         return reviewService.readMyReview(username);
     }
