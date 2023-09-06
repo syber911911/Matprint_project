@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Getter
@@ -45,7 +44,7 @@ public class CustomUserDetails implements UserDetails {
                 .build();
     }
 
-    public static CustomUserDetails fromDto(UpdateDto updateDto) {
+    public static CustomUserDetails fromDto(UpdateProfileDto updateDto) {
         return CustomUserDetails.builder()
                 .email(updateDto.getEmail())
                 .phone(updateDto.getPhone())

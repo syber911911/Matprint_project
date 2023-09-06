@@ -2,6 +2,7 @@ package com.example.final_project_17team.user.entity;
 
 import com.example.final_project_17team.global.entity.Base;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
+import com.example.final_project_17team.user.dto.UpdateProfileDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -53,9 +54,14 @@ public class User extends Base {
                 .build();
     }
 
-    public void update(String email, String phone, Integer age){
-        this.email = email;
-        this.phone = phone;
-        this.age = age;
+    public void update(CustomUserDetails request){
+        this.email = request.getEmail();
+        this.phone = request.getPhone();
+        this.gender = request.getGender();
+        this.age = request.getAge();
+    }
+
+    public void updateProfileImage(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

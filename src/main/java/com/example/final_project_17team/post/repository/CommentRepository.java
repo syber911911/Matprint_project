@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByPost(Post post, Pageable pageable);
     Optional<Comment> findByIdAndPostAndUser(Long commentId, Post post, User user);
+    void deleteAllByUser(User user);
 }

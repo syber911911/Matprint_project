@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class UpdateDto {
+public class UpdateProfileDto {
     private String email;
     private String phone;
     private String gender;

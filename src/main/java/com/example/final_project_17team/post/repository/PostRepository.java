@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
     Optional<Post> findByIdAndUser(Long PostId, User user);
     List<Post> findByUser(User user);
+    void deleteAllByUser(User user);
 }
