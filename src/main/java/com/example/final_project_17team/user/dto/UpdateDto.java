@@ -8,12 +8,8 @@ import lombok.ToString;
 @Builder
 @ToString
 public class UpdateDto {
-    private String username;
-    private String password;
     private String email;
     private String phone;
-    private boolean gender;
+    private String gender;
     private Integer age;
-    private String imgUrl;
-
 }

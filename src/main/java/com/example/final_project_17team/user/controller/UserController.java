@@ -62,18 +62,6 @@ public class UserController {
         return service.logout(username);
     }
 
-    @GetMapping("/reviews")
-    public List<Review> getReviews(@AuthenticationPrincipal String username){
-        log.info(username);
-        return service.readReview(username);
-    }
-
-    @GetMapping("/post")
-    public List<Post> getPost(@AuthenticationPrincipal String username){
-        log.info(username);
-        return service.readPost(username);
-    }
-
     //회원정보조회
     @GetMapping("/profile")
     public ResponseEntity<CustomUserDetails> getProfile(@AuthenticationPrincipal String username) {
