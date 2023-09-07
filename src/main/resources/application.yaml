@@ -32,9 +32,6 @@ spring:
       location: /tmp/
     mvc:
       static-path-pattern: /static/**
-    web:
-      resources:
-        static-locations: file:media/,classpath:/static
   jackson:
     serialization:
       fail-on-empty-beans: false

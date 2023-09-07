@@ -26,8 +26,9 @@ public class JoinDto {
     @Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "전화번호 형식이 잘못되었습니다.")
     private String phone;
 
-    @NotNull(message = "성별 입력은 필수입니다.")
-    private Boolean gender;
+    @NotBlank(message = "성별 선택은 필수입니다.")
+    @Pattern(regexp = "남성|여성", message = "성별은 남성, 여성만 선택 가능합니다.")
+    private String gender;
 
     @NotNull(message = "나이 입력은 필수입니다.")
     @Min(1)

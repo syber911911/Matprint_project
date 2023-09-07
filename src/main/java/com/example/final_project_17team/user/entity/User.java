@@ -1,23 +1,18 @@
 package com.example.final_project_17team.user.entity;
 
+import com.example.final_project_17team.global.entity.Base;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
+import com.example.final_project_17team.user.dto.UpdateProfileDto;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,21 +26,14 @@ public class User {
     @Column(nullable = false, unique = true)
     private String phone;
     @Column(nullable = false)
-    private boolean gender;
+    private String gender;
     @Column(nullable = false)
     private Integer age;
     @Column(name = "img_url")
     private String imgUrl;
 
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updateAt;
-
     @Builder
-    public User(String username, String password, String email, String phone, boolean gender, Integer age, String imgUrl) {
+    public User(String username, String password, String email, String phone, String gender, Integer age, String imgUrl) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -61,8 +49,19 @@ public class User {
                 .password(userDetails.getPassword())
                 .email(userDetails.getEmail())
                 .phone(userDetails.getPhone())
-                .gender(userDetails.isGender())
+                .gender(userDetails.getGender())
                 .age(userDetails.getAge())
                 .build();
+    }
+
+    public void update(CustomUserDetails request){
+        this.email = request.getEmail();
+        this.phone = request.getPhone();
+        this.gender = request.getGender();
+        this.age = request.getAge();
+    }
+
+    public void updateProfileImage(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

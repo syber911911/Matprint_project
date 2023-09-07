@@ -22,8 +22,4 @@ public class Base {
     @LastModifiedDate
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
-
-    @Setter
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
 }

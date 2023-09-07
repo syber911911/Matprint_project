@@ -5,37 +5,47 @@ import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.global.jwt.JwtTokenUtils;
 import com.example.final_project_17team.global.redis.Redis;
 import com.example.final_project_17team.global.redis.RedisRepository;
+import com.example.final_project_17team.post.repository.CommentRepository;
+import com.example.final_project_17team.post.repository.PostRepository;
+import com.example.final_project_17team.review.repository.ReviewRepository;
 import com.example.final_project_17team.user.dto.CustomUserDetails;
 import com.example.final_project_17team.user.dto.LoginDto;
+import com.example.final_project_17team.user.dto.UserProfile;
 import com.example.final_project_17team.user.entity.User;
 import com.example.final_project_17team.user.repository.UserRepository;
+import com.example.final_project_17team.wishlist.repository.WishlistRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsManager {
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+    private final CommentRepository commentRepository;
+    private final WishlistRepository wishlistRepository;
+    private final PostRepository postRepository;
     private final RedisRepository redisRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
-
-    public UserService(UserRepository userRepository, RedisRepository redisRepository, PasswordEncoder passwordEncoder, JwtTokenUtils jwtTokenUtils) {
-        this.userRepository = userRepository;
-        this.redisRepository = redisRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenUtils = jwtTokenUtils;
-    }
 
     public void setRefreshCookie(String refreshToken, String autoLogin, HttpServletResponse response) {
         ResponseCookie refreshTokenCookie = null;
@@ -63,14 +73,14 @@ public class UserService implements UserDetailsManager {
     public void setAutoLoginCookie(String autoLogin, HttpServletResponse response) {
         ResponseCookie autoLoginCookie = null;
         if (autoLogin.equals("T")) {
-            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN","T")
+            autoLoginCookie = ResponseCookie.from("LOGIN","T")
                     .sameSite("Lax")
                     .domain("localhost")
                     .path("/")
                     .maxAge(3600 * 24 * 14)
                     .build();
         } else {
-            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "F")
+            autoLoginCookie = ResponseCookie.from("LOGIN", "F")
                     .sameSite("Lax")
                     .domain("localhost")
                     .path("/")
@@ -131,14 +141,94 @@ public class UserService implements UserDetailsManager {
         }
     }
 
+    public UserProfile readUser(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isPresent())
+            return UserProfile.fromEntity(optionalUser.get());
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
     @Override
     public void updateUser(UserDetails user) {
+        CustomUserDetails updatedUserDetails = (CustomUserDetails) user;
 
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        User foundUser = optionalUser.get();
+
+        foundUser.update(updatedUserDetails);
+        userRepository.save(foundUser);
+    }
+
+    // TODO 사용자 이미지 삭제 기능
+    // TODO 사용자 이미지 업로드 시 기존 이미지 삭제
+    // TODO 사용자 삭제 시 사용자 ID 로 생성된 디렉토리 삭제
+    public ResponseDto uploadProfileImage(String username, MultipartFile profileImage) {
+        if (profileImage.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "업로드 할 이미지가 존재하지 않습니다.");
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "해당 사용자가 존재하지 않습니다.");
+        User user = optionalUser.get();
+
+        // 사용자 프로필 이미지 저장 디렉토리
+        String imageDir = String.format("media/%d/profile/", user.getId());
+        try {
+            Files.createDirectories(Path.of(imageDir));
+        } catch (IOException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "디렉토리 생성에 실패");
+        }
+        // 생성 시간
+        LocalDateTime createTime = LocalDateTime.now();
+
+        // 첨부된 이미지 filename 추출
+        String originalFileName = profileImage.getOriginalFilename();
+        // 확장자 추출
+        String[] fileNameSplit = originalFileName.split("\\.");
+        String extension = fileNameSplit[fileNameSplit.length - 1];
+        // 저장할 이미지의 filename 재설정 (생성시간_username.확장자)
+        String profileImageFileName = String.format("%s.%s", createTime.toString(), extension);
+        // 이미지 저장 경로와 filename 을 합쳐 최종적으로 저장될 path 생성
+        String profileImagePath = imageDir + profileImageFileName;
+
+        try {
+            // path 에 이미지 저장
+            profileImage.transferTo(Path.of(profileImagePath));
+        } catch (IOException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드 실패");
+        }
+
+        // userEntity 에 이미지 경로 추가 및 저장
+        user.updateProfileImage(String.format("/profile/image/%s/%s", username, profileImageFileName));
+        userRepository.save(user);
+
+        ResponseDto response = new ResponseDto();
+        response.setMessage("프로필 이미지가 업로드 되었습니다");
+        response.setStatus(HttpStatus.OK);
+        return response;
     }
 
     @Override
     public void deleteUser(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
 
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
+        User user = optionalUser.get();
+
+        //사용자의 리뷰삭제
+        reviewRepository.deleteAllByUser(user);
+        //사용자의 즐겨찾기 삭제
+        wishlistRepository.deleteAllByUser(user);
+        postRepository.deleteAllByUser(user);
+        commentRepository.deleteAllByUser(user);
+        //사용자삭제
+        userRepository.deleteById(user.getId());
     }
 
     @Override

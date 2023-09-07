@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-    Optional<Restaurant> findByNameAndMapXAndMapY(String name, BigDecimal mapX, BigDecimal mapY);
-
+    Optional<Restaurant> findByNameAndAddress(String name, String address);
     Page<Restaurant> findAllByCategoryList_Name(String categoryName, Pageable pageable);
-
 }

@@ -107,24 +107,6 @@ public class JwtTokenUtils {
                 .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(3600 * 24)));
-        //
-
-
-
-
-
-
-
-
-        // accessToken 만료 기간 수정 : 현재 24시간
-
-
-
-
-
-
-
-        //
         return Jwts.builder()
                 .setClaims(jwtClaims)
                 .signWith(signingKey)

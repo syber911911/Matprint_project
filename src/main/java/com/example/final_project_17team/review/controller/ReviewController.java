@@ -1,62 +1,68 @@
 package com.example.final_project_17team.review.controller;
 
-import com.example.final_project_17team.review.dto.ReviewRequestDto;
-import com.example.final_project_17team.review.dto.ReviewUpdateDto;
+import com.example.final_project_17team.global.dto.ResponseDto;
+import com.example.final_project_17team.review.dto.CreateReviewDto;
+import com.example.final_project_17team.review.dto.ReadReviewDto;
+import com.example.final_project_17team.review.dto.UpdateReviewDto;
 import com.example.final_project_17team.review.service.ReviewService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("/review")
+@AllArgsConstructor
+@RequestMapping("/{restaurantId}/review")
 public class ReviewController {
-
     private ReviewService reviewService;
 
     // 리뷰작성
-    @PostMapping("/post/restaurant/{restaurantId}")
-    public ResponseEntity<Map<String, String>> create(
-            @PathVariable("restaurantId")Long restaurantId,
-            @ModelAttribute("review") ReviewRequestDto dto
+    @PostMapping
+    public ResponseDto create(
+            @AuthenticationPrincipal String username,
+            @PathVariable("restaurantId") Long restaurantId,
+            @ModelAttribute("review") CreateReviewDto dto
     ){
-
-        reviewService.createReview(restaurantId, dto);
-
-        log.info(dto.toString());
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "리뷰 등록이 완료되었습니다.");
-
-        return ResponseEntity.ok(responseBody);
+        return reviewService.createReview(username, restaurantId, dto);
     }
 
-    @PutMapping("/edit/restaurant/{restaurantId}/review/{reviewId}")
-    public ResponseEntity<Map<String, String>> updateArticle(
-            @PathVariable("restaurantId")Long restaurantId,
-            @PathVariable("reviewId")Long reviewId,
-            @ModelAttribute("review") ReviewUpdateDto dto
+    @GetMapping
+    public ReadReviewDto.ReadReviewWithUser readReviews(
+            @AuthenticationPrincipal String username,
+            @PathVariable("restaurantId") Long restaurantId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit
+    ){
+        return reviewService.readReviewPage(username, restaurantId, page, limit);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseDto deleteReview(
+            @AuthenticationPrincipal String username,
+            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("reviewId") Long reviewId
     ) {
-        reviewService.updateArticle(restaurantId, reviewId, dto);
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "리뷰를 수정했습니다.");
-        return ResponseEntity.ok(responseBody);
+        return reviewService.deleteReview(username, restaurantId, reviewId);
     }
 
-    @PutMapping("/deleteImage/restaurant/{restaurantId}/review/{reviewId}/image/{imageId}")
-    public ResponseEntity<Map<String, String>> deleteImage(
-            @PathVariable("restaurantId")Long restaurantId,
-            @PathVariable("reviewId")Long reviewId,
-            @PathVariable("imageId") Long imageId)
-    {
-        reviewService.deleteImage(restaurantId, reviewId, imageId);
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "리뷰에 이미지가 삭제 되었습니다.");
-        return ResponseEntity.ok(responseBody);
+    @PutMapping("/{reviewId}")
+    public ResponseDto updateReview(
+            @AuthenticationPrincipal String username,
+            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("reviewId") Long reviewId,
+            @ModelAttribute @Valid UpdateReviewDto request
+    ) {
+        return reviewService.updateReview(username, restaurantId, reviewId, request);
     }
-
 }

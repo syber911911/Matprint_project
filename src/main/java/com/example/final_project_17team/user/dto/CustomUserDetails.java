@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Getter
@@ -15,7 +14,7 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private String email;
     private String phone;
-    private boolean gender; // 남성 : true, 여성 : false
+    private String gender;
     private Integer age;
     private String imgUrl;
 
@@ -28,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
                 .password(user.getPassword())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .gender(user.isGender())
+                .gender(user.getGender())
                 .age(user.getAge())
                 .imgUrl(user.getImgUrl())
                 .build();
@@ -42,6 +41,14 @@ public class CustomUserDetails implements UserDetails {
                 .phone(joinUser.getPhone())
                 .gender(joinUser.getGender())
                 .age(joinUser.getAge())
+                .build();
+    }
+
+    public static CustomUserDetails fromDto(UpdateProfileDto updateDto) {
+        return CustomUserDetails.builder()
+                .email(updateDto.getEmail())
+                .phone(updateDto.getPhone())
+                .age(updateDto.getAge())
                 .build();
     }
 

@@ -2,9 +2,10 @@ package com.example.final_project_17team.restaurant.entity;
 
 import com.example.final_project_17team.category.entity.Category;
 import com.example.final_project_17team.global.entity.Base;
-import com.example.final_project_17team.post.entity.Post;
+import com.example.final_project_17team.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,21 +21,30 @@ public class Restaurant extends Base {
     private Long id;
     private String status;
     private String name;
+    @Column(unique = true)
     private String tel;
     private String openHours;
     private String closeHours;
     private String location;
+    @Column(unique = true)
     private String address;
+    @Column(unique = true)
     private String roadAddress;
     @Column(length = 1000)
     private String menuInfo;
 
-    @Column(name = "map_x", precision = 20, scale = 17)
+    @Column(name = "map_x", precision = 20, scale = 17, unique = true)
     private BigDecimal mapX;
-    @Column(name = "map_y", precision = 20, scale = 18)
+    @Column(name = "map_y", precision = 20, scale = 18, unique = true)
     private BigDecimal mapY;
-    @Column(name = "avg_ratings")
+
+    @Basic(fetch = FetchType.LAZY)
+    @Formula("(select avg(reviews.ratings) from reviews where reviews.restaurant_id = id)")
     private Float avgRatings;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Formula("(select count(*) from reviews where reviews.restaurant_id = id)")
+    private Integer reviewCount;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "restaurant_id")
@@ -44,12 +54,19 @@ public class Restaurant extends Base {
     @JoinColumn(name = "restaurant_id")
     private List<Category> categoryList = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "restaurant_id")
-    private List<Post> posts = new ArrayList<>();
+    private List<Review> reviewList = new ArrayList<>();
 
     @Builder
-    public Restaurant(String status, String name, String tel, String openHours, String closeHours, String location, String address, String roadAddress,String menuInfo, BigDecimal mapX, BigDecimal mapY, Float avgRatings, List<RestaurantImage> restaurantImageList, List<Category> categoryList) {
+    public Restaurant(
+            String status, String name,
+            String tel, String openHours,
+            String closeHours, String location,
+            String address, String roadAddress,
+            String menuInfo, BigDecimal mapX,
+            BigDecimal mapY
+    ) {
         this.status = status;
         this.name = name;
         this.tel = tel;
@@ -61,8 +78,10 @@ public class Restaurant extends Base {
         this.menuInfo = menuInfo;
         this.mapX = mapX;
         this.mapY = mapY;
-        this.avgRatings = avgRatings;
-        this.restaurantImageList = restaurantImageList;
-        this.categoryList = categoryList;
+    }
+
+    public void setCategoryAndImage(List<Category> categories, List<RestaurantImage> restaurantImages) {
+        this.categoryList = categories;
+        this.restaurantImageList = restaurantImages;
     }
 }
