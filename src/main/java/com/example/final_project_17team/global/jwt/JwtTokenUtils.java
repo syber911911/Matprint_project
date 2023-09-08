@@ -45,6 +45,10 @@ public class JwtTokenUtils {
         try {
 //            String token = authHeader.split(" ")[1];
             jwtParser.parseClaimsJws(token);
+            String username = this.getUsernameFromJwt(token);
+            Optional<Redis> optionalRedis = redisRepository.findById(username);
+            if (optionalRedis.isEmpty())
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
         } catch (SignatureException ex) {
             log.error("서명이 유효하지 않음");
             throw new SignatureException("JWT 서명이 유효하지 않습니다.");
@@ -92,7 +96,7 @@ public class JwtTokenUtils {
         // refresh token 이 조회되지 않으면
         // 로그인 페이지로 리다이렉트
         if (optionalRedis.isEmpty())
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "refresh token 이 없다, 로그인 페이지로 가라;");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인된 이력이 없습니다.");
         // refresh token 이 조회된 경우에는
         // username 추출
         Redis redis = optionalRedis.get();
