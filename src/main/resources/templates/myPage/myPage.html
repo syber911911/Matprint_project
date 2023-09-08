@@ -40,28 +40,26 @@
             border-radius: 5px;
             background-color: #ffffff;
         }
-
     </style>
     <script defer type="text/javascript" src="/js/myPage.js"></script>
 </head>
 
 <body>
 <header class="header flex">
-    <button class="goback">뒤로가기</button>
-    <button class="logout">로그아웃</button>
+    <button id="goback">뒤로가기</button>
+    <button id="logout">로그아웃</button>
 </header>
 <main class="main grid">
     <div class="col-1">
         <div class="buttons">
-            <button id="button1">내 정보</button>
-            <button id="button2">즐겨찾기</button>
-            <button id="button3">내 게시글</button>
-            <button id="button4"></button>
+            <button id="myInfo">내 정보</button>
+            <button id="likePost">즐겨찾기</button>
+            <button id="myPost">내 게시글</button>
+            <button id="update">회원정보 수정</button>
         </div>
     </div>
     <div class="col-2">
         <div id="changecontentBox">
-
         </div>
     </div>
 </main>

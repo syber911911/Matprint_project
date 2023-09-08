@@ -1,17 +1,27 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNCIsImlhdCI6MTY5NDA4MTkzNywiZXhwIjoxNjk0MTY4MzM3fQ.9Md4Ba0EBlq7qP4tLfsKEFhkzxMJHQAwkLpdUQDG8GND6uIT7iban14JBgynzo3_iXZZ5l_gicfYgXB5TxVemQ");
-    const module = await import("./httpHandler.js");
-    const myInfoBtn = document.getElementById("button1");
-    const likePostBtn = document.getElementById("button2");
-    const myPostBtn = document.getElementById("button3");
+    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNCIsImlhdCI6MTY5NDE0MjY4OCwiZXhwIjoxNjk0MjI5MDg4fQ.4z4XahbVrpcMUe9CPakQxmslkylnSbPMZ9IeRD1S3h8Aj1jAPgiNcxK3Y-axIkl3_7TlEVxBvefrUaA0PYN-BA");
+    const httpModule = await import("./HttpHandler.js");
+    const userModule = await import("./User.js");
+
+    const myInfoBtn = document.getElementById("myInfo");
+    const likePostBtn = document.getElementById("likePost");
+    const myPostBtn = document.getElementById("myPost");
+    const updateBtn = document.getElementById("update");
+    const goBackBtn = document.getElementById("goback");
+    const logoutBtn = document.getElementById("logout");
     const changeContentBox = document.getElementById('changecontentBox');
     const token = localStorage.getItem('token');
-    const httpHandler = new module.HttpHandler(token);
+    const HttpHandler = new httpModule.HttpHandler(token);
+    const User = new userModule.User(token);
 
     const clearContentBox = () => changeContentBox.innerHTML = ``;
-    // 페이지 로드 시 토큰 확인 및 프로필 정보 요청
+    const handleGoback = (e) => {
+        e.preventDefault();
+        window.history.go(-1);
+    }
+    goBackBtn.addEventListener('click', handleGoback);
     const showProfile = async () => {
-        const user = await httpHandler.request('/profile');
+        const user = await HttpHandler.request('/profile');
         let template;
         clearContentBox();
         const { username, gender, email } = user;
@@ -41,15 +51,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
         console.error('토큰이 로컬 스토리지에 없습니다.');
     }
-
     const showInfo = (e) => {
         e.preventDefault();
         showProfile()
     }
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        User.logout('/logout');
+    }
+    logoutBtn.addEventListener('click', handleLogout);
+
     myInfoBtn.addEventListener("click", showInfo);
     const showLikedPosts = async (e) => {
         e.preventDefault();
-        const likedPosts = await httpHandler.request('/profile/wishlist');
+        const likedPosts = await HttpHandler.request('/profile/wishlist');
         let template;
         clearContentBox();
         likedPosts.map(post => {
@@ -81,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const showMyPosts = async (e) => {
         e.preventDefault();
-        const posts = await httpHandler.request('/profile/post');
+        const posts = await HttpHandler.request('/profile/post');
         console.log(posts)//!
         let template;
         clearContentBox();
@@ -111,6 +127,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     myPostBtn.addEventListener("click", showMyPosts);
 
+    const showUpdateForm = async (e) => {
+        e.preventDefault();
+        const profile = await HttpHandler.request('/profile');
+        console.log(profile)//!
+        let template;
+        clearContentBox();
+        const { phone,age, gender, email } = profile;
+        template = `
+                 <form action="/profile">
+                        <div class ="form-group">
+                            <label for = "email">email:</label>
+                            <input value=${email} type = "email" id ="email" name = "email" required />
+                        </div>
+                        <div class ="form-group">
+                            <label for = "phone">phone:</label>
+                            <input value=${phone} type = "text" id ="phone" name = "phone" required />
+                        </div>
+                        <div class ="form-group">
+                            <label for = "age">age:</label>
+                            <input value="${age}" type = "text" id ="age" name = "age" required />
+                        </div>
+                        <div class ="form-group">
+                            <label for = "male">gender:</label>
+                            <input type = "radio" id = "male" name = "gender" required checked=${gender =="남성" ? "checked" : ""}>남성
+                            <input type = "radio" id = "female" name = "gender" checked=${gender =="여성" ? "checked" : ""}>여성
+                        </div>
+                        <button id="submitBtn" type = "submit">회원가입</button>
+                    </form>
+        `
+        chageContent(template);
+        console.log(document.getElementById("submitBtn"));
+    }
+
+    updateBtn.addEventListener("click",showUpdateForm);
     const chageContent = (template) => {
         changeContentBox.insertAdjacentHTML('afterbegin', template);
     };
