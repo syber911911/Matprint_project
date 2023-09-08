@@ -97,7 +97,7 @@ public class UserService implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
 
         if (redisRepository.existsById(user.getUsername()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 로그인 된 기기가 존재함");
+            redisRepository.deleteById(user.getUsername());
 
         return jwtTokenUtils.generateToken(user.getUsername());
     }
