@@ -45,11 +45,8 @@ public class JwtTokenUtils {
         try {
 //            String token = authHeader.split(" ")[1];
             jwtParser.parseClaimsJws(token);
-            String username = this.getUsernameFromJwt(token);
-            if (username != null) {
-                Optional<Redis> optionalRedis = redisRepository.findById(username);
-                if (optionalRedis.isEmpty())
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
+            if (!redisRepository.existsByAccessToken(token)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
                 // 로그아웃 한 사용자의 access token 의 사용을 막기 위한 처리
                 // jwt 의 무상태성의 장점이 사라지는 것은 아닌지 고민되는 지점
                 // 로그아웃 시 클라이언트 측에 저장된 access token 을 제거하는 것 만으로는
@@ -86,7 +83,7 @@ public class JwtTokenUtils {
         String refreshToken = this.createRefreshToken();
         jwtTokenInfoDto.setAccessToken(accessToken);
         jwtTokenInfoDto.setRefreshToken(refreshToken);
-        saveRefreshToken(username, refreshToken);
+        saveToken(username, accessToken, refreshToken);
         return jwtTokenInfoDto;
     }
 
@@ -132,16 +129,17 @@ public class JwtTokenUtils {
                 .compact();
     }
 
-    public void saveRefreshToken(String username, String refreshToken) {
+    public void saveToken(String username, String accessToken, String refreshToken) {
         // 해당 user 가 기존에 로그인 된 기록이 있으면
         // refresh token 갱신
         // 기록이 없다면
         // refresh token 기록
         Optional<Redis> optionalRedis = redisRepository.findById(username);
         if (optionalRedis.isEmpty())
-            redisRepository.save(new Redis(username, refreshToken));
+            redisRepository.save(new Redis(username, accessToken, refreshToken));
         else {
             Redis redis = optionalRedis.get();
+            redis.setAccessToken(accessToken);
             redis.setRefreshToken(refreshToken);
             redisRepository.save(redis);
         }
