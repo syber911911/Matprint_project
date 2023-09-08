@@ -1,5 +1,4 @@
 (function ($) {
-    // Define a Vue instance for search results
     var search_result = new Vue({
         el: '#search-result',
         data: {
@@ -8,14 +7,12 @@
         methods: {}
     });
 
-    // Function to handle the search button click
     $("#searchButton").click(function () {
         const query = $("#searchBox").val();
-        $.get(`/restaurant/search?target=${query}&page=0&limit=350`, function (response) {
-            // Update the search_result data property with the search results
+        $.get(`/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
+
             search_result.search_result = response.content;
 
-            // Call initializeMap to update markers on the map
             initializeMap();
         });
     });
@@ -24,11 +21,10 @@
     $("#searchBox").keydown(function (key) {
         if (key.keyCode === 13) {
             const query = $("#searchBox").val();
-            $.get(`/restaurant/search?target=${query}&page=0&limit=300`, function (response) {
+            $.get(`/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
                 // Update the search_result data property with the search results
                 search_result.search_result = response.content;
 
-                // Call initializeMap to update markers on the map
                 initializeMap();
             });
         }
@@ -40,7 +36,7 @@
     };
 
     function initializeMap() {
-        // Create a map object centered at the average position of markers
+        // 지도 생성
         var map = new naver.maps.Map('map', {
             center: getAverageMarkerPosition(),
             zoom: 15
@@ -48,7 +44,7 @@
 
         var markers = [];
 
-        // Function to create a marker and infowindow for a result
+        // 검색 결과 정보 마커에 넣기
         function createMarker(result) {
             var marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(result.mapY, result.mapX),
@@ -86,7 +82,7 @@
             });
         }
 
-        // Loop through each search result and create a marker and infowindow
+        // 마커랑 마커 정보창 create
         for (var i = 0; i < search_result.search_result.length; i++) {
             createMarker(search_result.search_result[i]);
         }

@@ -6,11 +6,8 @@
             search_result: []
         },
         methods: {
-            // Function to handle sorting when a sorting button is clicked
             sortResults: function (sortBy) {
-                // Make an AJAX request to retrieve sorted results
                 $.get(`/named?category=성시경 먹을텐데&sortBy=${sortBy}&page=0&limit=300`, function (response) {
-                    // Update the search_result data property with the sorted search results
                     search_result.search_result = response.content;
 
                 });
