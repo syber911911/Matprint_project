@@ -1,23 +1,55 @@
-document.addEventListener("DOMContentLoaded", function () {
-    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNCIsImlhdCI6MTY5Mzk5NzE1NSwiZXhwIjoxNjk0MDgzNTU1fQ.FQ7bvFRh_PIHhQHn4ve4usRDlA0vb429fijgwTnueN1dULPCd0B0P5hjVSZa3o0_8Q1v4ADBNmbUE02OfKX9Sw");
-
-    //new
-    const buttonElem1 = document.getElementById("button1");//메뉴버튼1
-    const buttonElem2 = document.getElementById("button2");//메뉴버튼2
-    const buttonElem3 = document.getElementById("button3");//메뉴버튼3
-    const changeContentBox = document.getElementById('changecontentBox');//메뉴버튼누를시 바뀌는 컨테이너
+document.addEventListener("DOMContentLoaded", async () => {
+    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNCIsImlhdCI6MTY5NDA4MTkzNywiZXhwIjoxNjk0MTY4MzM3fQ.9Md4Ba0EBlq7qP4tLfsKEFhkzxMJHQAwkLpdUQDG8GND6uIT7iban14JBgynzo3_iXZZ5l_gicfYgXB5TxVemQ");
+    const module = await import("./httpHandler.js");
+    const myInfoBtn = document.getElementById("button1");
+    const likePostBtn = document.getElementById("button2");
+    const myPostBtn = document.getElementById("button3");
+    const changeContentBox = document.getElementById('changecontentBox');
     const token = localStorage.getItem('token');
+    const httpHandler = new module.HttpHandler(token);
 
     const clearContentBox = () => changeContentBox.innerHTML = ``;
-
-    const handleButtonClick = (e) => {
-        e.preventDefault();
-        showProfile(token)
+    // 페이지 로드 시 토큰 확인 및 프로필 정보 요청
+    const showProfile = async () => {
+        const user = await httpHandler.request('/profile');
+        let template;
+        clearContentBox();
+        const { username, gender, email } = user;
+        template = `
+            <ul>
+            <li class="flex">
+                <div>
+                    <h3>사용자명:</h3>
+                    <p>${username}</p>
+                </div>
+                <div>
+                    <h3>성별:</h3>
+                    <p>${gender}</p>
+                </div>
+                <div>
+                    <h3>이메일:</h3>
+                    <p>${email}</p>
+                </div>
+            </li>
+        </ul>
+            `
+        chageContent(template);
     }
-    buttonElem1.addEventListener("click", handleButtonClick);
-    const handleButtonClick2 = async (e) => {
+    //start
+    if (token) {
+        showProfile(token)
+    } else {
+        console.error('토큰이 로컬 스토리지에 없습니다.');
+    }
+
+    const showInfo = (e) => {
         e.preventDefault();
-        const likedPosts = await requestLikedPosts(token);
+        showProfile()
+    }
+    myInfoBtn.addEventListener("click", showInfo);
+    const showLikedPosts = async (e) => {
+        e.preventDefault();
+        const likedPosts = await httpHandler.request('/profile/wishlist');
         let template;
         clearContentBox();
         likedPosts.map(post => {
@@ -40,24 +72,24 @@ document.addEventListener("DOMContentLoaded", function () {
             </li>
         </ul>
         `
-            showLikedPost(template);
+            chageContent(template);
         })
 
     }
-    buttonElem2.addEventListener("click", handleButtonClick2);
+    likePostBtn.addEventListener("click", showLikedPosts);
 
 
-    const handleButtonClick3 = async (e) => {
+    const showMyPosts = async (e) => {
         e.preventDefault();
-        const posts = await requestPosts(token);
-        console.log(posts)
+        const posts = await httpHandler.request('/profile/post');
+        console.log(posts)//!
         let template;
         clearContentBox();
         posts.map(post => {
-            const { title, status, visitDate, id } = post;
+            const { title, status, visitDate } = post;
             template = `
             <ul>
-                    <li key=${id} class="flex">
+                    <li class="flex">
                         <div>
                             <h3>제목:</h3>
                             <p>${title}</p>
@@ -73,130 +105,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     </li>
                 </ul>
         `
-            showPost(template);
+            chageContent(template);
         })
 
     }
-    buttonElem3.addEventListener("click", handleButtonClick3);
+    myPostBtn.addEventListener("click", showMyPosts);
 
-    //new
-    const showPost = (template) => {
-        changeContentBox.insertAdjacentHTML('afterbegin', template);
-    };
-    const showMyPage = (template) => {
-        changeContentBox.insertAdjacentHTML('afterbegin', template);
-    };
-    const showLikedPost = (template) => {
+    const chageContent = (template) => {
         changeContentBox.insertAdjacentHTML('afterbegin', template);
     };
 
-
-    // 페이지 로드 시 토큰 확인 및 프로필 정보 요청
-    const showProfile = async (token) => {
-        const user = await requestProfile(token);
-        let template;
-        clearContentBox();
-        const { username, gender, email } = user;
-        template = `
-            <ul>
-            <li class="flex">
-                <div>
-                    <h3>사용자명:</h3>
-                    <p>${username}</p>
-                </div>
-                <div>
-                    <h3>성별:</h3>
-                    <p>${gender}</p>
-                </div>
-                <div>
-                    <h3>이메일:</h3>
-                    <p>${email}</p>
-                </div>
-            </li>
-        </ul>
-            `
-        showMyPage(template);
-    }
-    if (token) {
-        showProfile(token)
-    } else {
-        console.error('토큰이 로컬 스토리지에 없습니다.');
-    }
 });
-
-async function requestProfile(token) {
-    try {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-        if(token){
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-        const response = await fetch('/profile', {
-            method: 'GET',
-            headers: headers,
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-            console.log(data);
-            return data;
-        } else {
-            console.error("프로필 정보를 가져오는데 실패했습니다.");
-        }
-    } catch (error) {
-        console.error("오류 발생:", error);
-    }
-}
-async function requestPosts(token) {
-    try {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        const response = await fetch('/profile/post', {
-            method: 'GET',
-            headers: headers,
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-            console.log(data);
-            return data;
-        } else {
-            console.error("프로필 정보를 가져오는데 실패했습니다2.");
-        }
-    } catch (error) {
-        console.error("오류 발생:", error);
-    }
-}
-async function requestLikedPosts(token) {
-    try {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        const response = await fetch('/profile/wishlist', {
-            method: 'GET',
-            headers: headers,
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-            console.log(data);
-            return data;
-        } else {
-            console.error("프로필 정보를 가져오는데 실패했습니다3.");
-        }
-    } catch (error) {
-        console.error("오류 발생:", error);
-    }
-}
