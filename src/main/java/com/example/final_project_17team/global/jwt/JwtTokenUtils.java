@@ -46,13 +46,15 @@ public class JwtTokenUtils {
 //            String token = authHeader.split(" ")[1];
             jwtParser.parseClaimsJws(token);
             String username = this.getUsernameFromJwt(token);
-            Optional<Redis> optionalRedis = redisRepository.findById(username);
-            if (optionalRedis.isEmpty())
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
-            // 로그아웃 한 사용자의 access token 의 사용을 막기 위한 처리
-            // jwt 의 무상태성의 장점이 사라지는 것은 아닌지 고민되는 지점
-            // 로그아웃 시 클라이언트 측에 저장된 access token 을 제거하는 것 만으로는
-            // 예외 상황(access token 의 유출)에 대처하기 힘들다고 판단
+            if (username != null) {
+                Optional<Redis> optionalRedis = redisRepository.findById(username);
+                if (optionalRedis.isEmpty())
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
+                // 로그아웃 한 사용자의 access token 의 사용을 막기 위한 처리
+                // jwt 의 무상태성의 장점이 사라지는 것은 아닌지 고민되는 지점
+                // 로그아웃 시 클라이언트 측에 저장된 access token 을 제거하는 것 만으로는
+                // 예외 상황(access token 의 유출)에 대처하기 힘들다고 판단
+            }
         } catch (SignatureException ex) {
             log.error("서명이 유효하지 않음");
             throw new SignatureException("JWT 서명이 유효하지 않습니다.");
