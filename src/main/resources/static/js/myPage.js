@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const user = await HttpHandler.request('/profile');
         let template;
         clearContentBox();
-        const { username, gender, email } = user;
+        const { username, gender, age, email, phone } = user;
         template = `
             <ul>
             <li class="flex">
@@ -37,8 +37,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <p>${gender}</p>
                 </div>
                 <div>
+                    <h3>나이:</h3>
+                    <p>${age}</p>
+                </div>
+                <div>
                     <h3>이메일:</h3>
                     <p>${email}</p>
+                </div>
+                <div>
+                    <h3>휴대폰 번호:</h3>
+                    <p>${phone}</p>
                 </div>
             </li>
         </ul>
@@ -133,34 +141,68 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(profile)//!
         let template;
         clearContentBox();
-        const { phone,age, gender, email } = profile;
+        const { phone, age, gender, email } = profile;
         template = `
-                 <form action="/profile">
+                 <form id="submitForm" action="/profile">
                         <div class ="form-group">
                             <label for = "email">email:</label>
                             <input value=${email} type = "email" id ="email" name = "email" required />
                         </div>
                         <div class ="form-group">
                             <label for = "phone">phone:</label>
-                            <input value=${phone} type = "text" id ="phone" name = "phone" required />
+                            <input value=${phone} type = "tel" id ="phone" name = "phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required />
                         </div>
                         <div class ="form-group">
                             <label for = "age">age:</label>
-                            <input value="${age}" type = "text" id ="age" name = "age" required />
+                            <input id="age" value="${age}" type="number" min="1" max="100" required>
                         </div>
                         <div class ="form-group">
                             <label for = "male">gender:</label>
-                            <input type = "radio" id = "male" name = "gender" required checked=${gender =="남성" ? "checked" : ""}>남성
-                            <input type = "radio" id = "female" name = "gender" checked=${gender =="여성" ? "checked" : ""}>여성
+                            <input value="남성" type ="radio" id ="male" name ="gender" required ${gender == "남성" ? "checked" : ""}>남성
+                            <input value="여성" type ="radio" id ="female" name ="gender" required ${gender == "여성" ? "checked" : ""}>여성
                         </div>
-                        <button id="submitBtn" type = "submit">회원가입</button>
+                        <button id="submitBtn" type = "submit">수정</button>
                     </form>
         `
         chageContent(template);
-        console.log(document.getElementById("submitBtn"));
+        let checked = document.querySelector('input[name="gender"]:checked').value;
+        const genderList = document.querySelectorAll('input[name="gender"]');
+        console.log(genderList);
+        genderList.forEach((node) => {
+            node.addEventListener('change', (e) => {
+                console.dir(e.target.checked);
+                console.dir(e.target.value);
+                e.preventDefault();
+                if (e.target.checked) {
+                    e.target.checked = true;
+                    checked = e.target.value;
+                } else {
+                    e.target.checked = false;
+                    checked = "";
+                }
+                if (node.checked) checked = node.value;
+            })
+        })
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const age = document.getElementById("age").value;
+            const formData = {
+                email,
+                phone,
+                age,
+                gender: checked
+            };
+            console.log(formData);
+            User.updateUser('/profile', formData);
+        }
+        const submitForm = document.getElementById("submitForm");
+        submitForm.addEventListener('submit', handleSubmit);
     }
 
-    updateBtn.addEventListener("click",showUpdateForm);
+    updateBtn.addEventListener("click", showUpdateForm);
     const chageContent = (template) => {
         changeContentBox.insertAdjacentHTML('afterbegin', template);
     };

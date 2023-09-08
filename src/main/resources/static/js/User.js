@@ -24,11 +24,17 @@ export class User {
             console.error("error:", error);
         }
     }
-    async updateUser(url) {
+    async updateUser(url, FormData) {
         try {
+            const headers = {
+                ...this.headers,
+                body: JSON
+            }
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: this.headers,
+                body: JSON.stringify(FormData)
+                ,
             });
 
             if (response.status === 200) {
