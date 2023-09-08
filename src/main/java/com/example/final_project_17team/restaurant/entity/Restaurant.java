@@ -21,14 +21,11 @@ public class Restaurant extends Base {
     private Long id;
     private String status;
     private String name;
-    @Column(unique = true)
     private String tel;
     private String openHours;
     private String closeHours;
     private String location;
-    @Column(unique = true)
     private String address;
-    @Column(unique = true)
     private String roadAddress;
     @Column(length = 1000)
     private String menuInfo;

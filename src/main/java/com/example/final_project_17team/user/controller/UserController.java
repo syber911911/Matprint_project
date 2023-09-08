@@ -13,6 +13,7 @@ import com.example.final_project_17team.user.dto.*;
 import com.example.final_project_17team.user.service.UserService;
 import com.example.final_project_17team.wishlist.dto.WishlistDto;
 import com.example.final_project_17team.wishlist.service.WishlistService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -66,9 +67,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseDto logout(@AuthenticationPrincipal String username) {
+    public ResponseDto logout(@AuthenticationPrincipal String username, HttpServletRequest request, HttpServletResponse response) {
         log.info(username);
-        return userService.logout(username);
+        return userService.logout(username, request, response);
     }
 
     @GetMapping("/profile/wishlist")

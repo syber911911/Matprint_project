@@ -14,6 +14,8 @@ import com.example.final_project_17team.user.dto.UserProfile;
 import com.example.final_project_17team.user.entity.User;
 import com.example.final_project_17team.user.repository.UserRepository;
 import com.example.final_project_17team.wishlist.repository.WishlistRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,14 +75,14 @@ public class UserService implements UserDetailsManager {
     public void setAutoLoginCookie(String autoLogin, HttpServletResponse response) {
         ResponseCookie autoLoginCookie = null;
         if (autoLogin.equals("T")) {
-            autoLoginCookie = ResponseCookie.from("LOGIN","T")
+            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "T")
                     .sameSite("Lax")
                     .domain("localhost")
                     .path("/")
                     .maxAge(3600 * 24 * 14)
                     .build();
         } else {
-            autoLoginCookie = ResponseCookie.from("LOGIN", "F")
+            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "F")
                     .sameSite("Lax")
                     .domain("localhost")
                     .path("/")
@@ -111,12 +113,16 @@ public class UserService implements UserDetailsManager {
     // 2. 서버 : refresh token 갱신
     // 3. 서버 -> client : tokenDto 에 로그아웃 되었음을 함께 표시
 
-    public ResponseDto logout(String username) {
+    public ResponseDto logout(String username, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(redisRepository.existsById(username));
         Optional<Redis> optionalRedis = redisRepository.findById(username);
         if (optionalRedis.isEmpty())
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 된 계정 혹은 알 수 없는 이유로 로그인 이력을 확인 할 수 없음");
         redisRepository.delete(optionalRedis.get());
+        for (Cookie cookie : request.getCookies()) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("로그아웃이 완료되었습니다.");
         responseDto.setStatus(HttpStatus.OK);
@@ -136,14 +142,14 @@ public class UserService implements UserDetailsManager {
             customUserDetails.setEncodedPassword(passwordEncoder.encode(customUserDetails.getPassword()));
             this.userRepository.save(User.fromUserDetails(customUserDetails));
         } catch (ClassCastException e) {
-            log.error("Exception message : {} | failed to cast to {}",e.getMessage(), CustomUserDetails.class);
+            log.error("Exception message : {} | failed to cast to {}", e.getMessage(), CustomUserDetails.class);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     public UserProfile readUser(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isPresent())
+        if (optionalUser.isPresent())
             return UserProfile.fromEntity(optionalUser.get());
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }

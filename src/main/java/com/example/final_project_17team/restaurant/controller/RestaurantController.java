@@ -1,6 +1,7 @@
 package com.example.final_project_17team.restaurant.controller;
 
 import com.example.final_project_17team.global.dto.PlaceDataDto;
+import com.example.final_project_17team.global.service.CategoryUpdate;
 import com.example.final_project_17team.restaurant.dto.RestaurantDetailDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantDto;
 import com.example.final_project_17team.restaurant.service.RestaurantService;
@@ -16,6 +17,12 @@ import java.math.BigDecimal;
 @RequestMapping("restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
+    private final CategoryUpdate categoryUpdate;
+
+    @PostMapping("/input")
+    public void input() throws InterruptedException {
+        categoryUpdate.searchAndSaveRestaurant();
+    }
 
     // 음식점 검색 endPoint
     @GetMapping("/search")
