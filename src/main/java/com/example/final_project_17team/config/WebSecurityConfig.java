@@ -40,7 +40,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authHttpRequest -> authHttpRequest
-                        .requestMatchers(HttpMethod.POST, "/users/logout")
+                        .requestMatchers(HttpMethod.POST, "/logout")
                         .authenticated()
                         .anyRequest()
                         .permitAll()
@@ -78,7 +78,7 @@ public class WebSecurityConfig {
         return (web) -> web
                 .ignoring()
                 .requestMatchers("/main")
-                .requestMatchers("/users/login");
+                .requestMatchers("/login");
     }
 
     @Bean

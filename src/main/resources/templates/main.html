@@ -87,7 +87,7 @@
   </div>
   <!-- 로그인 링크 -->
   <div class="--not-login-container" style="display: none;">
-    <a href="/users/login">로그인</a>
+    <a href="/login">로그인</a>
   </div>
 </header>
 <main class="--main">
@@ -95,49 +95,38 @@
   <div class="grid-container">
     <button type='button' onclick='location.href="/page1"' class='grid-item'>🔍 주변 맛집 검색</button>
     <button type='button' onclick='location.href="/page2"' class='grid-item'>🍕 연예인 맛집 지도 </button>
-    <button type='button' onclick='location.href="/page3"'class='grid-item'>🙋‍ 동행 찾기</button>
+    <button type='button' onclick='location.href="/mate"'class='grid-item'>🙋‍ 동행 찾기</button>
   </div>
   </div>
 </main>
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
-<script src = "users.js"></script>
+<!--<script src = "users.js"></script>-->
 
 <script>
-  document.getElementById('logout-button').addEventListener('click', function(event) {
-    event.preventDefault(); // 기본 클릭 동작 막기
-    logout(); // logout 함수 호출
+  document.getElementById('logout-button').addEventListener('click', function() {
+    logout();
   });
+
   function logout() {
-    // 로그아웃 처리 코드 작성
-    // 예: 로컬 스토리지에서 토큰 제거, 서버에 로그아웃 요청 등
     const token = localStorage.getItem('token');
 
-    if (token) {
-      fetch('/users/logout', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-              .then(response => {
-                if (response.status === 200) {
-                  // 로그아웃 성공 시 처리
-                  localStorage.removeItem('token');
-                  window.location.href = '/main'; // 페이지 리다이렉트
-                } else {
-                  // 로그아웃 실패 시 처리
-                  console.error('로그아웃 실패:', response.statusText);
-                }
-              })
-              .catch(error => {
-                console.error('로그아웃 중 오류 발생:', error);
-              });
-    } else {
-      // 토큰이 로컬 스토리지에 없는 경우 처리
-      console.error('토큰이 로컬 스토리지에 없습니다.');
-    }
+    return fetch(`/logout`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+            .then(response => {
+              if (response.ok) {
+                localStorage.removeItem('token');
+                window.location.href = "/main"; // 메인 페이지로 이동
+              } else {
+                alert(response.message);
+              }
+            })
+            .catch(error => console.error('로그아웃 중 오류 발생:', error));
   }
 </script>
 <script>
@@ -158,5 +147,20 @@
     }
   }
 </script>
+<!--<script>-->
+<!--  fetch('/reissue', {-->
+<!--    method: 'POST',-->
+<!--    credentials: 'include' // 쿠키 전송을 위해 필요한 옵션-->
+<!--  })-->
+<!--          .then(response => response.json())-->
+<!--          .then(data => {-->
+<!--            console.log(data);-->
+<!--            localStorage.setItem('token', data.accessToken);-->
+<!--            // 페이지 리로드? 다음 작업?-->
+<!--          })-->
+<!--          .catch(error => {-->
+<!--            console.error('재발급 요청 중 오류 발생:', error);-->
+<!--          });-->
+<!--</script>-->
 </body>
 </html>

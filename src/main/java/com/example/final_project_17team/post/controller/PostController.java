@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/mate")
+@RequestMapping("api/mate")
 public class PostController {
     private final PostService postService;
 

@@ -70,7 +70,7 @@
     <label for="autoLogin">자동 로그인</label>
     <input type="checkbox" id="autoLogin" name="autoLogin" value="F">
     <button type = "submit">로그인</button>
-    <a href="/users/join"><button type = "button">회원가입</button></a>
+    <a href="/join"><button type = "button">회원가입</button></a>
   </form>
 </div>
 <script>
@@ -84,7 +84,7 @@
   function login(username, password, autoLogin) { // autoLogin parameter added
     const data = { username, password };
 
-    return fetch(`/users/login?autoLogin=${autoLogin}`, { // Query parameter added to URL
+    return fetch(`/login?autoLogin=${autoLogin}`, { // Query parameter added to URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
