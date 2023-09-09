@@ -6,22 +6,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController {
-    @GetMapping("/main")
-    public String mainPage() {
-        return "main";
-    }
-
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
-
-    @GetMapping("/join")
-    public String joinPage() {
-        return "join";
-    }
-
-    @GetMapping("/mate")
-    public String matePage() { return "mate"; }
+//    @GetMapping("/main")
+//    public String mainPage() {
+//        return "main";
+//    }
+//
+//    @GetMapping("/login")
+//    public String loginPage() {
+//        return "login";
+//    }
+//
+//    @GetMapping("/join")
+//    public String joinPage() {
+//        return "join";
+//    }
+//
+//    @GetMapping("/mate")
+//    public String matePage() { return "mate"; }
 
 }

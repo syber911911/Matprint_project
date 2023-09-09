@@ -87,69 +87,22 @@
   </div>
   <!-- 로그인 링크 -->
   <div class="--not-login-container" style="display: none;">
-    <a href="/login">로그인</a>
+    <a href="/matprint/login">로그인</a>
   </div>
 </header>
 <main class="--main">
   <div class="container">
   <div class="grid-container">
-    <button type='button' onclick='location.href="/page1"' class='grid-item'>🔍 주변 맛집 검색</button>
-    <button type='button' onclick='location.href="/page2"' class='grid-item'>🍕 연예인 맛집 지도 </button>
-    <button type='button' onclick='location.href="/mate"'class='grid-item'>🙋‍ 동행 찾기</button>
+    <button type='button' onclick='location.href="/matprint/search"' class='grid-item'>🔍 주변 맛집 검색</button>
+    <button type='button' onclick='location.href="/matprint/named"' class='grid-item'>🍕 연예인 맛집 지도 </button>
+    <button type='button' onclick='location.href="/matprint/mate"'class='grid-item'>🙋‍ 동행 찾기</button>
   </div>
   </div>
 </main>
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
-<!--<script src = "users.js"></script>-->
-
-<script>
-  document.getElementById('logout-button').addEventListener('click', function() {
-    logout();
-  });
-
-  function logout() {
-    const token = localStorage.getItem('token');
-
-    return fetch(`/logout`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-    })
-            .then(response => {
-              if (response.ok) {
-                localStorage.removeItem('token');
-                window.location.href = "/main"; // 메인 페이지로 이동
-              } else {
-                console.error('로그아웃 실패:', response.statusText);
-                // 오류 발생 시에도 토큰 삭제 후 리다이렉트
-                localStorage.removeItem('token');
-                window.location.href = '/main';
-              }
-            })
-            .catch(error => console.error('로그아웃 중 오류 발생:', error));
-  }
-</script>
-<script>
-  // 로컬 스토리지 토큰 확인
-  window.onload = function() {
-    const token = localStorage.getItem('token');
-    const loginContainer = document.querySelector('.--login-container');
-    const notLoginContainer = document.querySelector('.--not-login-container');
-
-    if (token) {
-      // 로그인 상태
-      loginContainer.style.display = 'block';
-      notLoginContainer.style.display = 'none';
-    } else {
-      // 로그아웃 상태
-      loginContainer.style.display = 'none';
-      notLoginContainer.style.display = 'block';
-    }
-  }
-</script>
+<script src="/js/users.js"></script>
 <!--<script>-->
 <!--  fetch('/reissue', {-->
 <!--    method: 'POST',-->

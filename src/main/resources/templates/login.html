@@ -70,7 +70,7 @@
     <label for="autoLogin">자동 로그인</label>
     <input type="checkbox" id="autoLogin" name="autoLogin" value="F">
     <button type = "submit">로그인</button>
-    <a href="/join"><button type = "button">회원가입</button></a>
+    <a href="/matprint/join"><button type = "button">회원가입</button></a>
   </form>
 </div>
 <script>
@@ -95,7 +95,7 @@
             .then(data => {
               if (data.accessToken) { // token이 반환되면 성공적으로 로그인된 것임.
                 localStorage.setItem('token', data.accessToken); // token을 localStorage에 저장
-                window.location.href = "/main"; // 메인 페이지로 이동
+                window.location.href = "/matprint/main"; // 메인 페이지로 이동
               } else {
                 alert(data.message);
               }

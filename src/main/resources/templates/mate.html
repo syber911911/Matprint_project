@@ -85,125 +85,28 @@
     <div class="container table-container">
         <table>
             <thead>
-             <th class="col-md-1">번호</th>
-             <th class="col-md-1">제목</th>
-             <th class="col-md-1">상태</th>
-             <th class="col-md-1">방문 날짜</th>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>상태</th>
+                    <th>방문 날짜</th>
+                </tr>
             </thead>
-            <tbody th:id="postListTableBody">
-            <script th:inline="javascript">
-                /* 서버로부터 받은 postList 데이터 */
-                var postListData = [[${post}]] [];
-                for(var i=0; i<postListData.length; i++) {
-                    var rowIdAttrVal = 'row-' + postListData[i].id;
-
-                    /* 게시글 목록 추가 */
-                    $('#postListTableBody').append('<tr id="'+rowIdAttrVal+'">' +
-                        '<td>'+postListData[i].id+'</td>' +
-                        '<td>'+postListData[i].title+'</td>' +
-                        '<td>'+postListData[i].status+'</td>' +
-                        '<td>'+formatDate(postListData[i].visitDate)+'</td>' +
-                        '<td><a href="/post/'+postListData[i].id+'">자세히 보기</a></td>' +
-                        '</tr>');
-                }
-
-                /* 날짜 포맷 변환 함수 */
-                function formatDate(dateStr) {
-
-                    var dateObj = new Date(dateStr);
-                    var year = dateObj.getFullYear();
-                    var month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-                    var day = ("0" + dateObj.getDate()).slice(-2);
-                    var hours=("0"+dateObj.getHours()).slice(-2);
-                    var minutes=("0"+dateObj.getMinutes()).slice(-2);
-
-                    return year + '-' + month + '-' + day +' '+hours+':'+minutes ;
-                }
-            </script>
-            <tr th:each="post : ${postList}">
-                <td th:text="${post.id}"></td>
-                <td th:text="${post.title}"></td>
-                <td th:text="${post.status}"></td>
-                <td th:text="${#temporals.format(post.visitDate,'yyyy-MM-dd HH:mm')}"></td>
-                <td><a th:href="@{'/post/' + ${post.id}}" >자세히 보기</a></td>
-            </tr>
+            <tbody>
+                <tr th:each="post : ${postPage.content}">
+                    <td th:text="${post.id}"></td>
+                    <td th:text="${post.title}"></td>
+                    <td th:text="${post.status}"></td>
+                    <td th:text="${#temporals.format(post.visitDate,'yyyy-MM-dd HH:mm')}"></td>
+                </tr>
             </tbody>
         </table>
-
     </div>
 </main>
 
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
-<script>
-    document.getElementById('logout-button').addEventListener('click', function(event) {
-        event.preventDefault(); // 기본 클릭 동작 막기
-        logout(); // logout 함수 호출
-    });
-    function logout() {
-        // 로그아웃 처리 코드 작성
-        // 예: 로컬 스토리지에서 토큰 제거, 서버에 로그아웃 요청 등
-        const token = localStorage.getItem('token');
-
-        if (token) {
-            fetch('/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        // 로그아웃 성공 시 처리
-                        localStorage.removeItem('token');
-                        window.location.href = '/main'; // 페이지 리다이렉트
-                    } else {
-                        // 로그아웃 실패 시 처리
-                        console.error('로그아웃 실패:', response.statusText);
-                    }
-                })
-                .catch(error => {
-                    console.error('로그아웃 중 오류 발생:', error);
-                });
-        } else {
-            // 토큰이 로컬 스토리지에 없는 경우 처리
-            console.error('토큰이 로컬 스토리지에 없습니다.');
-        }
-    }
-</script>
-<script>
-    // 로컬 스토리지 토큰 확인
-    window.onload = function() {
-        const token = localStorage.getItem('token');
-        const loginContainer = document.querySelector('.--login-container');
-        const notLoginContainer = document.querySelector('.--not-login-container');
-
-        if (token) {
-            // 로그인 상태
-            loginContainer.style.display = 'block';
-            notLoginContainer.style.display = 'none';
-        } else {
-            // 로그아웃 상태
-            loginContainer.style.display = 'none';
-            notLoginContainer.style.display = 'block';
-        }
-    }
-</script>
-<!--<script>-->
-<!--    fetch('/reissue', {-->
-<!--        method: 'POST',-->
-<!--        credentials: 'include' // 쿠키 전송을 위해 필요한 옵션-->
-<!--    })-->
-<!--        .then(response => response.json())-->
-<!--        .then(data => {-->
-<!--            console.log(data);-->
-<!--            localStorage.setItem('token', data.accessToken);-->
-<!--            // 페이지 리로드? 다음 작업?-->
-<!--        })-->
-<!--        .catch(error => {-->
-<!--            console.error('재발급 요청 중 오류 발생:', error);-->
-<!--        });-->
-<!--</script>-->
+<script src="/js/user.js"></script>
 </body>
 </html>

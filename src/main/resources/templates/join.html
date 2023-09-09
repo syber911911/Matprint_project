@@ -90,7 +90,7 @@
             <input type = "radio" id = "female" name = "gender" >여자
         </div>
         <button type = "submit">회원가입</button>
-        <a href="/users/login"><button type = "button">로그인</button></a>
+        <a href="/matprint/login"><button type = "button">로그인</button></a>
     </form>
 </div>
 <script>
@@ -102,7 +102,7 @@
             return;
         }
 
-        return fetch(`/users/join`, {
+        return fetch(`/join`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
