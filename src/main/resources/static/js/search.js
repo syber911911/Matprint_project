@@ -114,7 +114,18 @@
             // 이동할 URL 설정
             var newURL = "http://localhost:8080/matprint/named";
 
-            // 페이지를 새 URL로 이동합
+            // 페이지를 새 URL로 이동함
+            window.location.href = newURL;
+        });
+
+        // "마이페이지" 링크 클릭 이벤트 처리
+        $("#myPageLink").click(function (event) {
+            event.preventDefault(); // 기본 링크 동작을 막습니다.
+
+            // 이동할 URL 설정
+            var newURL = "http://localhost:8080/matprint/myPage";
+
+            // 페이지를 새 URL로 이동함
             window.location.href = newURL;
         });
     });

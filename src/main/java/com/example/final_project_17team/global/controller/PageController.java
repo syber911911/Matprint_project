@@ -19,5 +19,9 @@ public class PageController {
         return new ModelAndView("aaaa/search");
     }
 
+    @GetMapping("/myPage")
+    public ModelAndView myPage() {
+        return new ModelAndView("aaaa/myPage");
+    }
 
 }
