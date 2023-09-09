@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0Nzc3NyIsImlhdCI6MTY5NDIyMjAzNCwiZXhwIjoxNjk0MzA4NDM0fQ.LgMHkHGjDvz2mlzUSypp9ID_5ERG4tpWbbdlyH70XI_458ZDsHT9qAe_EWywyINnVVkM4iFJxF_Ju8O0_jFtJw");
+    //TODO localStorage.setItem : 로그인 구현시 삭제
+    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ODg4OCIsImlhdCI6MTY5NDI0MDg4NSwiZXhwIjoxNjk0MzI3Mjg1fQ.0OfhcONPssd_NoYtaND3NHYEgLSuK8qUcO1EDvCA20PLGlqVqsKFsYkKA1QJ9S98pZhpYS7bPDmMpiWo1DzTpg");
     const httpModule = await import("./service/HttpHandler.js");
     const userModule = await import("./service/User.js");
     const templateModule = await import("./service/Template.js");
@@ -22,7 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const handleLeave = (e) => {
         e.preventDefault();
-        User.deleteUser('/profile');
+        if (confirm("정말 회원 탈퇴하시겠습니까??") == true){
+            User.deleteUser('/profile');
+        }else{   //취소
+            return false;
+        }
     }
     leaveBtn.addEventListener('click', handleLeave);
     const handleGoback = (e) => {

@@ -8,6 +8,11 @@
     <style>
         .header {
             justify-content: space-between;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f2f2f2;
+            padding: 10px 20px;
         }
 
         body {
@@ -40,6 +45,21 @@
             border-radius: 5px;
             background-color: #ffffff;
         }
+
+        #logout,
+        #goback {
+            margin: 0;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #goback {
+            margin-right: 10px;
+        }
     </style>
     <script defer type="text/javascript" src="/js/myPage.js"></script>
 </head>
@@ -55,8 +75,8 @@
             <button id="myInfo">내 정보</button>
             <button id="likePost">즐겨찾기</button>
             <button id="myPost">내 게시글</button>
-            <button id="update">회원정보 수정</button>
-            <button id="leaveBtn">탈퇴</button>
+            <button id="update">내 정보 수정</button>
+            <button id="leaveBtn">회원 탈퇴</button>
         </div>
     </div>
     <div class="col-2">
