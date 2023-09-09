@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNCIsImlhdCI6MTY5NDE0MjY4OCwiZXhwIjoxNjk0MjI5MDg4fQ.4z4XahbVrpcMUe9CPakQxmslkylnSbPMZ9IeRD1S3h8Aj1jAPgiNcxK3Y-axIkl3_7TlEVxBvefrUaA0PYN-BA");
+    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNCIsImlhdCI6MTY5NDIxOTQ1MCwiZXhwIjoxNjk0MzA1ODUwfQ.PxPe5AAKex8w7DD1e3LRlhAk4KxLP2T_kL4mZzzmYutubJykyfNf7J9qsc1b1qidl8WAkECt8bej7gedmWEbNA");
     const httpModule = await import("./HttpHandler.js");
     const userModule = await import("./User.js");
 
@@ -9,15 +9,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const updateBtn = document.getElementById("update");
     const goBackBtn = document.getElementById("goback");
     const logoutBtn = document.getElementById("logout");
+    const leaveBtn = document.getElementById("leaveBtn");
     const changeContentBox = document.getElementById('changecontentBox');
     const token = localStorage.getItem('token');
     const HttpHandler = new httpModule.HttpHandler(token);
     const User = new userModule.User(token);
 
     const clearContentBox = () => changeContentBox.innerHTML = ``;
+    const handleLeave = (e)=>{
+        e.preventDefault();
+        User.deleteUser('/profile');
+    }
+    leaveBtn.addEventListener('click',handleLeave);
     const handleGoback = (e) => {
         e.preventDefault();
-        window.history.go(-1);
+        window.location.replace('/main');
     }
     goBackBtn.addEventListener('click', handleGoback);
     const showProfile = async () => {
