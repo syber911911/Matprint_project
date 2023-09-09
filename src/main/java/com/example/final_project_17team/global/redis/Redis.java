@@ -15,6 +15,8 @@ public class Redis {
     @Id
     private String username;
     @Indexed
+    private String accessToken;
+    @Indexed
     private String refreshToken;
 }
 

@@ -9,8 +9,13 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/matprint")
 public class PageController {
 
+    @GetMapping("/named")
+    public ModelAndView named() {
+        return new ModelAndView("aaaa/named");
+    }
+
     @GetMapping("/search")
-    public ModelAndView main(){
+    public ModelAndView search() {
         return new ModelAndView("aaaa/search");
     }
 

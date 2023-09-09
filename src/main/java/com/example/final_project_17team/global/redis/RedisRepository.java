@@ -9,4 +9,5 @@ public interface RedisRepository extends CrudRepository<Redis, String> {
 //    Boolean existsByUsername(String username);
     Optional<Redis> findRedisByRefreshToken(String refreshToken);
     Boolean existsByRefreshToken(String refreshToken);
+    Boolean existsByAccessToken(String accessToken);
 }

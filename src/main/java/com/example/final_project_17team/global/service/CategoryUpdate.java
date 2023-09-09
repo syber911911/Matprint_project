@@ -150,7 +150,7 @@ public class CategoryUpdate {
 
         for (List<String> descriptionAndUrl : descriptionAndUrlList) {
             List<PlaceDataDto> placeDataDtoList = this.getPlaceList(descriptionAndUrl.get(0) , 1);
-            if (placeDataDtoList == null) {
+            if (placeDataDtoList == null || placeDataDtoList.get(0).getCategory().contains("시장")) {
                 log.info("{} : 검색 불가", descriptionAndUrl.get(0));
                 continue;
             }
@@ -168,6 +168,7 @@ public class CategoryUpdate {
     // naver maps api 호출
     // 결과를 리스트에 저장해 반환
     public List<PlaceDataDto> getPlaceList(String target, Integer displayCount) {
+        log.info("Search KeyWord : {}", target);
         List<PlaceDataDto> placeDataDtoList = new ArrayList<>();
         String url = "https://map.naver.com/v5/api";
         WebClient webClient = WebClient.builder()
@@ -199,8 +200,6 @@ public class CategoryUpdate {
 
             for (JsonNode place : placeList) {
                 PlaceDataDto placeDataDto = new ObjectMapper().treeToValue(place, PlaceDataDto.class);
-                if (placeDataDto == null)
-                    continue;
                 String businessHours = place.get("businessStatus").get("businessHours").textValue();
                 String openHours = businessHours != null && !businessHours.isBlank() ? businessHours.split("~")[0].substring(8) : null;
                 String closeHours = businessHours != null && !businessHours.isBlank() ? businessHours.split("~")[1].substring(8) : null;
@@ -273,7 +272,13 @@ public class CategoryUpdate {
                             String item = rowItem.split("\\(")[0];
                             item = item.replaceAll("]", " ").split("\\[")[1];
                             item = item.split("\s[0-9]")[0];
-                            descriptionAndUrl.add(item);
+                            String[] splitItem = item.split(" ");
+                            StringBuilder searchKey = new StringBuilder();
+                            for (int i = 0; i < splitItem.length - 1; i++) {
+                                searchKey.append(splitItem[i]).append(" ");
+                            }
+                            if (searchKey.length() > 0) searchKey.setLength(searchKey.length() - 1);
+                            descriptionAndUrl.add(searchKey.toString());
                             descriptionAndUrl.add(url);
                             result.add(descriptionAndUrl);
                         }
@@ -281,14 +286,19 @@ public class CategoryUpdate {
                         descriptionAndUrl = new ArrayList<>();
                         String item = description.split("\\(")[0];
                         if (countChar(description, "\\[") != 0) {
-                            try {
-                                item = item.replaceAll("]", " ").split("\\[")[1];
-                            } catch (ArrayIndexOutOfBoundsException ex) {
-                                item = item.replaceAll("]", " ").split("\\[")[0];
-                            }
+                            item = item.replaceAll("]", " ").split("\\[")[1];
                             item = item.split("\s[0-9]")[0];
+                            String[] splitItem = item.split(" ");
+                            StringBuilder searchKey = new StringBuilder();
+                            for (int i = 0; i < splitItem.length - 1; i++) {
+                                searchKey.append(splitItem[i]).append(" ");
+                            }
+                            if (searchKey.length() > 0) searchKey.setLength(searchKey.length() - 1);
+                            descriptionAndUrl.add(searchKey.toString());
+                        } else {
+                            item = item.split("\s[0-9]")[0] + " " + "음식점";
+                            descriptionAndUrl.add(item);
                         }
-                        descriptionAndUrl.add(item);
                         descriptionAndUrl.add(url);
                         result.add(descriptionAndUrl);
                     }

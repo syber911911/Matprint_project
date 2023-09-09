@@ -13,6 +13,8 @@ import com.example.final_project_17team.user.dto.*;
 import com.example.final_project_17team.user.service.UserService;
 import com.example.final_project_17team.wishlist.dto.WishlistDto;
 import com.example.final_project_17team.wishlist.service.WishlistService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -46,7 +49,17 @@ public class UserController {
     }
 
     @PostMapping("/reissue")
-    public JwtTokenInfoDto reissue(@CookieValue("REFRESH_TOKEN") String refreshToken, @CookieValue("AUTO_LOGIN") String autoLogin, HttpServletResponse response) {
+    public JwtTokenInfoDto reissue(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = null;
+        String autoLogin = null;
+        for (Cookie cookie : request.getCookies()) {
+            switch (cookie.getName()) {
+                case "REFRESH_TOKEN" -> refreshToken = cookie.getValue();
+                case "AUTO_LOGIN" -> autoLogin = cookie.getValue();
+            }
+        }
+        if (refreshToken == null || autoLogin == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "재로그인 필요");
         JwtTokenInfoDto jwtTokenInfoDto = jwtTokenUtils.regenerateToken(refreshToken);
         userService.setRefreshCookie(jwtTokenInfoDto.getRefreshToken(), autoLogin, response);
         userService.setAutoLoginCookie(autoLogin, response);
@@ -66,9 +79,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseDto logout(@AuthenticationPrincipal String username) {
+    public ResponseDto logout(@AuthenticationPrincipal String username, HttpServletRequest request, HttpServletResponse response) {
         log.info(username);
-        return userService.logout(username);
+        return userService.logout(username, request, response);
     }
 
     @GetMapping("/profile/wishlist")

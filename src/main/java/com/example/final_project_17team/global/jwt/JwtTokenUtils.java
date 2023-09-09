@@ -45,6 +45,13 @@ public class JwtTokenUtils {
         try {
 //            String token = authHeader.split(" ")[1];
             jwtParser.parseClaimsJws(token);
+            if (!redisRepository.existsByAccessToken(token)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
+                // 로그아웃 한 사용자의 access token 의 사용을 막기 위한 처리
+                // jwt 의 무상태성의 장점이 사라지는 것은 아닌지 고민되는 지점
+                // 로그아웃 시 클라이언트 측에 저장된 access token 을 제거하는 것 만으로는
+                // 예외 상황(access token 의 유출)에 대처하기 힘들다고 판단
+            }
         } catch (SignatureException ex) {
             log.error("서명이 유효하지 않음");
             throw new SignatureException("JWT 서명이 유효하지 않습니다.");
@@ -76,7 +83,7 @@ public class JwtTokenUtils {
         String refreshToken = this.createRefreshToken();
         jwtTokenInfoDto.setAccessToken(accessToken);
         jwtTokenInfoDto.setRefreshToken(refreshToken);
-        saveRefreshToken(username, refreshToken);
+        saveToken(username, accessToken, refreshToken);
         return jwtTokenInfoDto;
     }
 
@@ -92,7 +99,7 @@ public class JwtTokenUtils {
         // refresh token 이 조회되지 않으면
         // 로그인 페이지로 리다이렉트
         if (optionalRedis.isEmpty())
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "refresh token 이 없다, 로그인 페이지로 가라;");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인된 이력이 없습니다.");
         // refresh token 이 조회된 경우에는
         // username 추출
         Redis redis = optionalRedis.get();
@@ -122,16 +129,17 @@ public class JwtTokenUtils {
                 .compact();
     }
 
-    public void saveRefreshToken(String username, String refreshToken) {
+    public void saveToken(String username, String accessToken, String refreshToken) {
         // 해당 user 가 기존에 로그인 된 기록이 있으면
         // refresh token 갱신
         // 기록이 없다면
         // refresh token 기록
         Optional<Redis> optionalRedis = redisRepository.findById(username);
         if (optionalRedis.isEmpty())
-            redisRepository.save(new Redis(username, refreshToken));
+            redisRepository.save(new Redis(username, accessToken, refreshToken));
         else {
             Redis redis = optionalRedis.get();
+            redis.setAccessToken(accessToken);
             redis.setRefreshToken(refreshToken);
             redisRepository.save(redis);
         }

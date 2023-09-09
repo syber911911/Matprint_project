@@ -1,5 +1,4 @@
 (function ($) {
-    // Define a Vue instance for search results
     var search_result = new Vue({
         el: '#search-result',
         data: {
@@ -8,14 +7,12 @@
         methods: {}
     });
 
-    // Function to handle the search button click
     $("#searchButton").click(function () {
         const query = $("#searchBox").val();
-        $.get(`/restaurant/search?target=${query}&page=0&limit=350`, function (response) {
-            // Update the search_result data property with the search results
+        $.get(`/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
+
             search_result.search_result = response.content;
 
-            // Call initializeMap to update markers on the map
             initializeMap();
         });
     });
@@ -24,11 +21,10 @@
     $("#searchBox").keydown(function (key) {
         if (key.keyCode === 13) {
             const query = $("#searchBox").val();
-            $.get(`/restaurant/search?target=${query}&page=0&limit=300`, function (response) {
+            $.get(`/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
                 // Update the search_result data property with the search results
                 search_result.search_result = response.content;
 
-                // Call initializeMap to update markers on the map
                 initializeMap();
             });
         }
@@ -40,7 +36,7 @@
     };
 
     function initializeMap() {
-        // Create a map object centered at the average position of markers
+        // 지도 생성
         var map = new naver.maps.Map('map', {
             center: getAverageMarkerPosition(),
             zoom: 15
@@ -48,7 +44,7 @@
 
         var markers = [];
 
-        // Function to create a marker and infowindow for a result
+        // 검색 결과 정보 마커에 넣기
         function createMarker(result) {
             var marker = new naver.maps.Marker({
                 position: new naver.maps.LatLng(result.mapY, result.mapX),
@@ -86,28 +82,12 @@
             });
         }
 
-        // Loop through each search result and create a marker and infowindow
+        // 마커랑 마커 정보창 create
         for (var i = 0; i < search_result.search_result.length; i++) {
             createMarker(search_result.search_result[i]);
         }
-
-        // Create a marker clusterer and add markers to it
-        var markerClusterer = new MarkerClusterer({
-            map: map,
-            averageCenter: true, // Centers the cluster at the average position of its markers
-        });
-
-        markerClusterer.addMarkers(markers);
-
-        // Optionally, fit the map to the bounds of the markers
-        var bounds = new naver.maps.LatLngBounds();
-        for (var i = 0; i < markers.length; i++) {
-            bounds.extend(markers[i].getPosition());
-        }
-        map.fitBounds(bounds);
     }
 
-    // Helper function to calculate the average position of markers
     function getAverageMarkerPosition() {
         var totalLat = 0;
         var totalLng = 0;
@@ -126,6 +106,17 @@
 
     $(document).ready(function () {
         console.log("init");
+
+        // "지역별 맛집 검색" 링크 클릭 이벤트 처리
+        $("#influencerSectionLink").click(function (event) {
+            event.preventDefault(); // 기본 링크 동작을 막습니다.
+
+            // 이동할 URL 설정
+            var newURL = "http://localhost:8080/matprint/named";
+
+            // 페이지를 새 URL로 이동합
+            window.location.href = newURL;
+        });
     });
 
 })(jQuery);
