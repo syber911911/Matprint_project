@@ -6,46 +6,68 @@
             search_result: []
         },
         methods: {
-            sortResults: function (sortBy) {
-                $.get(`/named?category=성시경 먹을텐데&sortBy=${sortBy}&page=0&limit=300`, function (response) {
+            sortResults: function (category, sortBy) {
+                $.get(`/named?category=${category}&sortBy=${sortBy}&page=0&limit=300`, function (response) {
                     search_result.search_result = response.content;
-
                 });
             }
         }
     });
 
-    // Function to handle the search button click
+    var currentCategory = ""; // Declare a global variable to store the current category
+
     $("#searchButton1").click(function () {
-        $.get(`/named?category=성시경 먹을텐데&page=0&limit=300`, function (response) {
-            // Update the search_result data property with the search results
-            search_result.search_result = response.content;
-
-            // Get the icon URL based on your logic (e.g., from a variable)
-            var iconUrl = '/markerImages/성시경마커.png';
-
-            // Call initializeMap with the icon URL
-            initializeMap(iconUrl);
-
-            $("#sorting-buttons").show();
-        });
+        var iconUrl = '/markerImages/성시경마커.png';
+        var category = '성시경 먹을텐데';
+        currentCategory = category; // Update the current category
+        performSearch(category, iconUrl);
     });
+
+    $("#searchButton2").click(function () {
+        var category = '이영자 맛집';
+        currentCategory = category; // Update the current category
+        performSearch(category);
+    });
+
+    $("#searchButton3").click(function () {
+        var category = '또간집';
+        currentCategory = category; // Update the current category
+        performSearch(category);
+    });
+
+    function performSearch(category, icon) {
+        $.get(`/named?category=${category}&page=0&limit=300`, function (response) {
+            search_result.search_result = response.content;
+            initializeMap(category, icon);
+        });
+    }
 
 
     // Initialize the map when the Naver Map library is ready
     naver.maps.onJSContentLoaded = function () {
         var map = new naver.maps.Map('map', {
-            center: new naver.maps.LatLng(37.3595704, 127.105399),
+            center: new naver.maps.LatLng(35.882682, 127.9647797),
             zoom: 7
         });
     };
 
-    function initializeMap(iconUrl) {
-        // Create a map object centered at the average position of markers
-        var map = new naver.maps.Map('map', {
-            center: getMostFrequentMarkerPosition(),
-            zoom: 11
-        });
+    function initializeMap(category, iconUrl) {
+
+        // 서울에 밖에 없음
+        if( category === '이영자 맛집') {
+            var map = new naver.maps.Map('map', {
+                center: getMostFrequentMarkerPosition(),
+                zoom: 11
+            });
+        }
+
+        // 전국적으로 있음
+        else if(category === '성시경 먹을텐데' || category === '또간집') {
+            var map = new naver.maps.Map('map', {
+                center: new naver.maps.LatLng(35.882682, 127.9647797),
+                zoom: 7
+            });
+        }
 
         var markers = [];
 
@@ -102,6 +124,20 @@
         for (var i = 0; i < search_result.search_result.length; i++) {
             createMarker(search_result.search_result[i]);
         }
+
+        $("#sorting-buttons").show();
+
+        $("#nameSortButton").click(function () {
+            search_result.sortResults(currentCategory, "이름");
+        });
+
+        $("#reviewSortButton").click(function () {
+            search_result.sortResults(currentCategory, "리뷰");
+        });
+
+        $("#ratingSortButton").click(function () {
+            search_result.sortResults(currentCategory, "평점");
+        });
 
     }
 
@@ -234,17 +270,6 @@
         });
     });
 
-    // Event listeners for sorting buttons
-    $("#nameSortButton").click(function () {
-        search_result.sortResults("이름");
-    });
 
-    $("#reviewSortButton").click(function () {
-        search_result.sortResults("리뷰");
-    });
-
-    $("#ratingSortButton").click(function () {
-        search_result.sortResults("평점");
-    });
 
 })(jQuery);
