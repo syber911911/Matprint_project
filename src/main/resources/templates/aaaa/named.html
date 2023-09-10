@@ -101,25 +101,27 @@
 
     <!-- search result -->
     <div id="search-result-container">
-        <!-- 정렬 버튼 추가 -->
+        <!-- Add sort button -->
         <div id="sorting-buttons" class="text-right mb-3">
             <button id="nameSortButton" class="btn btn-link">이름 순</button>
             <button id="reviewSortButton" class="btn btn-link">리뷰 많은 순</button>
             <button id="ratingSortButton" class="btn btn-link">평점 높은 순</button>
         </div>
         <div class="row" id="search-result">
-            <div id="result-list-container">
+            <div id="result-list-container" class="col-md-12">
+                <!-- Display the search result count here -->
+                <div id="search-result-count">음식점 수: {{ search_result.length }}</div>
                 <ul class="list-group list-group-flush" id="result-list">
-                    <!-- 여기에서 한 행에 두 개의 결과 항목을 그리도록 반복합니다. -->
+                    <!-- Here we repeat to draw two result items per row. -->
                     <li class="list-group-item" v-for="result in search_result">
                         <div class="row">
                             <div class="col-md-6">
                                 <a href="#detailSection" class="detail-link">{{ result.name }}</a>
-                                <!-- 원하는 다른 속성 추가 -->
+                                <!-- Add any other properties you want -->
                             </div>
                             <div class="col-md-6">
                                 <div class="result-roadAddress">{{ result.roadAddress }}</div>
-                                <!-- 원하는 다른 속성 추가 -->
+                                <!-- Add any other properties you want -->
                             </div>
                         </div>
                     </li>
