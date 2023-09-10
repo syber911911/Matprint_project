@@ -14,25 +14,27 @@
         }
     });
 
-    var currentCategory = ""; // Declare a global variable to store the current category
+    var currentCategory = ""; // 전역변수
 
     $("#searchButton1").click(function () {
         var iconUrl = '/markerImages/성시경마커.png';
         var category = '성시경 먹을텐데';
-        currentCategory = category; // Update the current category
+        currentCategory = category;
         performSearch(category, iconUrl);
     });
 
     $("#searchButton2").click(function () {
+        var iconUrl = '/markerImages/이영자마커.png';
         var category = '이영자 맛집';
-        currentCategory = category; // Update the current category
-        performSearch(category);
+        currentCategory = category;
+        performSearch(category, iconUrl);
     });
 
     $("#searchButton3").click(function () {
+        var iconUrl = '/markerImages/풍자마커.png';
         var category = '또간집';
-        currentCategory = category; // Update the current category
-        performSearch(category);
+        currentCategory = category;
+        performSearch(category, iconUrl);
     });
 
     function performSearch(category, icon) {
@@ -43,7 +45,6 @@
     }
 
 
-    // Initialize the map when the Naver Map library is ready
     naver.maps.onJSContentLoaded = function () {
         var map = new naver.maps.Map('map', {
             center: new naver.maps.LatLng(35.882682, 127.9647797),
@@ -79,13 +80,12 @@
                 title: result.name,
             };
 
-            // Check if iconUrl is provided, if so, set the custom icon URL
             if (iconUrl) {
                 markerOptions.icon = {
                     url: iconUrl,
-                    size: new naver.maps.Size(25, 25), // 마커 이미지의 크기를 조절하세요.
-                    origin: new naver.maps.Point(657, 272), // 이미지의 원점을 설정합니다. 가지고 있는 이미지 1440 x 1440
-                    anchor: new naver.maps.Point(16, 32) // 이미지의 앵커 지점을 설정합니다
+                    size: new naver.maps.Size(25, 25), // 마커 이미지의 크기를 조절
+                    origin: new naver.maps.Point(657, 272), // 이미지의 원점을 설정 가지고 있는 이미지 1440 x 1440
+                    anchor: new naver.maps.Point(16, 32) // 이미지의 앵커 지점을 설정
                 };
             }
 
@@ -120,7 +120,7 @@
                 }
             });
         }
-        // Loop through each search result and create a marker and infowindow
+
         for (var i = 0; i < search_result.search_result.length; i++) {
             createMarker(search_result.search_result[i]);
         }
