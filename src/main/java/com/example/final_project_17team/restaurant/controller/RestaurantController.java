@@ -1,6 +1,5 @@
 package com.example.final_project_17team.restaurant.controller;
 
-import com.example.final_project_17team.global.dto.PlaceDataDto;
 import com.example.final_project_17team.global.service.CategoryUpdate;
 import com.example.final_project_17team.restaurant.dto.RestaurantDetailDto;
 import com.example.final_project_17team.restaurant.dto.RestaurantDto;
@@ -9,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import java.math.BigDecimal;
 
 @Slf4j
 @RestController
@@ -22,6 +20,18 @@ public class RestaurantController {
     @PostMapping("/input")
     public void input() throws InterruptedException {
         categoryUpdate.searchAndSaveRestaurant();
+    }
+
+    // 이영자 맛집 input
+    @PostMapping("/inputLYJ")
+    public void inputLYJ() throws InterruptedException {
+        categoryUpdate.searchAndSaveLYJRestaurant();
+    }
+
+    // 또간집 맛집 input
+    @PostMapping("/inputPoongJa")
+    public void inputPoongJa() throws InterruptedException {
+        categoryUpdate.searchAndSavePoongJaRestaurant();
     }
 
     // 음식점 검색 endPoint

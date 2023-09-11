@@ -14,12 +14,12 @@ public class PageController {
 
     @GetMapping("/named")
     public ModelAndView named() {
-        return new ModelAndView("aaaa/named");
+        return new ModelAndView("html/named");
     }
 
     @GetMapping("/search")
     public ModelAndView search() {
-        return new ModelAndView("aaaa/search");
+        return new ModelAndView("html/search");
     }
 
     @GetMapping("/mate")
@@ -27,35 +27,35 @@ public class PageController {
         return new ModelAndView("mate");
     }
 
+    @GetMapping("/myPage")
+    public ModelAndView myPage () {
+        return new ModelAndView("html/myPage");
+    }
+
     @GetMapping("/main")
-    public ModelAndView main() {
+    public ModelAndView main () {
         return new ModelAndView("main");
     }
 
     @GetMapping("/login")
-    public ModelAndView login() {
+    public ModelAndView login () {
         return new ModelAndView("login");
     }
 
     @GetMapping("/join")
-    public ModelAndView join() {
+    public ModelAndView join () {
         return new ModelAndView("join");
     }
 
-    @GetMapping("/myPage")
-    public ModelAndView myPage() {
-        return new ModelAndView("myPage/myPage");
-    }
-
     @GetMapping("/mate/create")
-    public ModelAndView createdPost() {
+    public ModelAndView createdPost () {
         return new ModelAndView("post/create");
     }
 
     @GetMapping("/mate/{postId}")
-    public ModelAndView postDetail(
+    public ModelAndView postDetail (
             @PathVariable String postId
-    ) {
+    ){
         return new ModelAndView("post/detail");
     }
 

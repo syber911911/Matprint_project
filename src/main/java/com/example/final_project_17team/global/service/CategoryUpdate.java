@@ -22,8 +22,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,7 +130,59 @@ public class CategoryUpdate {
                             .restaurant(restaurant)
                             .build()
             );
-            log.info("{} category 생성", "성시경 먹을텐데");
+            log.info("{} category 생성", searchTopic);
+        }
+        categoryRepository.saveAll(categoryList);
+
+        List<RestaurantImage> restaurantImageList = new ArrayList<>();
+        for (String restaurantImage : placeDataDto.getThumUrls()) {
+            restaurantImageList.add(
+                    RestaurantImage.builder()
+                            .url(restaurantImage)
+                            .restaurant(restaurant)
+                            .build()
+            );
+        }
+        restaurantImageRepository.saveAll(restaurantImageList);
+    }
+    // naver maps api 조회 결과와 검색어, 출처 url 을 함께 DB 에 저장
+    public void saveRestaurant(PlaceDataDto placeDataDto, String searchTopic) {
+        Restaurant restaurant = restaurantRepository.save(
+                Restaurant.builder()
+                        .status("정상영업")
+                        .name(placeDataDto.getName())
+                        .tel(placeDataDto.getTel())
+                        .openHours(placeDataDto.getOpenHours())
+                        .closeHours(placeDataDto.getCloseHours())
+                        .location(placeDataDto.getShortAddress().isEmpty() ? null : placeDataDto.getShortAddress().get(0))
+                        .address(placeDataDto.getAddress())
+                        .roadAddress(placeDataDto.getRoadAddress())
+                        .mapX(placeDataDto.getX())
+                        .mapY(placeDataDto.getY())
+                        .menuInfo(placeDataDto.getMenuInfo())
+                        .build()
+        );
+        log.info("{} restaurant 생성", placeDataDto.getName());
+
+        List<Category> categoryList = new ArrayList<>();
+        for (String category : placeDataDto.getCategory()) {
+            categoryList.add(
+                    Category.builder()
+                            .name(category)
+                            .refUrl(null)
+                            .restaurant(restaurant)
+                            .build()
+            );
+            log.info("{} category 생성", category);
+        }
+        if (!searchTopic.isBlank()) {
+            categoryList.add(
+                    Category.builder()
+                            .name(searchTopic)
+                            .restaurant(restaurant)
+                            .build()
+            );
+            log.info("{} category 생성", searchTopic);
         }
         categoryRepository.saveAll(categoryList);
 
@@ -155,7 +211,7 @@ public class CategoryUpdate {
                 continue;
             }
             PlaceDataDto placeDataDto = placeDataDtoList.get(0);
-            Thread.sleep(3000);
+            Thread.sleep(5000);
 
             Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndAddress(placeDataDto.getName(), placeDataDto.getAddress());
             if (optionalRestaurant.isEmpty()) {
@@ -314,5 +370,119 @@ public class CategoryUpdate {
     // rowString 에 target 문자열이 얼마나 포함되어 있는지 반환
     public int countChar(String rowString, String target) {
         return rowString.length() - rowString.replaceAll(target, "").length();
+    }
+
+    // 이영자 맛집 검색 후 저장
+    public void searchAndSaveLYJRestaurant() throws InterruptedException {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> targetList = new ArrayList<String>();
+        BufferedReader bufferedReader = null;
+
+        try {
+            bufferedReader = Files.newBufferedReader(Paths.get("C:/Users/mingy/OneDrive/바탕 화면/멋사 팀플 자료/이영자 맛집.csv"));
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+
+                List<String> stringList = new ArrayList<>();
+                String stringArray[] = line.split(",");
+
+                stringList = Arrays.asList(stringArray);
+                list.add(stringList);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                assert bufferedReader != null;
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for (List<String> nameAndAddress : list) {
+            String concatenatedString = nameAndAddress.get(0) + " " + nameAndAddress.get(1);
+            targetList.add(concatenatedString);
+        }
+        if (!targetList.isEmpty()) {
+            targetList.remove(0);
+        }
+
+        for (String target : targetList) {
+            List<PlaceDataDto> placeDataDtoList = this.getPlaceList(target , 1);
+
+            if (placeDataDtoList == null || placeDataDtoList.isEmpty()) {
+                log.info("{} : 검색 불가", target);
+                continue;
+            }
+
+            PlaceDataDto placeDataDto = placeDataDtoList.get(0);
+            Thread.sleep(3000);
+
+            Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndAddress(placeDataDto.getName(), placeDataDto.getAddress());
+            if (optionalRestaurant.isEmpty()) {
+                this.saveRestaurant(placeDataDto,"이영자 맛집");
+            }
+        }
+    }
+
+    // 또간집 맛집 검색 후 저장
+    public void searchAndSavePoongJaRestaurant() throws InterruptedException {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> targetList = new ArrayList<String>();
+        BufferedReader bufferedReader = null;
+
+        try {
+            bufferedReader = Files.newBufferedReader(Paths.get("C:/Users/mingy/OneDrive/바탕 화면/멋사 팀플 자료/또간집.csv"));
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+
+                List<String> stringList = new ArrayList<>();
+                String stringArray[] = line.split(",");
+
+                stringList = Arrays.asList(stringArray);
+                list.add(stringList);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                assert bufferedReader != null;
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for (List<String> nameAndAddress : list) {
+            String concatenatedString = nameAndAddress.get(0) + " " + nameAndAddress.get(1);
+            targetList.add(concatenatedString);
+        }
+        if (!targetList.isEmpty()) {
+            targetList.remove(0);
+        }
+
+        for (String target : targetList) {
+            List<PlaceDataDto> placeDataDtoList = this.getPlaceList(target, 1);
+
+            if (placeDataDtoList == null || placeDataDtoList.isEmpty()) {
+                log.info("{} : 검색 불가", target);
+                continue;
+            }
+
+            PlaceDataDto placeDataDto = placeDataDtoList.get(0);
+
+            if (placeDataDto.getShortAddress() == null || placeDataDto.getShortAddress().isEmpty()) {
+                log.info("{} : shortAddress is null or empty", target);
+                continue;
+            }
+
+            Thread.sleep(4000);
+
+            Optional<Restaurant> optionalRestaurant = restaurantRepository.findByNameAndAddress(placeDataDto.getName(), placeDataDto.getAddress());
+            if (optionalRestaurant.isEmpty()) {
+                this.saveRestaurant(placeDataDto, "또간집");
+            }
+        }
     }
 }
