@@ -11,15 +11,15 @@ spring:
   thymeleaf:
     check-template-location: false
   datasource:
-    url: jdbc:mysql://matprint.cykpr9exnjij.ap-northeast-2.rds.amazonaws.com:3306/matprint?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: jdk171717
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   servlet:
     multipart:
       enabled: true
@@ -36,6 +36,6 @@ spring:
       fail-on-unknown-properties: false
   web:
     resources:
-      static-locations: file:media/ ,classpath:/static
+      static-locations: file:media/, classpath:/static
 jwt:
-  secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve
+  secret: ${JWT_SECRET}

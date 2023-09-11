@@ -19,6 +19,11 @@ import java.util.*;
 @Slf4j
 public class ExceptionManager {
 
+    @ExceptionHandler(Exception.class)
+    public String exceptionHandler(Exception ex) {
+        return ex.getMessage();
+    }
+
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> userExceptionHandler(CustomException e) {
         return ResponseEntity.status(e.getErrorCode().getStatus())
