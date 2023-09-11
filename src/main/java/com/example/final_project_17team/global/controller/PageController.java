@@ -18,4 +18,10 @@ public class PageController {
     public ModelAndView search() {
         return new ModelAndView("aaaa/search");
     }
+
+    @GetMapping("/myPage")
+    public ModelAndView myPage() {
+        return new ModelAndView("aaaa/myPage");
+    }
+
 }

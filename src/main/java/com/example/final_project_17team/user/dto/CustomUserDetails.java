@@ -48,6 +48,7 @@ public class CustomUserDetails implements UserDetails {
         return CustomUserDetails.builder()
                 .email(updateDto.getEmail())
                 .phone(updateDto.getPhone())
+                .gender(updateDto.getGender())
                 .age(updateDto.getAge())
                 .build();
     }
