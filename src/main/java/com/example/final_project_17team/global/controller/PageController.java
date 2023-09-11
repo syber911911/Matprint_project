@@ -59,10 +59,10 @@ public class PageController {
         return new ModelAndView("post/detail");
     }
 
-    @GetMapping("/mate/{postId}/comment")
-    public ModelAndView comment(
-            @PathVariable String postId
-    ) {
-        return new ModelAndView("post/detail");
-    }
+//    @GetMapping("/mate/{postId}/comment")
+//    public ModelAndView comment(
+//            @PathVariable String postId
+//    ) {
+//        return new ModelAndView("post/detail");
+//    }
 }
