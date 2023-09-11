@@ -33,7 +33,7 @@ public class PostController {
     ) {
         return postService.readAllPost(pageNumber, pageSize);
     }
-
+    
     @GetMapping("/{postId}")
     public PostDto.PostWithUser readPostDetail(@PathVariable("postId") Long postId, @AuthenticationPrincipal String username) {
         return postService.readPostDetail(postId, username);

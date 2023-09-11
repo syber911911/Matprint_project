@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .--header {
+      display:flex;
+      justify-content : space-between;
+      align-items : center;
+      padding :10px;
+      background-color:#FFE08C;
+      font-family: "Black Han Sans";
+      font-weight: bold;
+    }
+    .container {
+      width: auto;
+      min-height: calc(90vh - (40px + (10px * 2)));
+      display:flex;
+      flex-direction : column;
+      align-items: center;
+    }
+    .--logo-image{
+      font-size :30px;
+    }
+    .--login-container a{
+      margin-left :10px;
+    }
+    .--main{
+      padding :20px;
+    }
+    .--footer{
+      text-align:center;
+      padding :10px;
+      background-color:#f2f2f2;
+    }
+    .form-container {
+      width: 90%;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box; /* 패딩과 테두리를 고려하도록 설정 */
+    }
+    button {
+      background-color: #FFC107;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    h1 {
+      text-align: center;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+<header class="--header">
+  <div class="--logo">
+    <div class="--logo-image">🍔 맛자국</div>
+  </div>
+  <!-- 로그인/로그아웃과 마이페이지 링크 -->
+  <div class="--login-container">
+    <!-- 마이페이지와 로그아웃 링크 -->
+    <a href="/matprint/myPage">마이 페이지</a>
+    <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
+  </div>
+  <!-- 로그인 링크 -->
+  <div class="--not-login-container" style="display: none;">
+    <a href="/matprint/login">로그인</a>
+  </div>
+</header>
+<main class="--main">
+  <div class="container">
+    <div class="form-container">
+      <h1>🥨 동행 게시글을 작성해보세요! 🥨</h1>
+      <form id="create-post-form">
+        <label for="post-title">제목:</label>
+        <input type="text" id="post-title" name="post-title" required><br>
+
+        <label for="post-content">내용:</label>
+        <textarea id="post-content" name="post-content" rows="4" required></textarea><br>
+
+        <label for="post-visit-date">방문 날짜:</label>
+        <input type="date" id="post-visit-date" name="post-visit-date" required><br>
+
+        <label for="post-prefer">선호:</label>
+        <input type="text" id="post-prefer" name="post-prefer"><br>
+
+        <button type="button" id="create-post-button">게시글 생성</button>
+      </form>
+    </div>
+  </div>
+</main>
+<footer class="--footer">
+  ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
+</footer>
+<script src = "/js/users.js"></script>
+<script src = "/js/post/create.js"></script>
+</body>
+</html>

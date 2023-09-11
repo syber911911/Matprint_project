@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class CreatePostDto {
     private String title;
     private String content;
-    private LocalDateTime visitDate;
+//    private LocalDateTime visitDate;
+    private String visitDate;
     private String prefer;
 }

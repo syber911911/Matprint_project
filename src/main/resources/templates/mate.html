@@ -11,7 +11,7 @@
    body {
      margin: 0;
      padding: 0;
-     overflow: hidden;
+     overflow: auto;
    }
    .--header {
      display:flex;
@@ -27,8 +27,8 @@
      min-height: calc(90vh - (40px + (10px * 2)));
      display:flex;
      flex-direction : column;
-     justify-content: center;
-     align-items: center;
+     height: 90vh; /* 페이지 높이를 화면의 90%로 설정 */
+     overflow-y: auto; /* Y 축 스크롤을 활성화하여 내용이 넘칠 때 스크롤을 표시 */
    }
    .--logo-image{
      font-size :30px;
@@ -45,7 +45,7 @@
      background-color:#f2f2f2;
    }
    .table-container {
-       width: 80%;
+       width: 100%;
        margin-top:20px;
    }
    table {
@@ -61,6 +61,49 @@
        text-align:center;
        padding-top :20px;
    }
+   .alert {
+       background-color: #f44336;
+       color: white;
+       padding: 15px;
+       text-align: center;
+       position: fixed;
+       top: 0;
+       left: 0;
+       right: 0;
+       z-index: 1000; /* 다른 엘리먼트보다 위에 표시 */
+       display: none; /* 초기에는 숨겨진 상태로 설정 */
+   }
+   nav {
+       background-color: #333; /* 네비게이션 바 배경색 */
+       color: white; /* 텍스트 색상 */
+       padding: 10px; /* 패딩 */
+   }
+   nav a {
+       color: white; /* 링크 텍스트 색상 */
+       text-decoration: none; /* 링크 텍스트에 밑줄 제거 */
+       margin-right: 20px; /* 링크 사이 간격 */
+       font-size: 14px;
+   }
+   .pagination {
+       text-align: center;
+       margin-top: 40px;
+   }
+   .pagination button {
+       background-color: #333;
+       color: white;
+       border: none;
+       padding: 8px 16px;
+       cursor: pointer;
+       margin: 0 5px;
+       border-radius: 5px;
+   }
+   .pagination button:hover {
+       background-color: #555;
+   }
+   #page-numbers {
+       font-size: 16px;
+       font-weight: bold;
+   }
  </style>
 </head>
 <body>
@@ -71,15 +114,18 @@
     <!-- 로그인/로그아웃과 마이페이지 링크 -->
     <div class="--login-container">
         <!-- 마이페이지와 로그아웃 링크 -->
-        <a href="/mypage">마이 페이지</a>
-        <!-- 여기서 /logout 경로는 가정한 것입니다 -->
+        <a href="/matprint/myPage">마이 페이지</a>
         <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
     </div>
     <!-- 로그인 링크 -->
     <div class="--not-login-container" style="display: none;">
-        <a href="/login">로그인</a>
+        <a href="/matprint/login">로그인</a>
     </div>
 </header>
+
+<nav>
+    <a href="/matprint/mate/create" id="create-post-button">게시글 생성</a>
+</nav>
 
 <main class="--main">
     <div class="container table-container">
@@ -92,21 +138,28 @@
                     <th>방문 날짜</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr th:each="post : ${postPage.content}">
-                    <td th:text="${post.id}"></td>
-                    <td th:text="${post.title}"></td>
-                    <td th:text="${post.status}"></td>
-                    <td th:text="${#temporals.format(post.visitDate,'yyyy-MM-dd HH:mm')}"></td>
-                </tr>
+            <tbody id = "post-table-body">
+
             </tbody>
         </table>
+        <div class="pagination">
+            <button id="prev-page-button">이전</button>
+            <span id="page-numbers"></span>
+            <button id="next-page-button">다음</button>
+        </div>
     </div>
 </main>
+
+<!-- 알림을 표시 -->
+<div class="alert" id="no-posts-alert" style="display: none;">
+    작성된 글이 없습니다.
+</div>
+
 
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
-<script src="/js/user.js"></script>
+<script src="/js/users.js"></script>
+<script src="/js/post.js"></script>
 </body>
 </html>

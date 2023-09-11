@@ -75,16 +75,6 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-
-    @Bean
-    // securityFilter 에서 검증을 받지 않아도 되는 요청을 ignore 처리
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web
-                .ignoring()
-                .requestMatchers("/main")
-                .requestMatchers("/login");
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

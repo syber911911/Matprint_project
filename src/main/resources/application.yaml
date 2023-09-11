@@ -35,8 +35,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+      write-dates-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
+      adjust-dates-to-context-time-zone: false
   web:
     resources:
       static-locations: file:media/ ,classpath:/static

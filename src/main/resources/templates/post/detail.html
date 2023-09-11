@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+    }
+    .--header {
+      display:flex;
+      justify-content : space-between;
+      align-items : center;
+      padding :10px;
+      background-color:#FFE08C;
+      font-family: "Black Han Sans";
+      font-weight: bold;
+    }
+    .container {
+      width: 90%;
+      margin: 0 auto;
+      min-height: calc(100vh - (40px + (10px * 2)));
+      display:flex;
+      flex-direction : column;
+      align-items: center;
+      justify-content: center;
+    }
+    .--logo-image{
+      font-size :30px;
+    }
+    .--login-container a{
+      margin-left :10px;
+    }
+    .--main{
+      padding :20px;
+      display: flex; /* 주요 컨텐츠를 가로로 배치 */
+      justify-content: space-between; /* 주요 컨텐츠 사이의 간격 벌리기 */
+    }
+    .--footer{
+      text-align:center;
+      padding :10px;
+      background-color:#f2f2f2;
+    }
+    .post-details {
+      width: 90%; /* 왼쪽에 위치할 영역의 너비 설정 */
+      text-align: left;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .comments {
+      width: 90%; /* 오른쪽에 위치할 영역의 너비 설정 */
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .post-details h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .post-details p {
+      margin: 10px 0;
+    }
+    .comments h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    #comments-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    #comment-form label {
+      font-weight: bold;
+    }
+    #comment-form textarea {
+      width: 100%;
+      margin-top: 5px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+<header class="--header">
+  <div class="--logo">
+    <div class="--logo-image">🍔 맛자국</div>
+  </div>
+  <!-- 로그인/로그아웃과 마이페이지 링크 -->
+  <div class="--login-container">
+    <!-- 마이페이지와 로그아웃 링크 -->
+    <a href="/matprint/myPage">마이 페이지</a>
+    <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
+  </div>
+  <!-- 로그인 링크 -->
+  <div class="--not-login-container" style="display: none;">
+    <a href="/matprint/login">로그인</a>
+  </div>
+</header>
+<main class="--main">
+  <div class="container">
+    <div class="post-details">
+      <h2 id="post-title"></h2>
+      <p id="post-content"></p>
+      <p>✔️ 작성자 : <span id="post-username"></span></p>
+      <p>✔️ 나이 : <span id="post-age"></span></p>
+      <p>✔️ 성별 : <span id="post-gender"></span></p>
+      <p>✔️ 방문 날짜 : <span id="post-visitDate"></span></p>
+      <p>✔️ 상태 : <span id="post-status"></span></p>
+    </div>
+    <div class="comments">
+      <h2>🥨 동행 요청 🥨</h2>
+      <div id="comments-list">
+        <!-- 댓글 표시 -->
+      </div>
+      <form id="comment-form">
+        <label for="comment"></label>
+        <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
+        <br>
+        <button type="submit">댓글 작성</button>
+      </form>
+    </div>
+  </div>
+</main>
+<footer class="--footer">
+  ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
+</footer>
+<script src = "/js/users.js"></script>
+<script src = "/js/post/detail.js"></script>
+</body>
+</html>
