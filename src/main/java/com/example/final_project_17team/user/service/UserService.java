@@ -97,6 +97,9 @@ public class UserService implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
 
         if (redisRepository.existsById(user.getUsername()))
+            // 기존의 사용자 로그인 기록이 있는 경우
+            // 기존 로그인 기록 삭제 후 로그인
+            // 기존 access token 과 refresh token 사용 불가 (이는 blackList 로 변경 가능)
             redisRepository.deleteById(user.getUsername());
 
         return jwtTokenUtils.generateToken(user.getUsername());
