@@ -11,17 +11,17 @@ public class PageController {
 
     @GetMapping("/named")
     public ModelAndView named() {
-        return new ModelAndView("aaaa/named");
+        return new ModelAndView("html/named");
     }
 
     @GetMapping("/search")
     public ModelAndView search() {
-        return new ModelAndView("aaaa/search");
+        return new ModelAndView("html/search");
     }
 
     @GetMapping("/myPage")
     public ModelAndView myPage() {
-        return new ModelAndView("aaaa/myPage");
+        return new ModelAndView("html/myPage");
     }
 
 }
