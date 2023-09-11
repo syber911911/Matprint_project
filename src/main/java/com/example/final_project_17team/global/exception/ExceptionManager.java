@@ -25,9 +25,13 @@ public class ExceptionManager {
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<?> userExceptionHandler(CustomException e) {
-        return ResponseEntity.status(e.getErrorCode().getStatus())
-                .body(Response.error(e.getErrorCode().name()));
+    public ResponseEntity<Map<String, Object>> userExceptionHandler(CustomException e, HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("path", request.getServletPath());
+        response.put("error", e.getErrorCode().getStatus());
+        response.put("message", e.getMessage());
+        response.put("status", e.getErrorCode().getStatus().value());
+        return new ResponseEntity<>(response, e.getErrorCode().getStatus());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
