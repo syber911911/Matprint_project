@@ -1,6 +1,11 @@
-function fetchPosts() {
+let pageNumberSpan;
+let prevPageButton;
+let nextPageButton;
+let currentPage = 0;   // 페이지 번호는 0부터 시작
+
+function fetchPosts(pageNumber = 0, pageSize = 5) {
     // 서버로 GET 요청을 보내서 게시물 목록을 가져옴
-    fetch('/mate')
+    fetch(`/mate?page=${pageNumber}&limit=${pageSize}`)
         .then(response => response.json())
         .then(data => {
             // 게시물이 없을 경우 알림을 표시
@@ -9,6 +14,7 @@ function fetchPosts() {
             } else {
                 // 게시물이 있을 경우 게시물을 표시
                 displayPosts(data);
+                updatePageNumbers(data.totalPages);
             }
         })
         .catch(error => {
@@ -47,45 +53,37 @@ function displayPosts(postsPage) {
     });
 }
 
-// 페이지 로드 시 게시물 가져오기
 window.onload = function() {
-    fetchPosts();
+    pageNumberSpan = document.getElementById('page-numbers');
+    prevPageButton = document.getElementById('prev-page-button');
+    nextPageButton = document.getElementById('next-page-button');
+
+    fetchPosts();   // 초기 페이지의 게시물 불러오기
+
+    prevPageButton.addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            fetchPosts(currentPage);
+        }
+    });
+
+    nextPageButton.addEventListener('click', () => {
+        const totalPages = parseInt(pageNumberSpan.textContent.split(" / ")[1]);
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            fetchPosts(currentPage);
+        }
+    });
 };
 
-// 페이지 선택 버튼과 페이지 번호 관리
-const prevPageButton = document.getElementById('prev-page-button');
-const nextPageButton = document.getElementById('next-page-button');
-const pageNumberSpan = document.getElementById('page-numbers');
-let currentPage = 1;
-
-// 이전 페이지로 이동
-prevPageButton.addEventListener('click', () => {
-    if (currentPage > 1) {
-        currentPage--;
-        fetchPosts(currentPage);
-    }
-});
-
-// 다음 페이지로 이동
-nextPageButton.addEventListener('click', () => {
-    // 페이지 수는 총 페이지 수에 따라 수정해야 함
-    const totalPages = 5; // 예시로 5 페이지까지 있다고 가정
-    if (currentPage < totalPages) {
-        currentPage++;
-        fetchPosts(currentPage);
-    }
-});
-
-// 페이지 로드 시 초기 페이지의 게시물 불러오기
-window.onload = function () {
-    fetchPosts(currentPage);
-};
-
-// 페이지 번호 업데이트
+// 페이지 번호 업데이트 함수 추가
 function updatePageNumbers(totalPages) {
-    pageNumberSpan.textContent = `${currentPage} / ${totalPages}`;
+    pageNumberSpan.textContent = `${currentPage + 1} / ${totalPages}`;   // 사용자에게 보여주는 페이지 번호는 +1 해줘야 함.
 }
 
-// 페이지 번호 업데이트 예시
-// updatePageNumbers(5); // 총 5페이지가 있을 때 호출
+// // 페이지 로드 시 게시물 가져오기
+// window.onload = function() {
+//     fetchPosts();
+// };
+
 

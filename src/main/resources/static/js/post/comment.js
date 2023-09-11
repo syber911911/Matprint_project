@@ -30,8 +30,8 @@ function displayComments(comments) {
             const commentElement = document.createElement('div');
             commentElement.classList.add('comment');
             commentElement.innerHTML = `
-                <p>${comment.username}:</p>
-                <p>${comment.content}</p>
+                <p> ${comment.username} : ${comment.content}</p>
+   
             `;
             commentsList.appendChild(commentElement);
         });

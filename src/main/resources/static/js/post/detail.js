@@ -5,31 +5,37 @@ const pathWithoutContext = currentUrl.replace("http://localhost:8080/matprint", 
 // 경로에서 게시글 ID를 추출
 const postId = pathWithoutContext.split('/')[2];
 console.log('게시글 ID:', postId);
-function fetchPostDetail() {
-    if (!postId) {
-        console.error('게시글 ID가 유효하지 않습니다.');
-        return;
-    }
-    // 서버로 GET 요청을 보내서 게시글 상세 정보를 가져옴
-    fetch(`/mate/${postId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('서버에서 게시글을 가져오는 중 오류 발생');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                throw new Error(data.error); // 서버에서 반환한 오류 메시지를 사용
-            }
-            // 게시글 정보를 동적으로 표시
-            displayPostDetail(data.postDto);
-        })
-        .catch(error => {
-            console.error('게시글을 불러오는 중 오류 발생:', error.message);
-        });
-}
 
+function fetchPostDetail() {
+    return new Promise((resolve, reject) => {
+        if (!postId) {
+            reject('게시글 ID가 유효하지 않습니다.');
+            return;
+        }
+        fetch(`/mate/${postId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버에서 게시글을 가져오는 중 오류 발생');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                // 게시글 정보를 동적으로 표시
+                displayPostDetail(data.postDto);
+                // 게시글 정보가 화면에 표시된 후에 글쓴이 확인
+                const postUsernameElement = document.getElementById('post-username');
+                const postUsername = postUsernameElement.textContent.trim();
+                resolve(postUsername);
+            })
+            .catch(error => {
+                console.error('게시글을 불러오는 중 오류 발생:', error.message);
+                reject(error.message);
+            });
+    });
+}
 
 // 게시글 상세 정보를 화면에 표시
 function displayPostDetail(post) {
@@ -50,9 +56,3 @@ function displayPostDetail(post) {
     visitDateElement.textContent = post ? post.visitDate || '' : '';
     statusElement.textContent = post ? post.status || '' : '';
 }
-
-// 페이지 로드 시 게시글 상세 정보 가져오기
-window.onload = function() {
-    fetchPostDetail();
-    fetchComments();
-};

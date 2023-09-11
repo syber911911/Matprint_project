@@ -57,6 +57,7 @@
       border: 1px solid #ddd;
       border-radius: 5px;
       background-color: #f9f9f9;
+      margin-bottom: 10px; /* 각 댓글 사이의 여백 *//
     }
     .post-details h2 {
       font-size: 24px;
@@ -82,6 +83,28 @@
       padding: 5px;
       border: 1px solid #ddd;
       border-radius: 5px;
+    }
+    .comment p:last-child {
+      margin-left: 10px; /* 마지막 p 요소(댓글 내용)에 왼쪽 여백 추가 */
+    }
+    /* 수정 및 삭제 버튼 스타일 */
+    #post-buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #edit-button,
+    #delete-button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    #edit-button:hover,
+    #delete-button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
@@ -111,6 +134,11 @@
       <p>✔️ 성별 : <span id="post-gender"></span></p>
       <p>✔️ 방문 날짜 : <span id="post-visitDate"></span></p>
       <p>✔️ 상태 : <span id="post-status"></span></p>
+      <!-- 게시글 수정/삭제 버튼 영역 -->
+      <div id="post-buttons" style="display: none;">
+        <button id="edit-button">수정</button>
+        <button id="delete-button">삭제</button>
+      </div>
     </div>
     <div class="comments">
       <h2>🥨 동행 요청 🥨</h2>
@@ -132,5 +160,6 @@
 <script src = "/js/users.js"></script>
 <script src = "/js/post/detail.js"></script>
 <script src = "/js/post/comment.js"></script>
+<script src = "/js/post/edit.js"></script>
 </body>
 </html>
