@@ -30,6 +30,8 @@ window.onload = function() {
     const loginContainer = document.querySelector('.--login-container');
     const notLoginContainer = document.querySelector('.--not-login-container');
 
+    checkAndRefreshToken();
+
     if (token) {
         // 로그인 상태
         loginContainer.style.display = 'block';
@@ -39,6 +41,30 @@ window.onload = function() {
         loginContainer.style.display = 'none';
         notLoginContainer.style.display = 'block';
     }
+}
+
+// 서버에 토큰 재발급 요청
+function fetchTokenRefresh() {
+    const token = localStorage.getItem('token');
+
+    return fetch('/reissue', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('토큰 재발급 실패');
+            }
+        })
+        .then(data => data.newToken)
+        .catch(error => {
+            console.error('토큰 재발급 요청 실패:', error);
+            return null;
+        });
 }
 
 // 토큰 만료 여부 확인 및 재발급 요청
@@ -78,32 +104,5 @@ function decodeJwtToken(token) {
     return JSON.parse(jsonPayload);
 }
 
-// 서버에 토큰 재발급 요청
-function fetchTokenRefresh() {
-    const token = localStorage.getItem('token');
 
-    return fetch('/reissue', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('토큰 재발급 실패');
-            }
-        })
-        .then(data => data.newToken)
-        .catch(error => {
-            console.error('토큰 재발급 요청 실패:', error);
-            return null;
-        });
-}
 
-// 페이지 로드 시 토큰 체크 및 재발급 시도
-window.onload = function() {
-    checkAndRefreshToken();
-    // 이후에 페이지 초기화 및 기타 작업 수행
-};

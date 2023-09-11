@@ -109,11 +109,23 @@
             },
             body: JSON.stringify(data),
         })
+            // .then(response => {
+            //     if (response.ok) {
+            //         window.location.href = "/main";
+            //     }
+            //     res.then((data) => {
+            //         if (data.message) {
+            //             alert(data.message);
+            //         } else if (data.contentList[0].message) {
+            //             alert(data.contentList[0].message.split("|"));
+            //         }
+            //     });
+            // })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = "/main";
+                    window.location.href = "/matprint/main";
                 }
-                res.then((data) => {
+                response.json().then((data) => {
                     if (data.message) {
                         alert(data.message);
                     } else if (data.contentList[0].message) {
@@ -132,11 +144,11 @@
         const email = document.querySelector("#email").value;
         const phone = document.querySelector("#phone").value;
         const age = document.querySelector("#age").value;
-        let gender = true;
+        let gender = "남성";
 
         const genderList = document.getElementsByName('gender');
         genderList.forEach((node) => {
-            if(node.checked && node.id == "female")  gender = false;
+            if(node.checked && node.id == "female")  gender = "여성";
         })
 
         register(username, password, passwordCheck, email, phone, age, gender);
