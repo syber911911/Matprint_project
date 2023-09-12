@@ -3,7 +3,7 @@ let prevPageButton;
 let nextPageButton;
 let currentPage = 0;   // 페이지 번호는 0부터 시작
 
-function fetchPosts(pageNumber = 0, pageSize = 5) {
+function fetchPosts(pageNumber = 0, pageSize = 10) {
     // 서버로 GET 요청을 보내서 게시물 목록을 가져옴
     fetch(`/mate?page=${pageNumber}&limit=${pageSize}`)
         .then(response => response.json())
@@ -58,6 +58,7 @@ window.onload = function() {
     prevPageButton = document.getElementById('prev-page-button');
     nextPageButton = document.getElementById('next-page-button');
 
+    checkLogin();
     fetchPosts();   // 초기 페이지의 게시물 불러오기
 
     prevPageButton.addEventListener('click', () => {
@@ -80,10 +81,5 @@ window.onload = function() {
 function updatePageNumbers(totalPages) {
     pageNumberSpan.textContent = `${currentPage + 1} / ${totalPages}`;   // 사용자에게 보여주는 페이지 번호는 +1 해줘야 함.
 }
-
-// // 페이지 로드 시 게시물 가져오기
-// window.onload = function() {
-//     fetchPosts();
-// };
 
 

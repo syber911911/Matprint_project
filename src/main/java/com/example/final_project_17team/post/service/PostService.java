@@ -131,7 +131,8 @@ public class PostService {
 
     public ResponseDto crateComment(CreateCommentDto request, Long postId, String username) {
         User user = getUser(username);
-        Post post = getPost(postId, user);
+//        Post post = getPost(postId, user);
+        Post post = this.getPost(postId);
 
         commentRepository.save(
                 Comment.builder()
@@ -146,16 +147,16 @@ public class PostService {
         return responseDto;
     }
 
-    public CommentDto.CommentWithUser readCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
+    public ReadCommentDto.CommentWithUser readCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 동행 글이 존재하지 않습니다.");
         Post post = optionalPost.get();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()); // 내림차순 정렬
-        CommentDto.CommentWithUser commentWithUser = new CommentDto.CommentWithUser();
+        ReadCommentDto.CommentWithUser commentWithUser = new ReadCommentDto.CommentWithUser();
         commentWithUser.setAccessUser(username);
-        commentWithUser.setComment(commentRepository.findAllByPost(post, pageable).map(CommentDto::fromEntity));
+        commentWithUser.setComment(commentRepository.findAllByPost(post, pageable).map(ReadCommentDto::fromEntity));
         return commentWithUser;
     }
 

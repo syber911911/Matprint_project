@@ -1,3 +1,7 @@
+window.onload = function() {
+    checkLogin();
+};
+
 // 현재 페이지의 URL 가져오기
 const currentUrl = window.location.href;
 // URL에서 컨텍스트 경로를 제외한 나머지 경로 가져오기

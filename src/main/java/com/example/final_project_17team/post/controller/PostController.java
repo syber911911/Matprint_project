@@ -29,7 +29,7 @@ public class PostController {
     @GetMapping
     public Page<ReadPostDto> readAllPost(
             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "limit", defaultValue = "5") Integer pageSize
+            @RequestParam(value = "limit", defaultValue = "10") Integer pageSize
     ) {
         return postService.readAllPost(pageNumber, pageSize);
     }
@@ -69,10 +69,10 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/comment")
-    public CommentDto.CommentWithUser readAllComment(
+    public ReadCommentDto.CommentWithUser readAllComment(
             @PathVariable("postId") Long postId,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "20") Integer limit,
             @AuthenticationPrincipal String username
     ) {
         return postService.readCommentPage(postId, page, limit, username);
