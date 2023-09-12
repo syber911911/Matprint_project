@@ -28,10 +28,15 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'mysql:mysql-connector-java:8.0.26'
 
     // mysql
-    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java:8.0.33'
+
+    // s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation platform('software.amazon.awssdk:bom:2.20.56')
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     // jsoup, selenium
     implementation 'org.jsoup:jsoup:1.16.1'
@@ -49,7 +54,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     // httpClient
-    implementation 'org.apache.httpcomponents:httpclient:4.3.4'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'

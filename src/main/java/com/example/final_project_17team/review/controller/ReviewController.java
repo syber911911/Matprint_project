@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class ReviewController {
             @AuthenticationPrincipal String username,
             @PathVariable("restaurantId") Long restaurantId,
             @ModelAttribute("review") CreateReviewDto dto
-    ){
+    ) throws IOException {
         return reviewService.createReview(username, restaurantId, dto);
     }
 
@@ -62,7 +63,7 @@ public class ReviewController {
             @PathVariable("restaurantId") Long restaurantId,
             @PathVariable("reviewId") Long reviewId,
             @ModelAttribute @Valid UpdateReviewDto request
-    ) {
+    ) throws IOException {
         return reviewService.updateReview(username, restaurantId, reviewId, request);
     }
 }
