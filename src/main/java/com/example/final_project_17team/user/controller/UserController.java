@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -116,7 +117,7 @@ public class UserController {
     }
 
     @PutMapping("/profile/image")
-    public ResponseDto uploadImage(MultipartFile multipartFile, @AuthenticationPrincipal String username) {
+    public ResponseDto uploadImage(MultipartFile multipartFile, @AuthenticationPrincipal String username) throws IOException {
         return userService.uploadProfileImage(username, multipartFile);
     }
 
