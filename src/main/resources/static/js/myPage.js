@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
-    localStorage.setItem('token', "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0MTIzMTIzIiwiaWF0IjoxNjk0NTgyODA2LCJleHAiOjE2OTQ2NjkyMDZ9.1AQPLibFTN_iKohnI6lvyQf_SBBpnCaqOrViYVvUgB1AZt2qDujALzt5Gib4n2LZ");
+    localStorage.setItem('token', "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0MTIzMTIzIiwiaWF0IjoxNjk0NTg5NDA2LCJleHAiOjE2OTQ2NzU4MDZ9.7-X2j3_p00R10T1BzEMkYkEaRdlXEobeN-Z0JJKSSl_vlu6okSDARj5RmEhXBSpq");
     const httpModule = await import("./service/HttpHandler.js");
     const userModule = await import("./service/User.js");
     const templateModule = await import("./service/Template.js");
