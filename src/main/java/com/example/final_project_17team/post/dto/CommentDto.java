@@ -8,11 +8,13 @@ import org.springframework.data.domain.Page;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
+    private Long id;
     private String content;
     private String username;
 
     public static CommentDto fromEntity(Comment comment){
         CommentDto commentDto = new CommentDto();
+        commentDto.setId(comment.getId());
         commentDto.setUsername(comment.getUser().getUsername());
         commentDto.setContent(comment.getContent());
         return commentDto;

@@ -33,7 +33,7 @@ public class PostController {
     ) {
         return postService.readAllPost(pageNumber, pageSize);
     }
-    
+
     @GetMapping("/{postId}")
     public PostDto.PostWithUser readPostDetail(@PathVariable("postId") Long postId, @AuthenticationPrincipal String username) {
         return postService.readPostDetail(postId, username);
@@ -58,7 +58,7 @@ public class PostController {
             @RequestParam(name = "age", defaultValue = "0") Integer age,
             @RequestParam(name = "status", defaultValue = "") String status,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer limit
+            @RequestParam(defaultValue = "10") Integer limit
     ) {
         return postService.searchPost(type, keyword, gender, age, status, page, limit);
     }
@@ -69,7 +69,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/comment")
-    public ReadCommentDto.CommentWithUser readAllComment(
+    public CommentDto.CommentWithUser readAllComment(
             @PathVariable("postId") Long postId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "20") Integer limit,

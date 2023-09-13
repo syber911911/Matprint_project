@@ -16,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -30,7 +28,6 @@ public class PostService {
 
     public ResponseDto createPost(CreatePostDto request, String username) {
         User user = this.getUser(username);
-
         postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -106,22 +103,21 @@ public class PostService {
     // 검색어를 통한 글 검색
     public Page<ReadPostDto> searchPost(String type, String keyword, String gender, Integer age, String status, Integer pageNumber, Integer pageSize) {
         Specification<Post> spec = (root, query, criteriaBuilder) -> null;
-        if (keyword.isBlank() || keyword.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어를 입력해주세요.");
-
-        switch (type) {
-            case "제목" -> spec = spec.and(PostSpecification.containsTitle(keyword));
-            case "내용" -> spec = spec.and(PostSpecification.containsContent(keyword));
-            case "작성자" -> spec = spec.and(PostSpecification.equalUsername(keyword));
+        if (!keyword.isBlank() || !keyword.isEmpty()) {
+            switch (type) {
+                case "제목" -> spec = spec.and(PostSpecification.containsTitle(keyword));
+                case "내용" -> spec = spec.and(PostSpecification.containsContent(keyword));
+                case "작성자" -> spec = spec.and(PostSpecification.equalUsername(keyword));
+            }
         }
 
-        if (!gender.isEmpty())
+        if (!gender.isBlank())
             spec = spec.and(PostSpecification.equalGender(gender));
 
         if (!age.equals(0))
             spec = spec.and(PostSpecification.inBoundAge(age));
 
-        if (!status.isEmpty())
+        if (!status.isBlank())
             spec = spec.and(PostSpecification.equalStatus(status));
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
@@ -131,8 +127,7 @@ public class PostService {
 
     public ResponseDto crateComment(CreateCommentDto request, Long postId, String username) {
         User user = getUser(username);
-//        Post post = getPost(postId, user);
-        Post post = this.getPost(postId);
+        Post post = getPost(postId);
 
         commentRepository.save(
                 Comment.builder()
@@ -147,16 +142,16 @@ public class PostService {
         return responseDto;
     }
 
-    public ReadCommentDto.CommentWithUser readCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
+    public CommentDto.CommentWithUser readCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 동행 글이 존재하지 않습니다.");
         Post post = optionalPost.get();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending()); // 내림차순 정렬
-        ReadCommentDto.CommentWithUser commentWithUser = new ReadCommentDto.CommentWithUser();
+        CommentDto.CommentWithUser commentWithUser = new CommentDto.CommentWithUser();
         commentWithUser.setAccessUser(username);
-        commentWithUser.setComment(commentRepository.findAllByPost(post, pageable).map(ReadCommentDto::fromEntity));
+        commentWithUser.setComment(commentRepository.findAllByPost(post, pageable).map(CommentDto::fromEntity));
         return commentWithUser;
     }
 
