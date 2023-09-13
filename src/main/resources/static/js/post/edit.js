@@ -113,7 +113,9 @@ deleteButton.addEventListener('click', () => {
 // 뒤로 가기 버튼 클릭 시 이벤트 처리
 const backButton = document.getElementById('back-button');
 backButton.addEventListener('click', function() {
-    window.location.href = `/matprint/mate/${postId}`
+    // window.location.href = `/matprint/mate/${postId}`
+    postEditForm.style.display = 'none';  // 수정 폼 숨기기
+    backButton.style.display = 'none';  // 뒤로 가기 버튼 숨기기
 });
 
 window.onload = function() {
