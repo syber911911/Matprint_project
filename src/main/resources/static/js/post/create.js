@@ -1,5 +1,4 @@
 function createPost(title, content, visitDate, prefer) {
-    const token = localStorage.getItem('token');
     const data = {
         title,
         content,
@@ -9,10 +8,7 @@ function createPost(title, content, visitDate, prefer) {
 
     return fetch('/mate', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: headers,
         body: JSON.stringify(data)
     })
         .then(response => response.json())

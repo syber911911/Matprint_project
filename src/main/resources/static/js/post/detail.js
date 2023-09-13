@@ -5,7 +5,8 @@ window.onload = function() {
 // 현재 페이지의 URL 가져오기
 const currentUrl = window.location.href;
 // URL에서 컨텍스트 경로를 제외한 나머지 경로 가져오기
-const pathWithoutContext = currentUrl.replace("http://localhost:8080/matprint", "");
+// const pathWithoutContext = currentUrl.replace("http://localhost:8080/matprint", "");
+const pathWithoutContext = currentUrl.replace("https://matprint.site/matprint", "");
 // 경로에서 게시글 ID를 추출
 const postId = pathWithoutContext.split('/')[2];
 console.log('게시글 ID:', postId);
@@ -59,4 +60,14 @@ function displayPostDetail(post) {
     genderElement.textContent = post ? post.gender || '' : '';
     visitDateElement.textContent = post ? post.visitDate || '' : '';
     statusElement.textContent = post ? post.status || '' : '';
+
+    if (post && post.username) {
+        usernameElement.innerHTML =
+            `<div style="display: flex; align-items: center;">
+            <img src="${post.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .5); width:40px;">
+            <b style="margin-left:10px;">${post.username}</b>
+         </div>`;
+    } else {
+        usernameElement.textContent = '';
+    }
 }

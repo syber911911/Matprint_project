@@ -8,6 +8,9 @@ export class HttpHandler {
     }
     async request(url) {
         try {
+            if(!this.token){
+                throw new Error("세션스토리지에 토큰이 없습니다. 테스트");
+            }
             const response = await fetch(url, {
                 method: 'GET',
                 headers: this.headers,

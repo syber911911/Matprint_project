@@ -1,12 +1,10 @@
 function isAuthor(postUsername) {
-    const currentToken = localStorage.getItem('token');
+    const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
     const currentUsername = payload.sub; // 토큰에서 username 추출
 
     return postUsername === currentUsername; // 글쓴이와 현재 로그인된 사용자가 일치하면 true 반환
 }
-
-const token = localStorage.getItem('token');
 
 // 수정 버튼 클릭 시 동작
 const editButton = document.getElementById('edit-button');
@@ -56,10 +54,7 @@ editForm.addEventListener('submit', (event) => {
     // 서버로 수정된 데이터 전송
     fetch(`/mate/${postId}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: headers,
         body: JSON.stringify({
             title: updatedTitle,
             content: updatedContent,
@@ -68,7 +63,7 @@ editForm.addEventListener('submit', (event) => {
         })
     })
         .then(response => {
-            if (!response.ok) {  // 여기서 수정했습니다.
+            if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
@@ -89,13 +84,10 @@ deleteButton.addEventListener('click', () => {
     if (confirmation) {
         fetch(`/mate/${postId}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: headers,
         })
             .then(response => {
-                if (!response.ok) { // response.ok 값이 false인 경우 (HTTP 상태 코드가 200~299 범위에 없는 경우)
+                if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
@@ -113,7 +105,9 @@ deleteButton.addEventListener('click', () => {
 // 뒤로 가기 버튼 클릭 시 이벤트 처리
 const backButton = document.getElementById('back-button');
 backButton.addEventListener('click', function() {
-    window.location.href = `/matprint/mate/${postId}`
+    // window.location.href = `/matprint/mate/${postId}`
+    postEditForm.style.display = 'none';  // 수정 폼 숨기기
+    backButton.style.display = 'none';  // 뒤로 가기 버튼 숨기기
 });
 
 window.onload = function() {
@@ -122,7 +116,7 @@ window.onload = function() {
     fetchPostDetail()
         .then(postUsername => {
             console.log("Post author: ", postUsername); // 게시글 작성자 출력
-            const currentToken = localStorage.getItem('token'); // 로컬 스토리지에서 토큰을 가져옴
+            const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
             const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
             const currentUsername = payload.sub; // 토큰에서 username 추출
             console.log("Logged in user: ", currentUsername); // 현재 로그인된 사용자 출력

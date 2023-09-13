@@ -1,7 +1,14 @@
 console.log('게시글 ID:', postId);
 
+let headers = {
+    'Content-Type': 'application/json'
+};
+if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+}
+
 function isAuthor(commentUsername) {
-    const currentToken = localStorage.getItem('token');
+    const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
     const currentUsername = payload.sub; // 토큰에서 username 추출
 
@@ -39,23 +46,23 @@ function displayComments(comments) {
             const commentElement = document.createElement('div');
             commentElement.classList.add('comment');
 
-            // 각각의 댓글 요소에 고유한 ID 값을 설정:
             commentElement.id = 'comment-' + comment.id;
 
             // 수정/삭제 버튼 생성
             let buttonsHTML = '';
-            if (isAuthor(comment.username)) { // 현재 로그인한 사용자와 댓글 작성자가 동일하다면
+            if (isAuthor(comment.username)) {
                 buttonsHTML = `
                <button class="comment-button" onclick="editComment(${comment.id})">  수정</button>
                <button class="comment-button" onclick="deleteComment(${comment.id})">  삭제</button>
            `;
             }
             commentElement.innerHTML = `
-                <p style="font-weight: bold;">${comment.username} : </p>
+                <div style="display: flex; align-items: center; overflow: visible;">
+                <img src="${comment.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .4); width:30px; object-fit: cover; position:relative; top:5px; right:-7px;">
+                <b style="margin-left:10px width:30px; object-fit: cover; position:relative; top:5px; right:-12px;;">${comment.username}</b></div>
                 <p class="content" style="background-color: white; padding: 10px; margin: 10px 0;">${comment.content}</p>
                 <p style="text-align: right;">${buttonsHTML}</p>
-   
-            `;
+             `;
             commentsList.appendChild(commentElement);
         });
 }
@@ -65,17 +72,19 @@ const commentForm = document.getElementById('comment-form');
 commentForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const commentTextarea = document.getElementById('comment');
     const commentText = commentTextarea.value;
+
+    if (!commentText) {
+        alert('댓글 내용을 입력해주세요.');
+        return;
+    }
 
     // 서버로 댓글을 저장하는 요청 보내기
     fetch(`/mate/${postId}/comment`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: headers,
         body: JSON.stringify({ content: commentText }),
     })
         .then(response => {
@@ -104,10 +113,7 @@ function deleteComment(commentId) {
     if (confirmation) {
         fetch(`/mate/${postId}/comment/${commentId}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: headers,
         })
             .then(response => {
                 if(!response.ok) {
@@ -122,7 +128,6 @@ function deleteComment(commentId) {
 }
 
 function editComment(commentId) {
-    const token = localStorage.getItem('token');
     const commentElement = document.querySelector(`#comments-list #comment-${commentId}`);
     const contentElement = commentElement.querySelector('.content');
     const originalContent = contentElement.textContent;
@@ -167,10 +172,7 @@ function editComment(commentId) {
 
         fetch(`/mate/${postId}/comment/${commentId}`,{
             method:"PUT",
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
-            },
+            headers:headers,
             body: JSON.stringify({content: editedContent}),
         })
             .then((response)=>{

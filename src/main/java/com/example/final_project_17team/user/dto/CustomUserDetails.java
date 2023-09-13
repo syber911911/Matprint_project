@@ -41,6 +41,7 @@ public class CustomUserDetails implements UserDetails {
                 .phone(joinUser.getPhone())
                 .gender(joinUser.getGender())
                 .age(joinUser.getAge())
+                .imgUrl("https://matprint.s3.ap-northeast-2.amazonaws.com/media/base.png")
                 .build();
     }
 
