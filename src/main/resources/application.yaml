@@ -42,13 +42,8 @@ spring:
       max-request-size: 10MB
       file-size-threshold: 2KB
       location: /tmp/
-    mvc:
-      static-path-pattern: /static/**
   jackson:
     serialization:
       fail-on-empty-beans: false
     deserialization:
       fail-on-unknown-properties: false
-  web:
-    resources:
-      static-locations: file:media/, classpath:/static
