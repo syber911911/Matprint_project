@@ -110,6 +110,7 @@ function displayPosts(postsPage) {
             <td><a href="/matprint/mate/${post.id}" class="post-link">${post.title}</a></td>
             <td>${post.status}</td>
             <td>${post.visitDate}</td>
+            <td>${post.username}</td>
         `;
         postTableBody.appendChild(row);
     });
