@@ -23,5 +23,4 @@ public class PageController {
     public ModelAndView myPage() {
         return new ModelAndView("html/myPage");
     }
-
 }
