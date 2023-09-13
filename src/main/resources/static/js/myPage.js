@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const uploadBtn = document.getElementById("upload");
     const changeContentBox = document.getElementById('changecontentBox');
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    console.log(token);
     const HttpHandler = new httpModule.HttpHandler(token);
     const User = new userModule.User(token);
     const { likePostTemplate, postTemplate, profileTemplate, uploadTemplate, updateFormTemplate } = templateModule;
