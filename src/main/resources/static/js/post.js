@@ -105,11 +105,21 @@ function displayPosts(postsPage) {
     // 게시물을 동적으로 추가
     posts.forEach(post => {
         const row = document.createElement('tr');
+
+        // visitDate를 Date 객체로 변환하고 각 부분 추출
+        const dateObj = new Date(post.visitDate);
+        const year = dateObj.getFullYear();
+        const month = dateObj.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줍니다.
+        const date = dateObj.getDate();
+
+        // 추출한 부분들을 조합하여 원하는 형식의 문자열 생성
+        const visitDate = `${year}.${month}.${date}`;
+
         row.innerHTML = `
             <td>${post.id}</td>
             <td><a href="/matprint/mate/${post.id}" class="post-link">${post.title}</a></td>
             <td>${post.status}</td>
-            <td>${post.visitDate}</td>
+            <td>${visitDate}</td>
             <td>${post.username}</td>
         `;
         postTableBody.appendChild(row);
