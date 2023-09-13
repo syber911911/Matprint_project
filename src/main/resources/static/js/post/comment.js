@@ -76,6 +76,11 @@ commentForm.addEventListener('submit', function(event) {
     const commentTextarea = document.getElementById('comment');
     const commentText = commentTextarea.value;
 
+    if (!token) {
+        alert("로그인을 해주세요.");
+        return;
+    }
+
     if (!commentText) {
         alert('댓글 내용을 입력해주세요.');
         return;
