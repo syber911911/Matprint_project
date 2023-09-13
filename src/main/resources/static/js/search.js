@@ -149,6 +149,17 @@
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
         });
+
+        $(".container").on("click", ".detail-link", function (event) {
+            event.preventDefault();
+
+            var name = $(this).data('name');
+            var address = $(this).data('address');
+
+            var newURL = "https://matprint.site/matprint/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+
+            window.location.href = newURL;
+        });
     });
 
 })(jQuery);

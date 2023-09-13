@@ -297,7 +297,7 @@
             var name = $(this).data('name');
             var address = $(this).data('address');
 
-            var newURL = "https://matprint.site/restaurant?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+            var newURL = "https://matprint.site/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
 
             window.location.href = newURL;
         });

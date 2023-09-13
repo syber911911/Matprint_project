@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -57,6 +58,14 @@ public class PageController {
             @PathVariable String postId
     ){
         return new ModelAndView("post/detail");
+    }
+
+    @GetMapping("/detail")
+    public ModelAndView postDetail (
+            @RequestParam String name,
+            @RequestParam String address
+    ){
+        return new ModelAndView("restaurant");
     }
 
 //    @GetMapping("/mate/{postId}/comment")
