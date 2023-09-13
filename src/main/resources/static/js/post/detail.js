@@ -64,7 +64,7 @@ function displayPostDetail(post) {
     if (post && post.username) {
         usernameElement.innerHTML =
             `<div style="display: flex; align-items: center;">
-            <img src="${post.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .5); width:50px;">
+            <img src="${post.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .5); width:40px;">
             <b style="margin-left:10px;">${post.username}</b>
          </div>`;
     } else {
