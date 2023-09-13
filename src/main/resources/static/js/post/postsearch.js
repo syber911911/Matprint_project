@@ -5,16 +5,13 @@ let ageRangeSelect = document.getElementById('age-range-select');
 let statusSelect = document.getElementById('status-select');
 let searchButton = document.getElementById('search-button');
 
-// searchTypeSelect.addEventListener('change', updatePosts);
-// keywordInput.addEventListener('input', updatePosts);
-// genderSelect.addEventListener('change', updatePosts);
-// ageRangeSelect.addEventListener('change', updatePosts);
-// statusSelect.addEventListener('change', updatePosts);
-
-// searchButton.addEventListener('click', function(event) {
-//     event.preventDefault();
-//     updatePosts();
-// });
+let currentSearchConditions = {
+    searchType: "",
+    keyword: "",
+    gender: "",
+    ageRange: "",
+    status: ""
+};
 
 searchButton.addEventListener('click', function(event) {
     event.preventDefault();
@@ -32,20 +29,6 @@ searchButton.addEventListener('click', function(event) {
         0, 10, selectedGender,
         selectedAgeRange, selectedStatus);
 });
-
-function updatePosts() {
-    let selectedSearchType = searchTypeSelect.value;
-    let enteredKeyword = keywordInput.value;
-    let selectedGender = genderSelect.value;
-    let selectedAgeRange = ageRangeSelect.value;
-    let selectedStatus = statusSelect.value;
-
-    // 키워드 입력 필드 값 여부와 상관없이 fetchPosts 함수 호출
-    fetchPostsForSearch(selectedSearchType, enteredKeyword || "", 0, 10,
-        selectedGender || "",
-        selectedAgeRange || "",
-        selectedStatus || "");
-}
 
 function fetchPostsForSearch(searchType="", keyword="", pageNumber=0 , pageSize=10 , gender="", age=0, status="" ) {
     fetch(`/mate/search?type=${searchType}&target=${keyword}&gender=${gender}&age=${age}&status=${status}&page=${pageNumber}&limit=${pageSize}`)
