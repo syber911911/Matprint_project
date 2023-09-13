@@ -65,6 +65,16 @@ public class PageController {
         return new ModelAndView("post/detail");
     }
 
+    @GetMapping("/restaurant")
+    public ModelAndView restaurant () {
+        return new ModelAndView("restaurant");
+    }
+
+    @GetMapping("/review/edit")
+    public ModelAndView editReview () {
+        return new ModelAndView("editReview");
+    }
+
     @GetMapping("/detail")
     public ModelAndView postDetail (
             @RequestParam String name,

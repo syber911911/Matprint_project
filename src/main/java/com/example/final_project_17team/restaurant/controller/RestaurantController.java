@@ -49,4 +49,9 @@ public class RestaurantController {
     public RestaurantDetailDto detailPage(@RequestParam("name") String name, @RequestParam("address") String address){
         return restaurantService.detailPage(name, address);
     }
+
+    @GetMapping("/detail/id")
+    public RestaurantDetailDto detailWithId(@RequestParam("restaurantId") Long id){
+        return restaurantService.readRestaurantWithId(id);
+    }
 }

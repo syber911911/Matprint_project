@@ -112,7 +112,7 @@ public class UserController {
 
     //회원정보수정
     @PutMapping("/profile")
-    public ResponseDto update(@RequestBody UpdateProfileDto updateDto){
+    public ResponseDto update(@RequestBody UpdateProfileDto updateDto) {
         userService.updateUser(CustomUserDetails.fromDto(updateDto));
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("사용자 정보 수정이 완료되었습니다.");
@@ -133,5 +133,10 @@ public class UserController {
         responseDto.setMessage("회원탈퇴가 완료되었습니다.");
         responseDto.setStatus(HttpStatus.OK);
         return responseDto;
+    }
+
+    @GetMapping("/username")
+    public String getUsername(@AuthenticationPrincipal String username) {
+        return username;
     }
 }

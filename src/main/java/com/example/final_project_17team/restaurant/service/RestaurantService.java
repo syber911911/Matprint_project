@@ -72,4 +72,11 @@ public class RestaurantService {
             return RestaurantDetailDto.fromEntity(restaurant);
         }
     }
+
+    public RestaurantDetailDto readRestaurantWithId(Long id) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
+        if (optionalRestaurant.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "음식점 아이디가 유효하지 않습니다.");
+        return RestaurantDetailDto.fromEntity(optionalRestaurant.get());
+    }
 }
