@@ -76,6 +76,11 @@ public class PageController {
         return new ModelAndView("editReview");
     }
 
+    @GetMapping("/review")
+    public ModelAndView newReview () {
+        return new ModelAndView("newReview");
+    }
+
     @GetMapping("/detail")
     public ModelAndView postDetail (
             @RequestParam String name,

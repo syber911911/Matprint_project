@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
   <meta charSet="UTF-8">
-  <title>edit review</title>
+  <title>new review</title>
   <style>
     @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
@@ -94,7 +94,7 @@
 
 <main class="--main">
   <div class="container">
-    <h1 id="name">리뷰 수정</h1>
+    <h1 id="name">리뷰 작성</h1>
     <fieldset class="rate">
       <input type="radio" id="rating5" name="rating" value="5" onclick="editRatings(5)"><label for="rating5" title="5점" id="rt5"></label>
       <input type="radio" id="rating4" name="rating" value="4" onclick="editRatings(4)"><label for="rating4" title="4점" id="rt4"></label>
@@ -110,8 +110,7 @@
         <textarea id="content" name="content" cols="40" rows="5"></textarea>
       </div>
       <div class="buttons">
-        <button style="margin-right: 5px" onclick="editReview()">수정</button>
-        <button onclick="deleteReview()">삭제</button>
+        <button onclick="deleteReview()">등록</button>
       </div>
     </div>
   </div>
@@ -125,7 +124,6 @@
 
 <script>
   let ratings = 0;
-  let deleteImageList = [];
 
   window.onload = function () {
     const params = new URL(location.href).searchParams;
@@ -135,14 +133,14 @@
     getReviewInfo(params.get("restaurantId"), params.get("reviewId"), localStorage.getItem('token'));
   }
 
-  async function editReview() {
+  async function newReview() {
     await reissueToken();
     const token = localStorage.getItem('token');
 
     const content = document.getElementById('content').value;
-    const dt = { content, ratings, deleteImageList };
+    const dt = { content, ratings };
 
-    fetch(`/${localStorage.getItem('rsId')}/review/${localStorage.getItem('rvId')}`, {
+    fetch(`/${localStorage.getItem('rsId')}/review`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -150,7 +148,6 @@
       },
       body: JSON.stringify(dt),
     });
-    alert("tmp");
     await backToRestaurantPage();
   }
 
@@ -174,60 +171,6 @@
             .then(data =>
                     window.location.href = `/matprint/restaurant?name=${data.name}&address=${data.address}`
             );
-  }
-
-  async function deleteReview () {
-    const token = localStorage.getItem('token');
-
-    let response = await fetch(`/${localStorage.getItem('rsId')}/review/${localStorage.getItem('rvId')}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    let data = await response;
-    await backToRestaurantPage();
-  }
-
-  function deleteImg (cnt, url) {
-    deleteImageList.push(url);
-    document.getElementById(`imgBox${cnt}`).style.display = 'none';
-  }
-
-  function getReviewInfo (restaurantId, reviewId, token) {
-    fetch(`/${restaurantId}/review/${reviewId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    })
-            .then(response => response.json())
-            .then(data => {
-              console.log(data);
-              if (!data.content) alert("not found");
-              else {
-                document.getElementById('content').innerHTML = data.content;
-                document.getElementById(`rating${data.ratings}`).checked = true;
-                ratings = data.ratings;
-
-                let imgStr = "";
-                let cnt = 0;
-                data.imageUrl.forEach(url => {
-                  if (cnt % 4 === 0) imgStr += "<div id='img'>";
-
-                  imgStr += `<div id="imgBox${cnt}" class="imgDiv" style="position: relative; width: 108px; height:108px;">
-                                <img style="width: 100px; height:100px; margin: 8px;" src="${url}" >
-                                <p class="btn" style="cursor: pointer; position: absolute; top: -3px; right: 8px;" onclick="deleteImg(${cnt},'${url}')"> ❌</p>
-                            </div>`;
-
-                  if (cnt++ % 4 === 3) imgStr += "</div>";
-                });
-                if (cnt % 4 !== 0) imgStr += "</div>";
-                if (imgStr !== "") document.getElementById('images').innerHTML = imgStr + "<br>";
-              }
-            })
   }
 
   function logout() {
