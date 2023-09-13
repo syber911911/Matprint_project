@@ -1,5 +1,7 @@
 package com.example.final_project_17team.user.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.final_project_17team.global.dto.ResponseDto;
 import com.example.final_project_17team.global.jwt.JwtTokenInfoDto;
 import com.example.final_project_17team.global.jwt.JwtTokenUtils;
@@ -20,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,8 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -49,6 +50,10 @@ public class UserService implements UserDetailsManager {
     private final RedisRepository redisRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
+    private final AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+    private final String bucketPath = "https://matprint.s3.ap-northeast-2.amazonaws.com";
 
     public void setRefreshCookie(String refreshToken, String autoLogin, HttpServletResponse response) {
         ResponseCookie refreshTokenCookie = null;
@@ -179,7 +184,7 @@ public class UserService implements UserDetailsManager {
     // TODO 사용자 이미지 삭제 기능
     // TODO 사용자 이미지 업로드 시 기존 이미지 삭제
     // TODO 사용자 삭제 시 사용자 ID 로 생성된 디렉토리 삭제
-    public ResponseDto uploadProfileImage(String username, MultipartFile profileImage) {
+    public ResponseDto uploadProfileImage(String username, MultipartFile profileImage) throws IOException {
         if (profileImage.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "업로드 할 이미지가 존재하지 않습니다.");
         Optional<User> optionalUser = userRepository.findByUsername(username);
@@ -187,35 +192,20 @@ public class UserService implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "해당 사용자가 존재하지 않습니다.");
         User user = optionalUser.get();
 
-        // 사용자 프로필 이미지 저장 디렉토리
-        String imageDir = String.format("media/%d/profile/", user.getId());
-        try {
-            Files.createDirectories(Path.of(imageDir));
-        } catch (IOException ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "디렉토리 생성에 실패");
-        }
-        // 생성 시간
-        LocalDateTime createTime = LocalDateTime.now();
+        String imageDir = String.format("/media/%d/profile", user.getId());
+        String bucketDir = bucketName + imageDir;
 
-        // 첨부된 이미지 filename 추출
+        LocalDateTime createTime = LocalDateTime.now();
         String originalFileName = profileImage.getOriginalFilename();
-        // 확장자 추출
         String[] fileNameSplit = originalFileName.split("\\.");
         String extension = fileNameSplit[fileNameSplit.length - 1];
-        // 저장할 이미지의 filename 재설정 (생성시간_username.확장자)
-        String profileImageFileName = String.format("%s.%s", createTime.toString(), extension);
-        // 이미지 저장 경로와 filename 을 합쳐 최종적으로 저장될 path 생성
-        String profileImagePath = imageDir + profileImageFileName;
+        String reviewImageFileName = String.format("%s.%s", createTime.toString(), extension);
+        amazonS3Client.putObject(bucketDir, reviewImageFileName, profileImage.getInputStream(), getObjectMetadata(profileImage));
 
-        try {
-            // path 에 이미지 저장
-            profileImage.transferTo(Path.of(profileImagePath));
-        } catch (IOException ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드 실패");
-        }
+        String profileImagePath = bucketPath + imageDir + "/" + reviewImageFileName;
 
         // userEntity 에 이미지 경로 추가 및 저장
-        user.updateProfileImage(String.format("/profile/image/%s/%s", username, profileImageFileName));
+        user.updateProfileImage(profileImagePath);
         userRepository.save(user);
 
         ResponseDto response = new ResponseDto();
@@ -257,5 +247,12 @@ public class UserService implements UserDetailsManager {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 사용자입니다.");
         return CustomUserDetails.fromEntity(optionalUser.get());
+    }
+
+    private ObjectMetadata getObjectMetadata(MultipartFile file) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentLength(file.getSize());
+        return objectMetadata;
     }
 }

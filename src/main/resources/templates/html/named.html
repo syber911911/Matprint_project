@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>인플루언서 맛집 찾기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
     <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=aaidwic796"></script>
 </head>
@@ -74,21 +77,27 @@
             display: none;
         }
 
+        .--footer{
+            text-align:center;
+            padding :10px;
+            background-color:#f2f2f2;
+        }
+
     </style>
 
     <!-- Categories Section -->
     <div class="row category-section">
         <div class="col-3">
-            <a href="#mainSection" class="category-link">메인 페이지</a>
+            <a href="#mainSection" class="category-link" id="mainSectionLink">🦁 메인 페이지</a>
         </div>
         <div class="col-3">
-            <a href="#localSection" class="category-link" id="localSectionLink">지역별 맛집 검색</a>
+            <a href="#localSection" class="category-link" id="localSectionLink">🔍 지역별 맛집 검색</a>
         </div>
         <div class="col-3">
-            <a href="#mateSection" class="category-link">동행 찾기</a>
+            <a href="#mateSection" class="category-link">🙋‍ 동행 찾기</a>
         </div>
         <div class="col-3">
-            <a href="#myPageSection" class="category-link" id="myPageLink">마이 페이지</a>
+            <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>
         </div>
     </div>
 
@@ -136,6 +145,10 @@
             </div>
         </div>
     </div>
+
+    <footer class="--footer">
+        ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
+    </footer>
 
 </div>  <!-- container end -->
 

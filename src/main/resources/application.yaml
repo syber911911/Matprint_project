@@ -1,3 +1,19 @@
+server:
+  port: 8080
+jwt:
+  secret: ${JWT_SECRET}
+  fail-on-unknown-properties: false
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${BUCKET}
+    stack:
+      auto: false
+    credentials:
+      secret-key: ${SECRET_KEY}
+      access-key: ${ACCESS_KEY}
 spring:
   data:
     redis:
@@ -30,8 +46,6 @@ spring:
       max-request-size: 10MB
       file-size-threshold: 2KB
       location: /tmp/
-    mvc:
-      static-path-pattern: /static/**
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -42,5 +56,3 @@ spring:
   web:
     resources:
       static-locations: file:media/, classpath:/static
-jwt:
-  secret: ${JWT_SECRET}

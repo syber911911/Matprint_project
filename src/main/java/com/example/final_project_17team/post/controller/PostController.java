@@ -69,7 +69,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/comment")
-    public ReadCommentDto.CommentWithUser readAllComment(
+    public CommentDto.CommentWithUser readAllComment(
             @PathVariable("postId") Long postId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "20") Integer limit,
