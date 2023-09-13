@@ -69,6 +69,11 @@ commentForm.addEventListener('submit', function(event) {
     const commentTextarea = document.getElementById('comment');
     const commentText = commentTextarea.value;
 
+    if (!commentText) {
+        alert('댓글 내용을 입력해주세요.');
+        return;
+    }
+
     // 서버로 댓글을 저장하는 요청 보내기
     fetch(`/mate/${postId}/comment`, {
         method: 'POST',
