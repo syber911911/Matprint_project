@@ -127,7 +127,8 @@ public class ReviewService {
         if (optionalReview.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 항목을 찾을 수 없습니다.");
         Review review = optionalReview.get();
-        this.deleteDir(user.getId(), review);
+        if (!review.getReviewImages().isEmpty())
+            this.deleteDir(user.getId(), review);
         reviewRepository.delete(review);
 
         ResponseDto responseDto = new ResponseDto();
