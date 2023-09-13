@@ -16,7 +16,7 @@ export class User {
 
             if (response.status === 200) {
                 localStorage.removeItem('token');
-                window.location.replace('/main');
+                window.location.replace('/matprint/login');
             } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);
             }
@@ -34,7 +34,7 @@ export class User {
             });
 
             if (response.status === 200) {
-                window.location.replace('/users/profiles');
+                window.location.replace('/matprint/myPage');
             } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);
             }
@@ -50,7 +50,7 @@ export class User {
             });
 
             if (response.status === 200) {
-                window.location.replace('/main');
+                window.location.replace('/matprint/login');
                 console.dir(response);
             } else {
                 console.error('Authentication failed: Token may be invalid or expired.');
@@ -73,7 +73,7 @@ export class User {
 
             if (response.status === 200) {
                 console.log(response);
-                window.location.replace('/users/profiles');
+                window.location.replace('/matprint/myPage');
             } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);
             }
