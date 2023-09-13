@@ -1,5 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
+
     const httpModule = await import("./service/HttpHandler.js");
     const userModule = await import("./service/User.js");
     const templateModule = await import("./service/Template.js");

@@ -52,6 +52,7 @@ public class WishlistService {
 
         // 해당 사용자 & 식당으로 등록된 위시리스트 조회
         Optional<Wishlist> optionalWishList = wishListRepository.findByRestaurantAndUser(restaurant, user);
+        log.info("check wish");
         return optionalWishList.isPresent();
     }
 
@@ -90,9 +91,11 @@ public class WishlistService {
                             .restaurant(restaurant)
                             .build()
             );
+            log.info("set wishlist true");
             return true;
         } else {   // 이미 위시리스트에 있는데 버튼을 누른거라면 위시리스트에서 삭제시켜줌
             wishListRepository.delete(optionalMyRestaurant.get());
+            log.info("set wishlist false");
             return false;
         }
     }

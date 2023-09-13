@@ -53,11 +53,15 @@ public class UserController {
     public JwtTokenInfoDto reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = null;
         String autoLogin = null;
-        for (Cookie cookie : request.getCookies()) {
-            switch (cookie.getName()) {
-                case "REFRESH_TOKEN" -> refreshToken = cookie.getValue();
-                case "AUTO_LOGIN" -> autoLogin = cookie.getValue();
+        try {
+            for (Cookie cookie : request.getCookies()) {
+                switch (cookie.getName()) {
+                    case "REFRESH_TOKEN" -> refreshToken = cookie.getValue();
+                    case "AUTO_LOGIN" -> autoLogin = cookie.getValue();
+                }
             }
+        } catch (Exception e) {
+            log.warn(e.getMessage());
         }
         if (refreshToken == null || autoLogin == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "재로그인 필요");

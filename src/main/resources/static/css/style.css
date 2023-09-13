@@ -7,7 +7,9 @@ body {
     font-family: 'Spoqa Han Sans Neo', sans-serif;
 }
 
-
+table {
+    width: 100%;
+}
 
 * {
     box-sizing: border-box;
@@ -24,7 +26,7 @@ a {
 
 button {
     margin-bottom: 10px;
-    padding: 10px 20px; /* 버튼의 내부 여백을 추가하여 가로 길이를 늘립니다. */
+    padding: 10px 20px;
 }
 
 button,
@@ -46,27 +48,17 @@ input:active {
     box-shadow: none;
 }
 
-ul,
-ol,
-li {
-    list-style-type: none;
-    padding-left: 0;
-    margin-left: 0;
-}
-
-body {
-    background-color: #f2f2f2;
-}
-
 .main {
     display: flex;
 }
 
 .header {
     justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f2f2f2;
     padding: 10px 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .flex {
@@ -89,17 +81,21 @@ body {
 .col-1 {
     flex-direction: column;
     align-items: flex-start;
-    flex-basis: 33.333333%;
 }
 
 .col-2 {
-    flex-basis: 66.666667%;
+    width: 700px;
     margin-left: 20px;
     padding: 20px;
     border: 1px solid #000;
     border-radius: 5px;
     background-color: #ffffff;
+    display: flex; /* 부모 요소를 Flex 컨테이너로 설정 */
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
 }
+
+
 
 .buttons {
     display: flex;
@@ -112,6 +108,8 @@ button {
 
 .changecontentBox__user {
     column-gap: 4rem;
+    width: 100%;
+
 }
 
 .changecontentBox__user__image {
@@ -124,16 +122,10 @@ button {
 
 
 .changecontentBox__user__image-profile {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-}
-
-.field {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
