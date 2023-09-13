@@ -17,7 +17,8 @@ public class UpdatePostDto {
     @NotBlank(message = "모집 상태를 선택해주세요.")
     @Pattern(regexp = "모집 중|모집 완료")
     private String status;
-    private LocalDateTime visitDate;
+//    private LocalDateTime visitDate;
+    private String visitDate;
 
     public boolean titleIsNotModified(String originTitle) {
         return originTitle.equals(this.title);
@@ -31,7 +32,7 @@ public class UpdatePostDto {
         return originStatus.equals(this.status);
     }
 
-    public boolean visitDataIsNotModified(LocalDateTime originVisitData) {
+    public boolean visitDataIsNotModified(String originVisitData) {
         return originVisitData.equals(this.visitDate);
     }
 

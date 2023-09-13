@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+    <title>Join</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: #FFE08C;
+            border-radius: 5px;
+            display:flex;
+            flex-direction : column;
+            justify-content:center;
+            align-items:center;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            font-weight:bold;
+            display:flex;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width :80%;
+            padding :5px;
+            border-radius :3px;
+        }
+        .form-group button[type="submit"]{
+            width :100%;
+            padding :10px;
+            background-color:#FFE08C;
+            font-weight:bold;
+            border:none;
+            display:flex;
+            justify-content:center;
+        }
+        h1{
+            font-family: "Black Han Sans";
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Join</h1>
+    <form action="/join" method="post">
+        <div class="form-group">
+            <label for="username">username:</label>
+            <input type="text" id ="username" name ="username" required />
+        </div>
+        <div class ="form-group">
+            <label for = "password">password:</label>
+            <input type = "password" id ="password" name = "password" required />
+        </div>
+        <div class ="form-group">
+            <label for = "passwordCheck">password check:</label>
+            <input type = "password" id ="passwordCheck" name = "passwordCheck" required />
+        </div>
+        <div class ="form-group">
+            <label for = "email">email:</label>
+            <input type = "email" id ="email" name = "email" required />
+        </div>
+        <div class ="form-group">
+            <label for = "phone">phone:</label>
+            <input type = "text" id ="phone" name = "phone" required />
+        </div>
+        <div class ="form-group">
+            <label for = "age">age:</label>
+            <input type = "text" id ="age" name = "age" required />
+        </div>
+        <div class ="form-group">
+            <label for = "male">gender:</label>
+            <input type = "radio" id = "male" name = "gender" required checked = "checked">남자
+            <input type = "radio" id = "female" name = "gender" >여자
+        </div>
+        <button type = "submit">회원가입</button>
+        <a href="/matprint/login"><button type = "button">로그인</button></a>
+    </form>
+</div>
+<script>
+    function register(username, password, passwordCheck, email, phone, age, gender) {
+        const data = { username, password, passwordCheck, email, phone, age, gender };
+
+        if (password != passwordCheck) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        return fetch(`/join`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            // .then(response => {
+            //     if (response.ok) {
+            //         window.location.href = "/main";
+            //     }
+            //     res.then((data) => {
+            //         if (data.message) {
+            //             alert(data.message);
+            //         } else if (data.contentList[0].message) {
+            //             alert(data.contentList[0].message.split("|"));
+            //         }
+            //     });
+            // })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = "/matprint/main";
+                }
+                response.json().then((data) => {
+                    if (data.message) {
+                        alert(data.message);
+                    } else if (data.contentList[0].message) {
+                        alert(data.contentList[0].message.split("|"));
+                    }
+                });
+            })
+            .then(data => data)
+    }
+    document.querySelector("form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const username = document.querySelector("#username").value;
+        const password = document.querySelector("#password").value;
+        const passwordCheck = document.querySelector("#passwordCheck").value;
+        const email = document.querySelector("#email").value;
+        const phone = document.querySelector("#phone").value;
+        const age = document.querySelector("#age").value;
+        let gender = "남성";
+
+        const genderList = document.getElementsByName('gender');
+        genderList.forEach((node) => {
+            if(node.checked && node.id == "female")  gender = "여성";
+        })
+
+        register(username, password, passwordCheck, email, phone, age, gender);
+    });
+</script>
+</body>
+</html>

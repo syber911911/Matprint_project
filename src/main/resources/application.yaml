@@ -1,7 +1,8 @@
 server:
-  port: 8083
+  port: 8080
 jwt:
   secret: ${JWT_SECRET}
+  fail-on-unknown-properties: false
 cloud:
   aws:
     region:
@@ -25,6 +26,9 @@ spring:
       host: localhost
   thymeleaf:
     check-template-location: false
+    prefix: classpath:templates/
+    suffix: .html
+    cache: false
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -45,5 +49,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+      write-dates-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
+      adjust-dates-to-context-time-zone: false
+  web:
+    resources:
+      static-locations: file:media/, classpath:/static

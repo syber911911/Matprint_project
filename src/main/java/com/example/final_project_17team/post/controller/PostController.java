@@ -6,7 +6,11 @@ import com.example.final_project_17team.post.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,7 +29,7 @@ public class PostController {
     @GetMapping
     public Page<ReadPostDto> readAllPost(
             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "limit", defaultValue = "5") Integer pageSize
+            @RequestParam(value = "limit", defaultValue = "10") Integer pageSize
     ) {
         return postService.readAllPost(pageNumber, pageSize);
     }
@@ -54,7 +58,7 @@ public class PostController {
             @RequestParam(name = "age", defaultValue = "0") Integer age,
             @RequestParam(name = "status", defaultValue = "") String status,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer limit
+            @RequestParam(defaultValue = "10") Integer limit
     ) {
         return postService.searchPost(type, keyword, gender, age, status, page, limit);
     }
@@ -68,7 +72,7 @@ public class PostController {
     public CommentDto.CommentWithUser readAllComment(
             @PathVariable("postId") Long postId,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "20") Integer limit,
             @AuthenticationPrincipal String username
     ) {
         return postService.readCommentPage(postId, page, limit, username);

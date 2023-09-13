@@ -11,7 +11,8 @@ public class PostDto {
     private String title;
     private String content;
     private String status;
-    private LocalDateTime visitDate;
+//    private LocalDateTime visitDate;
+    private String visitDate;
     private String prefer;
     private String username;
     private Integer age;

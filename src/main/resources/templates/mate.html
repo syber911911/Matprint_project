@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+    <title>Mate Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+        }
+        .--header {
+            display:flex;
+            justify-content : space-between;
+            align-items : center;
+            padding :10px;
+            background-color:#FFE08C;
+            font-family: "Black Han Sans";
+            font-weight: bold;
+        }
+        .container {
+            width: auto;
+            min-height: calc(90vh - (40px + (10px * 2)));
+            display:flex;
+            flex-direction : column;
+            height: 90vh;
+            overflow-y: auto;
+        }
+        .--logo-image{
+            font-size :30px;
+        }
+        .--login-container a{
+            margin-left :10px;
+        }
+        .--main{
+            padding :20px;
+        }
+        .--footer{
+            text-align:center;
+            padding :10px;
+            background-color:#f2f2f2;
+        }
+        .table-container {
+            width: 100%;
+            margin-top:20px;
+        }
+        table {
+            width:100%;
+            border-collapse: collapse;
+        }
+        thead th, tbody td {
+            border-bottom:solid #ddd 1px;
+            padding :12px;
+            text-align:left;
+        }
+        tfoot td {
+            text-align:center;
+            padding-top :20px;
+        }
+        nav {
+            background-color: #FAECC5;
+            color: white;
+            padding: 20px;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none; /* 링크 텍스트에 밑줄 제거 */
+            margin-right: 20px;
+            font-size: 14px;
+        }
+        #create-post-button {
+            float: right;
+            background-color: #8C8C8C;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none; /* 텍스트에 밑줄 제거 */
+            font-weight: bold;
+            vertical-align: middle;
+            margin-top: -7px;
+        }
+        #create-post-button:hover {
+            background-color: #555; /* 마우스 호버 시 배경색 변경 */
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .pagination button {
+            background-color: #8C8C8C;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+        .pagination button:hover {
+            background-color: #555;
+        }
+        #page-numbers {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<header class="--header">
+    <div class="--logo">
+        <div class="--logo-image">🍔 맛자국</div>
+    </div>
+    <!-- 로그인/로그아웃과 마이페이지 링크 -->
+    <div class="--login-container">
+        <!-- 마이페이지와 로그아웃 링크 -->
+        <a href="/matprint/myPage">마이 페이지</a>
+        <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
+    </div>
+    <!-- 로그인 링크 -->
+    <div class="--not-login-container" style="display: none;">
+        <a href="/matprint/login">로그인</a>
+    </div>
+</header>
+<nav>
+    <a href="/matprint/mate/create" id="create-post-button">게시글 생성</a>
+    <select id="search-type-select">
+        <option value="제목">제목으로 검색</option>
+        <option value="내용">내용으로 검색</option>
+        <option value="작성자">작성자로 검색</option>
+    </select>
+    <input type="text" id="keyword-input" placeholder="검색어를 입력하세요">
+    <select id="gender-select">
+        <option value="">모든 성별</option>
+        <option value="남성">남성</option>
+        <option value="여성">여성</option>
+    </select>
+    <select id="age-range-select">
+        <option value="">모든 나이대</option>
+        <option value="10">10대</option>
+        <option value="20">20대</option>
+        <option value="30">30대</option>
+        <option value="40">40대</option>
+        <option value="50">50대</option>
+    </select>
+    <select id="status-select">
+        <option value="">모든 상태</option>
+        <option value="모집 중">모집 중</option>
+        <option value="모집 완료">모집 완료</option>
+    </select>
+    <button id="search-button">검색하기</button>
+</nav>
+
+<main class="--main">
+    <div class="container table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>상태</th>
+                <th>방문 날짜</th>
+            </tr>
+            </thead>
+            <tbody id = "post-table-body">
+
+            </tbody>
+        </table>
+        <div class="pagination">
+            <button id="prev-page-button">이전</button>
+            <span id="page-numbers"></span>
+            <button id="next-page-button">다음</button>
+        </div>
+    </div>
+</main>
+
+<footer class="--footer">
+    ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
+</footer>
+<script src="/js/users.js"></script>
+<script src="/js/post.js"></script>
+<script src="/js/post/postsearch.js"></script>
+</body>
+</html>

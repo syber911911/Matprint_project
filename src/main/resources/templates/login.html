@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+  <title>Login</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 400px;
+      padding: 20px;
+      background-color: #FFE08C;
+      border-radius: 5px;
+      display:flex;
+      flex-direction : column;
+      justify-content:center;
+      align-items:center;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      display: block;
+      font-weight:bold;
+      display:flex;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width :80%;
+      padding :5px;
+      border-radius :3px;
+    }
+    .form-group button[type="submit"]{
+      width :100%;
+      padding :10px;
+      background-color:#FFE08C;
+      font-weight:bold;
+      border:none;
+      display:flex;
+      justify-content:center;
+    }
+    h1{
+      font-family: "Black Han Sans";
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Login</h1>
+  <form action="/login" method="post">
+    <div class="form-group">
+      <label for="username">username:</label>
+      <input type="text" id ="username" name ="username" required />
+    </div>
+    <div class ="form-group">
+      <label for = "password">password:</label>
+      <input type = "password" id ="password" name = "password"
+             required />
+    </div>
+    <label for="autoLogin">자동 로그인</label>
+    <input type="checkbox" id="autoLogin" name="autoLogin" value="F">
+    <button type = "submit">로그인</button>
+    <a href="/matprint/join"><button type = "button">회원가입</button></a>
+  </form>
+</div>
+<script>
+  document.getElementById('autoLogin').addEventListener('change', function() {
+    if (this.checked) {
+      this.value = 'T';
+    } else {
+      this.value = 'F';
+    }
+  });
+  function login(username, password, autoLogin) { // autoLogin parameter added
+    const data = { username, password };
+
+    return fetch(`/login?autoLogin=${autoLogin}`, { // Query parameter added to URL
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.accessToken) { // token이 반환되면 성공적으로 로그인된 것임.
+                localStorage.setItem('token', data.accessToken); // token을 localStorage에 저장
+                window.location.href = "/matprint/main"; // 메인 페이지로 이동
+              } else {
+                alert(data.message);
+              }
+            })
+  }
+  document.querySelector("form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const username = document.querySelector("#username").value;
+    const password = document.querySelector("#password").value;
+    let autoLogin;
+
+    if(document.getElementById("autoLogin").checked){
+      autoLogin='T';
+    }else{
+      autoLogin='F';
+    }
+
+    login(username, password, autoLogin); // Pass in the value of the checkbox
+  });
+</script>
+</body>
+</html>
