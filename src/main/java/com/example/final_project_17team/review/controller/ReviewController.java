@@ -48,6 +48,11 @@ public class ReviewController {
         return reviewService.readReviewPage(username, restaurantId, page, limit);
     }
 
+    @GetMapping("/{reviewId}")
+    public ReadReviewDto readAReviews(@PathVariable("reviewId") Long reviewId){
+        return reviewService.readAReview(reviewId);
+    }
+
     @DeleteMapping("/{reviewId}")
     public ResponseDto deleteReview(
             @AuthenticationPrincipal String username,

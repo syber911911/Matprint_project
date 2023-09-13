@@ -17,6 +17,7 @@ public class PostDto {
     private String username;
     private Integer age;
     private String gender;
+    private String imgUrl;
 
     public static PostDto fromEntity(Post post){
         PostDto dto = new PostDto();
@@ -28,6 +29,7 @@ public class PostDto {
         dto.setUsername(post.getUser().getUsername());
         dto.setAge(post.getUser().getAge());
         dto.setGender(post.getUser().getGender());
+        dto.setImgUrl(post.getUser().getImgUrl());
         return dto;
     }
 

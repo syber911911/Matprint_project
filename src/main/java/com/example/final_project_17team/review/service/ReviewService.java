@@ -232,4 +232,11 @@ public class ReviewService {
         objectMetadata.setContentLength(file.getSize());
         return objectMetadata;
     }
+
+    public ReadReviewDto readAReview(Long reviewId) {
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+        if (optionalReview.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰 아이디가 유효하지 않습니다.");
+        return ReadReviewDto.fromEntity(optionalReview.get());
+    }
 }

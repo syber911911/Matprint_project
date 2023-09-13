@@ -149,6 +149,22 @@
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
         });
+
+        $("body").on("click", "a.detail-link", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+
+            // Extract the data-name and data-address attributes
+            var name = $(this).data("name");
+            var address = $(this).data("address");
+
+            // Check if name and address are correctly extracted (for debugging)
+            console.log("Name: " + name);
+            console.log("Address: " + address);
+
+            // URL creation and page redirection
+            var url = "https://matprint.site/matprint/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+            window.location.href = url;
+        });
     });
 
 })(jQuery);
