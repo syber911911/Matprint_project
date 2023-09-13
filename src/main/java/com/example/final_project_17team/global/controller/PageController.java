@@ -1,16 +1,22 @@
 package com.example.final_project_17team.global.controller;
 
-import jakarta.persistence.Entity;
-import org.springframework.boot.Banner;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+@Slf4j
 @Controller
 @RequestMapping("/matprint")
 public class PageController {
+    @GetMapping("/check")
+    public void check() {
+        throw new ResponseStatusException(HttpStatus.OK);
+    }
 
     @GetMapping("/named")
     public ModelAndView named() {
@@ -57,6 +63,24 @@ public class PageController {
             @PathVariable String postId
     ){
         return new ModelAndView("post/detail");
+    }
+
+    @GetMapping("/restaurant")
+    public ModelAndView restaurant () {
+        return new ModelAndView("restaurant");
+    }
+
+    @GetMapping("/review/edit")
+    public ModelAndView editReview () {
+        return new ModelAndView("editReview");
+    }
+
+    @GetMapping("/detail")
+    public ModelAndView postDetail (
+            @RequestParam String name,
+            @RequestParam String address
+    ){
+        return new ModelAndView("restaurant");
     }
 
 //    @GetMapping("/mate/{postId}/comment")
