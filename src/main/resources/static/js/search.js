@@ -112,7 +112,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "http://localhost:8080/matprint/named";
+            var newURL = "https://matprint.site/matprint/named";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
@@ -123,7 +123,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "http://localhost:8080/matprint/myPage";
+            var newURL = "https://matprint.site/matprint/myPage";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
@@ -134,7 +134,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "http://localhost:8080/matprint/main";
+            var newURL = "https://matprint.site/matprint/main";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;

@@ -132,7 +132,7 @@
                     <li class="list-group-item" v-for="result in search_result">
                         <div class="row">
                             <div class="col-md-6">
-                                <a href="#detailSection" class="detail-link">{{ result.name }}</a>
+                                <a href="#detailSection" class="detail-link" data-name="{{ result.name }}" data-address="{{ result.address }}">{{ result.name }}</a>
                                 <!-- Add any other properties you want -->
                             </div>
                             <div class="col-md-6">
