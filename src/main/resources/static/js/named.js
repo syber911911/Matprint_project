@@ -280,7 +280,7 @@
             window.location.href = newURL;
         });
 
-        $(".detail-link").click(function (event) {
+        $(".container").on("click", ".detail-link", function (event) {
             event.preventDefault();
 
             var name = $(this).data('name');
