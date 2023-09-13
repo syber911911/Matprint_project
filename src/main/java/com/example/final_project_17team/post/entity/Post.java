@@ -23,7 +23,8 @@ public class Post extends Base {
     @Column(nullable = false)
     private String content;
     private String status;
-    private LocalDateTime visitDate;
+//    private LocalDateTime visitDate;
+    private String visitDate;
     private String prefer;
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -32,7 +33,7 @@ public class Post extends Base {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(String title, String content, String status, LocalDateTime visitDate, String prefer, User user) {
+    public Post(String title, String content, String status, String visitDate, String prefer, User user) {
         this.title = title;
         this.content = content;
         this.status = status;

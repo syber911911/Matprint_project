@@ -44,7 +44,6 @@ export class User {
     }
     async deleteUser(url) {
         try {
-            console.log(this.token)
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: this.headers,
@@ -55,6 +54,27 @@ export class User {
                 console.dir(response);
             } else {
                 console.error('Authentication failed: Token may be invalid or expired.');
+                console.error(`failed to request on ${url} api ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error("error:", error);
+        }
+    }
+
+    async uploadProfile(url, formData) {
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': this.token ? `Bearer ${this.token}` : ''
+                },
+                body: formData
+            });
+
+            if (response.status === 200) {
+                console.log(response);
+                window.location.replace('/users/profiles');
+            } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);
             }
         } catch (error) {

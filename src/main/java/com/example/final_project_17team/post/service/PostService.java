@@ -127,7 +127,7 @@ public class PostService {
 
     public ResponseDto crateComment(CreateCommentDto request, Long postId, String username) {
         User user = getUser(username);
-        Post post = getPost(postId, user);
+        Post post = getPost(postId);
 
         commentRepository.save(
                 Comment.builder()

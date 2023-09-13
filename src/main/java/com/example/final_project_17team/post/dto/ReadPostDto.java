@@ -12,7 +12,7 @@ public class ReadPostDto {
     private Long id;
     private String title;
     private String status;
-    private LocalDateTime visitDate;
+    private String visitDate;
     private String username;
 
     public static ReadPostDto fromEntity(Post post){

@@ -1,6 +1,6 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
-    //TODO localStorage.setItem : 로그인 구현시 삭제
-    localStorage.setItem('token', "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ODg4OCIsImlhdCI6MTY5NDI0MDg4NSwiZXhwIjoxNjk0MzI3Mjg1fQ.0OfhcONPssd_NoYtaND3NHYEgLSuK8qUcO1EDvCA20PLGlqVqsKFsYkKA1QJ9S98pZhpYS7bPDmMpiWo1DzTpg");
+    localStorage.setItem('token', "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0MTIzMTIzIiwiaWF0IjoxNjk0NTg5NDA2LCJleHAiOjE2OTQ2NzU4MDZ9.7-X2j3_p00R10T1BzEMkYkEaRdlXEobeN-Z0JJKSSl_vlu6okSDARj5RmEhXBSpq");
     const httpModule = await import("./service/HttpHandler.js");
     const userModule = await import("./service/User.js");
     const templateModule = await import("./service/Template.js");
@@ -12,22 +12,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     const goBackBtn = document.getElementById("goback");
     const logoutBtn = document.getElementById("logout");
     const leaveBtn = document.getElementById("leaveBtn");
+    const uploadBtn = document.getElementById("upload");
     const changeContentBox = document.getElementById('changecontentBox');
     const token = localStorage.getItem('token');
     const HttpHandler = new httpModule.HttpHandler(token);
     const User = new userModule.User(token);
-    const { likePostTemplate, postTemplate, profileTemplate } = templateModule;
+    const { likePostTemplate, postTemplate, profileTemplate, uploadTemplate, updateFormTemplate } = templateModule;
 
     const clear = () => changeContentBox.innerHTML = ``;
     const paint = (template) => changeContentBox.insertAdjacentHTML('afterbegin', template);
 
+    const handleUpload = (e) => {
+        e.preventDefault();
+        clear();
+        uploadTemplate(User, paint);
+    }
+    uploadBtn.addEventListener('click', handleUpload);
     const handleLeave = (e) => {
         e.preventDefault();
-        if (confirm("정말 회원 탈퇴하시겠습니까??") == true){
-            User.deleteUser('/profile');
-        }else{   //취소
-            return false;
-        }
+        User.deleteUser('/profile');
     }
     leaveBtn.addEventListener('click', handleLeave);
     const handleGoback = (e) => {
@@ -75,61 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showUpdateForm = async (e) => {
         e.preventDefault();
         clear();
-        const profile = await HttpHandler.request('/profile');
-        const { phone, age, gender, email } = profile;
-        paint(`
-    <form id="submitForm" action="/profile">
-    <div class ="form-group">
-        <label for = "email">email:</label>
-        <input value=${email} type = "email" id ="email" name = "email" required />
-    </div>
-    <div class ="form-group">
-        <label for = "phone">phone:</label>
-        <input value=${phone} type = "text" id ="phone" name = "phone" required />
-    </div>
-    <div class ="form-group">
-        <label for = "age">age:</label>
-        <input id="age" value="${age}" type="number" min="1" max="100" required>
-    </div>
-    <div class ="form-group">
-        <label for = "male">gender:</label>
-        <input value="남성" type ="radio" id ="male" name ="gender" required ${gender == "남성" ? "checked" : ""}>남성
-        <input value="여성" type ="radio" id ="female" name ="gender" required ${gender == "여성" ? "checked" : ""}>여성
-    </div>
-    <button id="submitBtn" type = "submit">수정</button>
-</form>
-    `)
-        let checked = document.querySelector('input[name="gender"]:checked').value;
-        const genderList = document.querySelectorAll('input[name="gender"]');
-        genderList.forEach((node) => {
-            node.addEventListener('change', (e) => {
-                e.preventDefault();
-                if (e.target.checked) {
-                    e.target.checked = true;
-                    checked = e.target.value;
-                } else {
-                    e.target.checked = false;
-                    checked = "";
-                }
-                if (node.checked) checked = node.value;
-            })
-        })
-
-        const handleSubmit = (e) => {
-            e.preventDefault();
-            const email = document.getElementById("email").value;
-            const phone = document.getElementById("phone").value;
-            const age = document.getElementById("age").value;
-            const formData = {
-                email,
-                phone,
-                age,
-                gender: checked
-            };
-            User.updateUser('/profile', formData);
-        }
-        const submitForm = document.getElementById("submitForm");
-        submitForm.addEventListener('submit', handleSubmit);
+        updateFormTemplate(HttpHandler, User, paint);
     }
 
     updateBtn.addEventListener("click", showUpdateForm);
