@@ -62,7 +62,7 @@ public class UserService implements UserDetailsManager {
                     .httpOnly(true)
                     .secure(true)
                     .sameSite("Lax")
-                    .domain("localhost")
+                    .domain("matprint.site")
                     .path("/")
                     .maxAge(3600 * 24 * 14)
                     .build();
@@ -71,7 +71,7 @@ public class UserService implements UserDetailsManager {
                     .httpOnly(true)
                     .secure(true)
                     .sameSite("Lax")
-                    .domain("localhost")
+                    .domain("matprint.site")
                     .path("/")
                     .build();
         }
@@ -83,14 +83,14 @@ public class UserService implements UserDetailsManager {
         if (autoLogin.equals("T")) {
             autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "T")
                     .sameSite("Lax")
-                    .domain("localhost")
+                    .domain("matprint.site")
                     .path("/")
                     .maxAge(3600 * 24 * 14)
                     .build();
         } else {
             autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "F")
                     .sameSite("Lax")
-                    .domain("localhost")
+                    .domain("matprint.site")
                     .path("/")
                     .build();
         }
