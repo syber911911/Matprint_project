@@ -46,12 +46,12 @@ public class JwtTokenUtils {
 //            String token = authHeader.split(" ")[1];
             jwtParser.parseClaimsJws(token);
             if (this.getUsernameFromJwt(token) == null) {
+                log.info("check login states by refresh token");
                 if (!redisRepository.existsByRefreshToken(token))
-                    log.info("check login states by refresh token");
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
             } else {
+                log.info("check login states by access token");
                 if (!redisRepository.existsByAccessToken(token)) {
-                    log.info("check login states by access token");
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
                     // 로그아웃 한 사용자의 access token 의 사용을 막기 위한 처리
                     // jwt 의 무상태성의 장점이 사라지는 것은 아닌지 고민되는 지점
