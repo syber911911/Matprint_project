@@ -103,7 +103,7 @@
       <input type="radio" id="rating1" name="rating" value="1" onclick="editRatings(1)"><label for="rating1" title="1점" id="rt1"></label>
     </fieldset><br>
     <div id="images">
-      <input type="file" name="image" accept="image/*">
+      <input id="imageInput" type="file" name="image" accept="image/*">
       <button onclick="uploadImage()">업로드</button>
     </div><br>
     <div style="width: 500px;">
@@ -137,20 +137,42 @@
   async function newReview() {
     await reissueToken();
     const token = localStorage.getItem('token');
-
     const content = document.getElementById('content').value;
-    let dt = { content, ratings };
-    if (imageList.length !== 0) dt = { content, ratings, imageList };
+
+    const fileInput = document.getElementById('imageInput');
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const imageData = e.target.result;
+        imageList.push(imageData);
+      }
+      reader.readAsDataURL(file);
+    }
+
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('ratings', ratings);
+    imageList.forEach((image, index) => {
+      formData.append(`addImageList[${index}]`, image);
+    });
 
     await fetch(`/${localStorage.getItem('rsId')}/review`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(dt),
-    });
-    await backToRestaurantPage();
+      body: formData,
+    })
+            .then(response => response.json())
+            .then(data => {
+              console.log('리뷰가 성공적으로 등록되었습니다.', data);
+              backToRestaurantPage();
+            })
+            .catch(error => {
+              console.error('리뷰 등록 중 오류가 발생했습니다.', error);
+            });
   }
 
   function uploadImage() {
@@ -164,6 +186,7 @@
         var imageData = e.target.result;
         imgList.push(imageData);
       }
+      alert(imageData);
       reader.readAsDataURL(file);
     }
   }

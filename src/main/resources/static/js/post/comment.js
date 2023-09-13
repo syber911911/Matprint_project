@@ -57,7 +57,9 @@ function displayComments(comments) {
            `;
             }
             commentElement.innerHTML = `
-                <p style="font-weight: bold;"><img src="${comment.imgUrl}" width="50px">${comment.username} : </p>
+                <div style="display: flex; align-items: center; overflow: visible;">
+                <img src="${comment.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .4); width:30px; object-fit: cover; position:relative; top:5px; right:-7px;">
+                <b style="margin-left:10px width:30px; object-fit: cover; position:relative; top:5px; right:-12px;;">${comment.username}</b></div>
                 <p class="content" style="background-color: white; padding: 10px; margin: 10px 0;">${comment.content}</p>
                 <p style="text-align: right;">${buttonsHTML}</p>
              `;
