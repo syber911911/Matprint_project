@@ -88,7 +88,7 @@
                 <div class="row" id="search-result">
                     <ul class="list-group list-group-flush" id="result-list">
                         <li class="list-group-item" v-for="result in search_result">
-                            <a href="#detailSection" class="detail-link" data-name="{{ result.name }}" data-address="{{ result.address }}">{{ result.name }}</a>
+                            <a href="#" class="detail-link" :data-name="result.name" :data-address="result.address">{{ result.name }}</a>
                             <div class="result-roadAddress">{{ result.roadAddress }}</div>
                             <!-- Add other properties you want to display here -->
                         </li>

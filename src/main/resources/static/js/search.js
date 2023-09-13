@@ -150,15 +150,20 @@
             window.location.href = newURL;
         });
 
-        $(".container").on("click", ".detail-link", function (event) {
-            event.preventDefault();
+        $("body").on("click", "a.detail-link", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
 
-            var name = $(this).data('name');
-            var address = $(this).data('address');
+            // Extract the data-name and data-address attributes
+            var name = $(this).data("name");
+            var address = $(this).data("address");
 
-            var newURL = "https://matprint.site/matprint/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+            // Check if name and address are correctly extracted (for debugging)
+            console.log("Name: " + name);
+            console.log("Address: " + address);
 
-            window.location.href = newURL;
+            // URL creation and page redirection
+            var url = "https://matprint.site/matprint/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+            window.location.href = url;
         });
     });
 
