@@ -129,8 +129,6 @@
     const params = new URL(location.href).searchParams;
     reissueToken();
     localStorage.setItem('rsId', params.get("restaurantId"));
-    localStorage.setItem('rvId', params.get("reviewId"));
-    getReviewInfo(params.get("restaurantId"), params.get("reviewId"), localStorage.getItem('token'));
   }
 
   async function newReview() {
