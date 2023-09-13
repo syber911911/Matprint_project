@@ -14,11 +14,16 @@ function logout() {
         .then(response => {
             if (response.ok) {
                 localStorage.removeItem('token');
-                window.location.href = "/matprint/main"; // 메인 페이지로 이동
+                localStorage.removeItem('autoLogin');
+                // 로그아웃 성공 시 메인 페이지로 이동하고 뒤로가기 막기
+                window.location.replace("/matprint/main");
+                // 브라우저의 페이지 이동 기록을 제거
+                window.history.pushState({}, '', '/matprint/main');
             } else {
                 console.error('로그아웃 실패:', response.statusText);
                 // 오류 발생 시에도 토큰 삭제 후 리다이렉트
                 localStorage.removeItem('token');
+                localStorage.removeItem('autoLogin');
                 window.location.href = '/matprint/main';
             }
         })
@@ -47,7 +52,7 @@ window.onload = function () {
     checkLogin();
 }
 
-// window.onunload = function() {
+// window.onbeforeunload = function() {
 //     const autoLogin = localStorage.getItem('autoLogin');
 //
 //     if (autoLogin === 'F') {
