@@ -15,7 +15,6 @@ export class HttpHandler {
 
             if (response.status === 200) {
                 const data = await response.json();
-                console.log(data);
                 return data;
             } else {
                 console.error(`failed to request on ${url} api`);

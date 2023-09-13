@@ -103,22 +103,21 @@ public class PostService {
     // 검색어를 통한 글 검색
     public Page<ReadPostDto> searchPost(String type, String keyword, String gender, Integer age, String status, Integer pageNumber, Integer pageSize) {
         Specification<Post> spec = (root, query, criteriaBuilder) -> null;
-        if (keyword.isBlank() || keyword.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어를 입력해주세요.");
-
-        switch (type) {
-            case "제목" -> spec = spec.and(PostSpecification.containsTitle(keyword));
-            case "내용" -> spec = spec.and(PostSpecification.containsContent(keyword));
-            case "작성자" -> spec = spec.and(PostSpecification.equalUsername(keyword));
+        if (!keyword.isBlank() || !keyword.isEmpty()) {
+            switch (type) {
+                case "제목" -> spec = spec.and(PostSpecification.containsTitle(keyword));
+                case "내용" -> spec = spec.and(PostSpecification.containsContent(keyword));
+                case "작성자" -> spec = spec.and(PostSpecification.equalUsername(keyword));
+            }
         }
 
-        if (!gender.isEmpty())
+        if (!gender.isBlank())
             spec = spec.and(PostSpecification.equalGender(gender));
 
         if (!age.equals(0))
             spec = spec.and(PostSpecification.inBoundAge(age));
 
-        if (!status.isEmpty())
+        if (!status.isBlank())
             spec = spec.and(PostSpecification.equalStatus(status));
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());

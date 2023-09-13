@@ -19,6 +19,7 @@ public class UserProfile {
         userProfile.setEmail(user.getEmail());
         userProfile.setGender(user.getGender());
         userProfile.setAge(user.getAge());
+        userProfile.setImgUrl(user.getImgUrl());
         return userProfile;
     }
 }

@@ -8,7 +8,7 @@ public class UserPageController {
 
     @GetMapping("/users/profiles")
     public String MyPage() {
-        return "myPage/myPage";
+        return "html/myPage";
     }
 }
 

@@ -1,0 +1,139 @@
+/* ResetCss */
+
+body {
+    cursor: default;
+    background-color: #f2f2f2;
+    margin: 0;
+    font-family: 'Spoqa Han Sans Neo', sans-serif;
+}
+
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+}
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+button {
+    margin-bottom: 10px;
+    padding: 10px 20px; /* 버튼의 내부 여백을 추가하여 가로 길이를 늘립니다. */
+}
+
+button,
+textarea,
+input {
+    font-size: 16px;
+    font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    border: none;
+    background-color: #fff;
+}
+
+button:focus,
+button:active,
+textarea:focus,
+textarea:active,
+input:focus,
+input:active {
+    outline: none;
+    box-shadow: none;
+}
+
+ul,
+ol,
+li {
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+body {
+    background-color: #f2f2f2;
+}
+
+.main {
+    display: flex;
+}
+
+.header {
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.col-1 {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-basis: 33.333333%;
+}
+
+.col-2 {
+    flex-basis: 66.666667%;
+    margin-left: 20px;
+    padding: 20px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    margin-bottom: 10px;
+}
+
+.changecontentBox__user {
+    column-gap: 4rem;
+}
+
+.changecontentBox__user__image {
+    flex-basis: 33.333333%;
+}
+
+.changecontentBox__user-info {
+    flex-basis: 66.666667%;
+}
+
+
+.changecontentBox__user__image-profile {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
