@@ -3,7 +3,6 @@ console.log('게시글 ID:', postId);
 let headers = {
     'Content-Type': 'application/json'
 };
-const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 if (token) {
     headers['Authorization'] = `Bearer ${token}`;
 }

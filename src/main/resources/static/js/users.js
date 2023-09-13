@@ -1,3 +1,4 @@
+let token = localStorage.getItem('token') || sessionStorage.getItem('token');
 let header = {};
 if (token) {
     header['Authorization'] = `Bearer ${token}`;
