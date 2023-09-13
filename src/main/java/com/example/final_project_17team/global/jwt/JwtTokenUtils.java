@@ -46,9 +46,11 @@ public class JwtTokenUtils {
 //            String token = authHeader.split(" ")[1];
             jwtParser.parseClaimsJws(token);
             if (this.getUsernameFromJwt(token) == null) {
+                log.info("check login states by refresh token");
                 if (!redisRepository.existsByRefreshToken(token))
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
             } else {
+                log.info("check login states by access token");
                 if (!redisRepository.existsByAccessToken(token)) {
                     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이력이 없습니다.");
                     // 로그아웃 한 사용자의 access token 의 사용을 막기 위한 처리
