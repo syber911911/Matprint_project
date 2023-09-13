@@ -106,8 +106,8 @@ public class PostService {
     // 검색어를 통한 글 검색
     public Page<ReadPostDto> searchPost(String type, String keyword, String gender, Integer age, String status, Integer pageNumber, Integer pageSize) {
         Specification<Post> spec = (root, query, criteriaBuilder) -> null;
-        if (keyword.isBlank() || keyword.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어를 입력해주세요.");
+//        if (keyword.isBlank() || keyword.isEmpty())
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어를 입력해주세요.");
 
         switch (type) {
             case "제목" -> spec = spec.and(PostSpecification.containsTitle(keyword));

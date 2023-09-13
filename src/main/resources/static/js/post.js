@@ -10,7 +10,7 @@ function fetchPosts(pageNumber = 0, pageSize = 10) {
         .then(data => {
             // 게시물이 없을 경우 알림을 표시
             if (data.length === 0) {
-                showNoPostsAlert();
+                // showNoPostsAlert();
             } else {
                 // 게시물이 있을 경우 게시물을 표시
                 displayPosts(data);
@@ -20,12 +20,6 @@ function fetchPosts(pageNumber = 0, pageSize = 10) {
         .catch(error => {
             console.error('게시물을 불러오는 중 오류 발생:', error);
         });
-}
-
-// 게시물이 없을 때 알림 표시
-function showNoPostsAlert() {
-    const alertDiv = document.getElementById('no-posts-alert');
-    alertDiv.style.display = 'block'; // 알림을 보이도록 변경
 }
 
 // 게시물 표시

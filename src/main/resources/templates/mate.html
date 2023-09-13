@@ -27,8 +27,8 @@
      min-height: calc(90vh - (40px + (10px * 2)));
      display:flex;
      flex-direction : column;
-     height: 90vh; /* 페이지 높이를 화면의 90%로 설정 */
-     overflow-y: auto; /* Y 축 스크롤을 활성화하여 내용이 넘칠 때 스크롤을 표시 */
+     height: 90vh;
+     overflow-y: auto;
    }
    .--logo-image{
      font-size :30px;
@@ -61,35 +61,40 @@
        text-align:center;
        padding-top :20px;
    }
-   .alert {
-       background-color: #f44336;
-       color: white;
-       padding: 15px;
-       text-align: center;
-       position: fixed;
-       top: 0;
-       left: 0;
-       right: 0;
-       z-index: 1000; /* 다른 엘리먼트보다 위에 표시 */
-       display: none; /* 초기에는 숨겨진 상태로 설정 */
-   }
    nav {
-       background-color: #333; /* 네비게이션 바 배경색 */
-       color: white; /* 텍스트 색상 */
-       padding: 10px; /* 패딩 */
+       background-color: #FAECC5;
+       color: white;
+       padding: 20px;
+       align-items: center;
    }
    nav a {
-       color: white; /* 링크 텍스트 색상 */
+       color: white;
        text-decoration: none; /* 링크 텍스트에 밑줄 제거 */
-       margin-right: 20px; /* 링크 사이 간격 */
+       margin-right: 20px;
        font-size: 14px;
+   }
+   #create-post-button {
+       float: right;
+       background-color: #8C8C8C;
+       color: white;
+       border: none;
+       padding: 10px 20px;
+       cursor: pointer;
+       border-radius: 5px;
+       text-decoration: none; /* 텍스트에 밑줄 제거 */
+       font-weight: bold;
+       vertical-align: middle;
+       margin-top: -7px;
+   }
+   #create-post-button:hover {
+       background-color: #555; /* 마우스 호버 시 배경색 변경 */
    }
    .pagination {
        text-align: center;
        margin-top: 40px;
    }
    .pagination button {
-       background-color: #333;
+       background-color: #8C8C8C;
        color: white;
        border: none;
        padding: 8px 16px;
@@ -122,9 +127,33 @@
         <a href="/matprint/login">로그인</a>
     </div>
 </header>
-
 <nav>
     <a href="/matprint/mate/create" id="create-post-button">게시글 생성</a>
+    <select id="search-type-select">
+        <option value="제목">제목으로 검색</option>
+        <option value="내용">내용으로 검색</option>
+        <option value="작성자">작성자로 검색</option>
+    </select>
+    <input type="text" id="keyword-input" placeholder="검색어를 입력하세요">
+    <select id="gender-select">
+        <option value="">모든 성별</option>
+        <option value="남성">남성</option>
+        <option value="여성">여성</option>
+    </select>
+    <select id="age-range-select">
+        <option value="">모든 나이대</option>
+        <option value="10">10대</option>
+        <option value="20">20대</option>
+        <option value="30">30대</option>
+        <option value="40">40대</option>
+        <option value="50">50대</option>
+    </select>
+    <select id="status-select">
+        <option value="">모든 상태</option>
+        <option value="모집 중">모집 중</option>
+        <option value="모집 완료">모집 완료</option>
+    </select>
+    <button id="search-button">검색하기</button>
 </nav>
 
 <main class="--main">
@@ -150,16 +179,11 @@
     </div>
 </main>
 
-<!-- 알림을 표시 -->
-<div class="alert" id="no-posts-alert" style="display: none;">
-    작성된 글이 없습니다.
-</div>
-
-
 <footer class="--footer">
   ©2023 Mutsa-Backend-School-JDK17. All rights reserved.
 </footer>
 <script src="/js/users.js"></script>
 <script src="/js/post.js"></script>
+<script src="/js/post/postsearch.js"></script>
 </body>
 </html>

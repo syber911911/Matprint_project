@@ -17,7 +17,6 @@
         });
     });
 
-    // Enter key press handling (optional)
     $("#searchBox").keydown(function (key) {
         if (key.keyCode === 13) {
             const query = $("#searchBox").val();
