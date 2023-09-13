@@ -4,62 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/mvp.css">
     <style>
-        .header {
-            justify-content: space-between;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f2f2f2;
-            padding: 10px 20px;
-        }
-
-        body {
-            background-color: #f2f2f2;
-        }
-
-        .main {
-            display: flex;
-        }
-
-        .col-1 {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .buttons {
-            display: flex;
-            flex-direction: column;
-        }
-
-        button {
-            margin-bottom: 10px;
-        }
-
-        .col-2 {
-            width: 700px;
-            margin-left: 20px;
-            padding: 20px;
-            border: 1px solid #000;
-            border-radius: 5px;
-            background-color: #ffffff;
-        }
-
-        #logout,
-        #goback {
-            margin: 0;
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #goback {
-            margin-right: 10px;
-        }
     </style>
     <script defer type="text/javascript" src="/js/myPage.js"></script>
 </head>
@@ -69,18 +16,20 @@
     <button id="goback">뒤로가기</button>
     <button id="logout">로그아웃</button>
 </header>
-<main class="main grid">
+<main class="main">
     <div class="col-1">
         <div class="buttons">
             <button id="myInfo">내 정보</button>
             <button id="likePost">즐겨찾기</button>
             <button id="myPost">내 게시글</button>
-            <button id="update">내 정보 수정</button>
-            <button id="leaveBtn">회원 탈퇴</button>
+            <button id="update">회원정보 수정</button>
+            <button id="upload">프로필업로드</button>
+            <button id="leaveBtn">탈퇴</button>
         </div>
     </div>
     <div class="col-2">
         <div id="changecontentBox">
+
         </div>
     </div>
 </main>
