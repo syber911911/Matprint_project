@@ -2,33 +2,20 @@ export const profileTemplate = async (HttpHandler, paint) => {
     const user = await HttpHandler.request('/profile');
     const { username, gender, email, age, phone, imgUrl } = user;
     paint(`
-    <ul class="flex changecontentBox__user">
-                    <li class="flex changecontentBox__user__image items-center justify-center">
+    <div class="flex changecontentBox__user">
+                    <div class="flex changecontentBox__user__image items-center justify-center">
                         <img src=${imgUrl ? imgUrl : "https://picsum.photos/300/300"} class="changecontentBox__user__image-profile"></img>
-                    </li>
-                    <li class="flex-col changecontentBox__user-info">
-                        <div class="field">
-                            <h3>사용자명:</h3>
-                            <p>${username}</p>
-                        </div>
-                        <div class="field">
-                            <h3>성별:</h3>
-                            <p>${gender}</p>
-                        </div>
-                        <div class="field">
-                            <h3>나이:</h3>
-                            <p>${age}</p>
-                        </div>
-                        <div class="field">
-                            <h3>이메일:</h3>
-                            <p>${email}</p>
-                        </div>
-                        <div class="field">
-                            <h3>휴대폰 번호:</h3>
-                            <p>${phone}</p>
-                        </div>
-                    </li>
-                </ul>
+                    </div>
+                    <div class="flex-col changecontentBox__user-info">
+                        <ul class="" style="list-style: none;" >
+                            <li style="margin-bottom: 0.5rem;"><h3>사용자명:</h3><span>${username}</span></li>
+                            <li style="margin-bottom: 0.5rem;"><h3>성별:</h3><span>${gender}</span></li>
+                            <li style="margin-bottom: 0.5rem;"><h3>나이:</h3><span>${age}</span></li>
+                            <li style="margin-bottom: 0.5rem;"><h3>이메일:</h3><span>${email}</span></li>
+                            <li style="margin-bottom: 0.5rem;"><h3>휴대폰번호:</h3><span>${phone}</span></li>
+                        </ul>
+                    </div>
+                </div>
     `)
 }
 export const likePostTemplate = async (HttpHandler, paint) => {
@@ -36,22 +23,16 @@ export const likePostTemplate = async (HttpHandler, paint) => {
     posts.map(post => {
         const { restaurantName, address, roadAddress } = post;
         paint(`
-        <ul>
-        <li class="flex">
-            <div class="field">
-                <h3>가게명:</h3>
-                <p>${restaurantName}</p>
-            </div>
-            <div class="field">
-                <h3>주소:</h3>
-                <p>${address}</p>
-            </div>
-            <div class="field">
-                <h3>도로주소:</h3>
-                <p>${roadAddress}</p>
-            </div>
-        </li>
-    </ul>
+
+        <ul class="" style="list-style: none;">
+            <li><h3>가게명:</h3><span>${restaurantName}</span></li>
+            <li><h3>주소:</h3><span>${address}</span></li>
+            <li><h3>도로주소:</h3><span>${roadAddress}</span></li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+        </ul>
+
     `)
     })
 }
@@ -70,22 +51,18 @@ export const postTemplate = async (HttpHandler, paint) => {
     posts.map(post => {
         const { title, status, visitDate } = post;
         paint(`
-        <ul>
-                <li class="flex">
-                    <div class="field">
-                        <h3>제목:</h3>
-                        <p>${title}</p>
-                    </div>
-                    <div class="field">
-                        <h3>모집상태:</h3>
-                        <p>${status}</p>
-                    </div>
-                    <div class="field">
-                        <h3>방문날짜:</h3>
-                        <p>${formatTime(visitDate)}</p>
-                    </div>
-                </li>
-            </ul>
+                <table>
+                    <tr>
+                        <th>제목:</th>
+                        <th>모집상태:</th>
+                        <th>방문날짜:</th>
+                    </tr>
+                    <tr>
+                        <td>${title}</td>
+                        <td>${status}</td>
+                        <td>${visitDate}</td>
+                    </tr>
+                </table>
     `)
     })
 }

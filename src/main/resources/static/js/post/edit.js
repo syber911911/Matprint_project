@@ -6,8 +6,6 @@ function isAuthor(postUsername) {
     return postUsername === currentUsername; // 글쓴이와 현재 로그인된 사용자가 일치하면 true 반환
 }
 
-const token = localStorage.getItem('token');
-
 // 수정 버튼 클릭 시 동작
 const editButton = document.getElementById('edit-button');
 const postEditForm = document.getElementById('post-edit-form');
@@ -56,10 +54,7 @@ editForm.addEventListener('submit', (event) => {
     // 서버로 수정된 데이터 전송
     fetch(`/mate/${postId}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: headers,
         body: JSON.stringify({
             title: updatedTitle,
             content: updatedContent,
@@ -89,10 +84,7 @@ deleteButton.addEventListener('click', () => {
     if (confirmation) {
         fetch(`/mate/${postId}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: headers,
         })
             .then(response => {
                 if (!response.ok) {
@@ -124,7 +116,7 @@ window.onload = function() {
     fetchPostDetail()
         .then(postUsername => {
             console.log("Post author: ", postUsername); // 게시글 작성자 출력
-            const currentToken = localStorage.getItem('token'); // 로컬 스토리지에서 토큰을 가져옴
+            const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
             const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
             const currentUsername = payload.sub; // 토큰에서 username 추출
             console.log("Logged in user: ", currentUsername); // 현재 로그인된 사용자 출력

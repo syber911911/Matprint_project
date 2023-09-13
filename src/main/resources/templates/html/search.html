@@ -21,6 +21,10 @@
                 font-size: 18px;
             }
 
+            .search-box{
+                margin-bottom: 50px;
+            }
+
             .detail-link {
                 font-size: 18px;
             }
@@ -59,7 +63,7 @@
                 <a href="#influencerSection" class="category-link" id="influencerSectionLink">🔍 인플루언서 맛집 찾기</a>
             </div>
             <div class="col-3">
-                <a href="#mateSection" class="category-link">🙋‍ 동행 찾기</a>
+                <a href="#mateSection" class="category-link" id="mateSectionLink">🙋‍ 동행 찾기</a>
             </div>
             <div class="col-3">
                 <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>
@@ -67,7 +71,7 @@
         </div>
 
         <!-- search -->
-        <div class="row">
+        <div class="row search-box">
             <div class="col-sm-8 col-md-8">
                 <input id="searchBox" style="width:80%; height: 46px" class="form-control form-control-lg" type="text" placeholder="맛집을 검색해주세요 (지역명이나 음식점으로 검색해주세요)" >
             </div>
@@ -88,7 +92,7 @@
                 <div class="row" id="search-result">
                     <ul class="list-group list-group-flush" id="result-list">
                         <li class="list-group-item" v-for="result in search_result">
-                            <a href="#detailSection" class="detail-link">{{ result.name }}</a>
+                            <a href="#" class="detail-link" :data-name="result.name" :data-address="result.address">{{ result.name }}</a>
                             <div class="result-roadAddress">{{ result.roadAddress }}</div>
                             <!-- Add other properties you want to display here -->
                         </li>

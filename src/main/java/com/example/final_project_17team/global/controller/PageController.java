@@ -2,7 +2,6 @@ package com.example.final_project_17team.global.controller;
 
 import jakarta.persistence.Entity;
 import org.springframework.boot.Banner;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

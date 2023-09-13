@@ -280,15 +280,31 @@
             window.location.href = newURL;
         });
 
-        $(".container").on("click", ".detail-link", function (event) {
-            event.preventDefault();
+        // "동행페이지" 링크 클릭 이벤트 처리
+        $("#mateSectionLink").click(function (event) {
+            event.preventDefault(); // 기본 링크 동작을 막습니다.
 
-            var name = $(this).data('name');
-            var address = $(this).data('address');
+            // 이동할 URL 설정
+            var newURL = "https://matprint.site/matprint/mate";
 
-            var newURL = "https://matprint.site/restaurant?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
-
+            // 페이지를 새 URL로 이동함
             window.location.href = newURL;
+        });
+
+        $("body").on("click", "a.detail-link", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+
+            // Extract the data-name and data-address attributes
+            var name = $(this).data("name");
+            var address = $(this).data("address");
+
+            // Check if name and address are correctly extracted (for debugging)
+            console.log("Name: " + name);
+            console.log("Address: " + address);
+
+            // URL creation and page redirection
+            var url = "https://matprint.site/matprint/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+            window.location.href = url;
         });
     });
 

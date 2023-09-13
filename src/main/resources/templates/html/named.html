@@ -94,7 +94,7 @@
             <a href="#localSection" class="category-link" id="localSectionLink">🔍 지역별 맛집 검색</a>
         </div>
         <div class="col-3">
-            <a href="#mateSection" class="category-link">🙋‍ 동행 찾기</a>
+            <a href="#mateSection" class="category-link" id="mateSectionLink">🙋‍ 동행 찾기</a>
         </div>
         <div class="col-3">
             <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>
@@ -132,7 +132,7 @@
                     <li class="list-group-item" v-for="result in search_result">
                         <div class="row">
                             <div class="col-md-6">
-                                <a href="#detailSection" class="detail-link" data-name="{{ result.name }}" data-address="{{ result.address }}">{{ result.name }}</a>
+                                <a href="#" class="detail-link" :data-name="result.name" :data-address="result.address">{{ result.name }}</a>
                                 <!-- Add any other properties you want -->
                             </div>
                             <div class="col-md-6">

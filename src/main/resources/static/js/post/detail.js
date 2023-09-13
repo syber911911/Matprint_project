@@ -60,4 +60,14 @@ function displayPostDetail(post) {
     genderElement.textContent = post ? post.gender || '' : '';
     visitDateElement.textContent = post ? post.visitDate || '' : '';
     statusElement.textContent = post ? post.status || '' : '';
+
+    if (post && post.username) {
+        usernameElement.innerHTML =
+            `<div style="display: flex; align-items: center;">
+            <img src="${post.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .5); width:50px;">
+            <b style="margin-left:10px;">${post.username}</b>
+         </div>`;
+    } else {
+        usernameElement.textContent = '';
+    }
 }

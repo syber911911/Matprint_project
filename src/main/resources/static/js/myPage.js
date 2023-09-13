@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
-    localStorage.setItem('token', "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0MTIzMTIzIiwiaWF0IjoxNjk0NTgyODA2LCJleHAiOjE2OTQ2NjkyMDZ9.1AQPLibFTN_iKohnI6lvyQf_SBBpnCaqOrViYVvUgB1AZt2qDujALzt5Gib4n2LZ");
+
     const httpModule = await import("./service/HttpHandler.js");
     const userModule = await import("./service/User.js");
     const templateModule = await import("./service/Template.js");
@@ -28,14 +28,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         uploadTemplate(User, paint);
     }
     uploadBtn.addEventListener('click', handleUpload);
+
     const handleLeave = (e) => {
         e.preventDefault();
-        User.deleteUser('/profile');
+        const confirmed = confirm("정말 회원 탈퇴하시겠습니까??");
+        if (confirmed) {
+            User.deleteUser('/profile');
+        } else {
+            console.log("회원 탈퇴가 취소되었습니다.");
+        }
     }
     leaveBtn.addEventListener('click', handleLeave);
+
     const handleGoback = (e) => {
         e.preventDefault();
-        window.location.replace('/main');
+        window.location.replace('/matprint/main');
     }
     goBackBtn.addEventListener('click', handleGoback);
     const showProfile = async () => {
@@ -56,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const handleLogout = (e) => {
         e.preventDefault();
-        User.logout('/logout');
+        User.logout('/matprint/login');
     }
     logoutBtn.addEventListener('click', handleLogout);
 

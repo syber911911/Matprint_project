@@ -11,12 +11,14 @@ public class CommentDto {
     private Long id;
     private String content;
     private String username;
+    private String imgUrl;
 
     public static CommentDto fromEntity(Comment comment){
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setUsername(comment.getUser().getUsername());
         commentDto.setContent(comment.getContent());
+        commentDto.setImgUrl(comment.getUser().getImgUrl());
         return commentDto;
     }
 
