@@ -1,5 +1,5 @@
 function isAuthor(postUsername) {
-    const currentToken = localStorage.getItem('token');
+    const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
     const currentUsername = payload.sub; // 토큰에서 username 추출
 

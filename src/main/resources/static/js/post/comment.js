@@ -1,7 +1,7 @@
 console.log('게시글 ID:', postId);
 
 function isAuthor(commentUsername) {
-    const currentToken = localStorage.getItem('token');
+    const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
     const currentUsername = payload.sub; // 토큰에서 username 추출
 
@@ -65,7 +65,7 @@ const commentForm = document.getElementById('comment-form');
 commentForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const commentTextarea = document.getElementById('comment');
     const commentText = commentTextarea.value;
 
@@ -127,7 +127,7 @@ function deleteComment(commentId) {
 }
 
 function editComment(commentId) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const commentElement = document.querySelector(`#comments-list #comment-${commentId}`);
     const contentElement = commentElement.querySelector('.content');
     const originalContent = contentElement.textContent;

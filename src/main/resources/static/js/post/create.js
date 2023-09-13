@@ -1,5 +1,5 @@
 function createPost(title, content, visitDate, prefer) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const data = {
         title,
         content,

@@ -3,7 +3,7 @@ document.getElementById('logout-button').addEventListener('click', function() {
 });
 
 function logout() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     return fetch(`/logout`, {
         method: 'POST',
@@ -15,6 +15,8 @@ function logout() {
             if (response.ok) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('autoLogin');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('autoLogin');
                 // 로그아웃 성공 시 메인 페이지로 이동하고 뒤로가기 막기
                 window.location.replace("/matprint/main");
                 // 브라우저의 페이지 이동 기록을 제거
@@ -24,6 +26,8 @@ function logout() {
                 // 오류 발생 시에도 토큰 삭제 후 리다이렉트
                 localStorage.removeItem('token');
                 localStorage.removeItem('autoLogin');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('autoLogin');
                 window.location.href = '/matprint/main';
             }
         })
@@ -31,7 +35,7 @@ function logout() {
 }
 
 function checkLogin() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const loginContainer = document.querySelector('.--login-container');
     const notLoginContainer = document.querySelector('.--not-login-container');
 
@@ -50,6 +54,8 @@ function checkLogin() {
 
 window.onload = function () {
     checkLogin();
+    console.log("토큰 확인",localStorage.getItem('token'));
+    console.log("토큰 확인",sessionStorage.getItem('token'));
 }
 
 // window.onbeforeunload = function() {
