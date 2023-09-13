@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (token) {
         showProfile(token)
     } else {
-        console.error('토큰이 로컬 스토리지에 없습니다.');
+        console.error('토큰이 없습니다.');
     }
     const showInfo = (e) => {
         e.preventDefault();
