@@ -81,10 +81,10 @@
       this.value = 'F';
     }
   });
-  function login(username, password, autoLogin) { // autoLogin parameter added
+  function login(username, password, autoLogin) {
     const data = { username, password };
 
-    return fetch(`/login?autoLogin=${autoLogin}`, { // Query parameter added to URL
+    return fetch(`/login?autoLogin=${autoLogin}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -94,8 +94,9 @@
             .then(response => response.json())
             .then(data => {
               if (data.accessToken) { // token이 반환되면 성공적으로 로그인된 것임.
-                localStorage.setItem('token', data.accessToken); // token을 localStorage에 저장
-                window.location.href = "/matprint/main"; // 메인 페이지로 이동
+                localStorage.setItem('token', data.accessToken);
+                localStorage.setItem('autoLogin', autoLogin);
+                window.location.href = "/matprint/main";
               } else {
                 alert(data.message);
               }

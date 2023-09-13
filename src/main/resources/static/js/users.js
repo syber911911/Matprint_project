@@ -47,6 +47,15 @@ window.onload = function () {
     checkLogin();
 }
 
+window.onunload = function() {
+    const autoLogin = localStorage.getItem('autoLogin');
+
+    if (autoLogin === 'F') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('autoLogin');
+    }
+};
+
 // // 서버에 토큰 재발급 요청
 // function fetchTokenRefresh() {
 //     const token = localStorage.getItem('token');

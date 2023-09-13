@@ -68,7 +68,7 @@ editForm.addEventListener('submit', (event) => {
         })
     })
         .then(response => {
-            if (!response.ok) {  // 여기서 수정했습니다.
+            if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
@@ -95,7 +95,7 @@ deleteButton.addEventListener('click', () => {
             }
         })
             .then(response => {
-                if (!response.ok) { // response.ok 값이 false인 경우 (HTTP 상태 코드가 200~299 범위에 없는 경우)
+                if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();

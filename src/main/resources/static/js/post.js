@@ -63,8 +63,7 @@ fetchPosts();
 let pageNumberSpan;
 let prevPageButton;
 let nextPageButton;
-// 페이지 번호는 처음에는 0부터 시작
-var currentPage=0;
+let currentPage=0;
 
 window.onload=function(){
 
