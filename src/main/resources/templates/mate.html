@@ -37,12 +37,16 @@
         }
         .--logo-image{
             font-size :30px;
+            text-decoration: none;
+            cursor: pointer;
         }
         .--login-container a{
             margin-right: 20px;
+            text-decoration: none;
         }
         .--not-login-container{
             margin-right: 20px;
+            text-decoration: none;
         }
         .--main{
             padding :20px;
@@ -126,12 +130,15 @@
             border-radius:5px;
             color:white;
         }
+        #search-button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
 <header class="--header">
     <div class="--logo">
-        <div class="--logo-image">🍔 맛자국</div>
+        <div class="--logo-image" onclick="location.href='/'">🍔 맛자국</div>
     </div>
     <!-- 로그인/로그아웃과 마이페이지 링크 -->
     <div class="--login-container">
