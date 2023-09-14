@@ -111,7 +111,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "https://matprint.site/matprint/named";
+            var newURL = "https://matprint.site/named";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
@@ -122,7 +122,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "https://matprint.site/matprint/myPage";
+            var newURL = "https://matprint.site/myPage";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
@@ -133,7 +133,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "https://matprint.site/matprint/main";
+            var newURL = "https://matprint.site";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
@@ -144,7 +144,7 @@
             event.preventDefault(); // 기본 링크 동작을 막습니다.
 
             // 이동할 URL 설정
-            var newURL = "https://matprint.site/matprint/mate";
+            var newURL = "https://matprint.site/mate";
 
             // 페이지를 새 URL로 이동함
             window.location.href = newURL;
@@ -162,7 +162,7 @@
             console.log("Address: " + address);
 
             // URL creation and page redirection
-            var url = "https://matprint.site/matprint/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+            var url = "https://matprint.site/restaurant/detail?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
             window.location.href = url;
         });
     });
