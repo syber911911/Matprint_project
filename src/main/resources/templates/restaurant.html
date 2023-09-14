@@ -145,7 +145,6 @@
         let data = await response.text();
         if (data.includes("true")) document.getElementById('wish').checked = true;
     }
-
     /* refreshToken으로 accessToken 재발급 */
     async function reissueToken() {
         if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
