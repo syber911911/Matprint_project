@@ -58,7 +58,16 @@ function displayPostDetail(post) {
     usernameElement.textContent = post ? post.username || '' : '';
     ageElement.textContent = post ? post.age || '' : '';
     genderElement.textContent = post ? post.gender || '' : '';
-    visitDateElement.textContent = post ? post.visitDate || '' : '';
+    // visitDateElement.textContent = post ? post.visitDate || '' : '';
+
+    // 방문 날짜 포맷 변경
+    if (post && post.visitDate) {
+        const dateParts = new Date(post.visitDate).toLocaleDateString('ko-KR').split('.');
+        visitDateElement.textContent =
+            `${dateParts[0]}.${dateParts[1]}.${dateParts[2]}`;
+    } else {
+        visitDateElement.textContent = '';
+    }
     statusElement.textContent = post ? post.status || '' : '';
 
     if (post && post.username) {
