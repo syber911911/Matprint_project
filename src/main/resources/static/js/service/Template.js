@@ -36,10 +36,11 @@ export const likePostTemplate = async (HttpHandler, paint) => {
 
         <ul class="" style="list-style: none;">
             <li>
-            <h3>가게명:
-            <a href=${url}>
-                </h3><span>${restaurantName}</span></li>
-            </a>
+                <h3>가게명:</h3>
+                <a href=${url}>
+                    <span>${restaurantName}</span>
+                </a>
+            </li>
         </ul>
 
     `)
