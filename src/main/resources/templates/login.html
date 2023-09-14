@@ -70,7 +70,7 @@
     <label for="autoLogin">자동 로그인</label>
     <input type="checkbox" id="autoLogin" name="autoLogin" value="F">
     <button type = "submit">로그인</button>
-    <a href="/matprint/join"><button type = "button">회원가입</button></a>
+    <a href="/join"><button type = "button">회원가입</button></a>
   </form>
 </div>
 <script>
@@ -85,7 +85,7 @@
   function login(username, password, autoLogin) {
     const data = { username, password };
 
-    return fetch(`/login?autoLogin=${autoLogin}`, {
+    return fetch(`api/login?autoLogin=${autoLogin}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@
                   sessionStorage.setItem('token', data.accessToken);
                   sessionStorage.setItem('autoLogin', autoLogin);
                 }
-                window.location.href = "/matprint/main";
+                window.location.href = "/";
               } else {
                 alert(data.message);
               }

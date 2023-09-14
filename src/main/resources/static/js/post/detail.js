@@ -5,7 +5,7 @@ window.onload = function() {
 // 현재 페이지의 URL 가져오기
 const currentUrl = window.location.href;
 // URL에서 컨텍스트 경로를 제외한 나머지 경로 가져오기
-const pathWithoutContext = currentUrl.replace("http://localhost:8080/matprint", "");
+const pathWithoutContext = currentUrl.replace("http://localhost:8080", "");
 // const pathWithoutContext = currentUrl.replace("https://matprint.site/matprint", "");
 // 경로에서 게시글 ID를 추출
 const postId = pathWithoutContext.split('/')[2];
@@ -17,7 +17,7 @@ function fetchPostDetail() {
             reject('게시글 ID가 유효하지 않습니다.');
             return;
         }
-        fetch(`/mate/${postId}`)
+        fetch(`/api/mate/${postId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('서버에서 게시글을 가져오는 중 오류 발생');

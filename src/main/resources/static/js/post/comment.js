@@ -17,7 +17,7 @@ function isAuthor(commentUsername) {
 
 // 댓글 목록을 가져오는 함수
 function fetchComments() {
-    fetch(`/mate/${postId}/comment`)
+    fetch(`/api/mate/${postId}/comment`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('서버에서 댓글을 가져오는 중 오류 발생');
@@ -87,7 +87,7 @@ commentForm.addEventListener('submit', function(event) {
     }
 
     // 서버로 댓글을 저장하는 요청 보내기
-    fetch(`/mate/${postId}/comment`, {
+    fetch(`/api/mate/${postId}/comment`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({ content: commentText }),
@@ -116,7 +116,7 @@ function deleteComment(commentId) {
     console.log('Deleting comment with ID:', commentId);
     const confirmation = confirm("댓글을 삭제하시겠습니까?");
     if (confirmation) {
-        fetch(`/mate/${postId}/comment/${commentId}`, {
+        fetch(`/api/mate/${postId}/comment/${commentId}`, {
             method: 'DELETE',
             headers: headers,
         })
@@ -124,7 +124,7 @@ function deleteComment(commentId) {
                 if(!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                window.location.href = `/matprint/mate/${postId}`;
+                window.location.href = `/mate/${postId}`;
             })
             .catch((error) => {
                 console.error('Error', error);
@@ -175,7 +175,7 @@ function editComment(commentId) {
 
         const editedContent=contentTextarea.value;
 
-        fetch(`/mate/${postId}/comment/${commentId}`,{
+        fetch(`/api/mate/${postId}/comment/${commentId}`,{
             method:"PUT",
             headers:headers,
             body: JSON.stringify({content: editedContent}),

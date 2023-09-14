@@ -57,7 +57,7 @@ editForm.addEventListener('submit', (event) => {
     const updatedVisitDate = editVisitDateInput.value;
 
     // 서버로 수정된 데이터 전송
-    fetch(`/mate/${postId}`, {
+    fetch(`/api/mate/${postId}`, {
         method: 'PUT',
         headers: headers,
         body: JSON.stringify({
@@ -87,7 +87,7 @@ const deleteButton = document.getElementById('delete-button');
 deleteButton.addEventListener('click', () => {
     const confirmation = confirm("게시글을 삭제하시겠습니까?");
     if (confirmation) {
-        fetch(`/mate/${postId}`, {
+        fetch(`/api/mate/${postId}`, {
             method: 'DELETE',
             headers: headers,
         })
@@ -99,7 +99,7 @@ deleteButton.addEventListener('click', () => {
             })
             .then(data => {
                 console.log(data.message);
-                window.location.href = "/matprint/mate";
+                window.location.href = "/mate";
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -110,7 +110,6 @@ deleteButton.addEventListener('click', () => {
 // 뒤로 가기 버튼 클릭 시 이벤트 처리
 const backButton = document.getElementById('back-button');
 backButton.addEventListener('click', function() {
-    // window.location.href = `/matprint/mate/${postId}`
     postEditForm.style.display = 'none';  // 수정 폼 숨기기
     backButton.style.display = 'none';  // 뒤로 가기 버튼 숨기기
 });
@@ -121,7 +120,7 @@ window.onload = function() {
         .then(postUsername => {
             console.log("Post author: ", postUsername);
             const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-            if (currentToken) {  // 로그인 상태일 때만 실행
+            if (currentToken) {
                 const payload = decodeJwtToken(currentToken);
                 const currentUsername = payload.sub; // 토큰에서 username 추출
                 console.log("Logged in user: ", currentUsername);

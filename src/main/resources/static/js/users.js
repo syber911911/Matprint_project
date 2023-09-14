@@ -11,7 +11,7 @@ document.getElementById('logout-button').addEventListener('click', function() {
 function logout() {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
-    return fetch(`/logout`, {
+    return fetch(`/api/logout`, {
         method: 'POST',
         headers: header,
     })
@@ -22,7 +22,7 @@ function logout() {
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('autoLogin');
                 // 로그아웃 성공 시 메인 페이지로 이동하고 뒤로가기 막기
-                window.location.replace("/matprint/main");
+                window.location.replace("/");
                 // 브라우저의 페이지 이동 기록을 제거
                 window.history.pushState({}, '', '/matprint/main');
             } else {
@@ -32,7 +32,7 @@ function logout() {
                 localStorage.removeItem('autoLogin');
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('autoLogin');
-                window.location.href = '/matprint/main';
+                window.location.href = "/";
             }
         })
         .catch(error => console.error('로그아웃 중 오류 발생:', error));
