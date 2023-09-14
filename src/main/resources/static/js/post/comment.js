@@ -7,50 +7,53 @@ if (token) {
     headers['Authorization'] = `Bearer ${token}`;
 }
 
-function isAuthor(commentUsername) {
-    const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-    const payload = decodeJwtToken(currentToken); // JWT 토큰 디코딩하여 payload 추출
-    const currentUsername = payload.sub; // 토큰에서 username 추출
-
-    return commentUsername === currentUsername; // 글쓴이와 현재 로그인된 사용자가 일치하면 true 반환
+function isAuthor(accessUser, commentUsername) {
+    return accessUser == commentUsername;
 }
 
 // 댓글 목록을 가져오는 함수
+// 댓글 목록을 가져오는 함수
 function fetchComments() {
-    fetch(`/api/mate/${postId}/comment`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('서버에서 댓글을 가져오는 중 오류 발생');
-            }
-            return response.json();
+    return new Promise((resolve, reject) => {
+        fetch(`/api/mate/${postId}/comment`, {
+            headers: headers
         })
-        .then(data => {
-            if (data.error) {
-                throw new Error(data.error);
-            }
-            // 댓글 목록을 화면에 표시
-            console.log('댓글 데이터:', data);
-            displayComments(data.comment.content);
-        })
-        .catch(error => {
-            console.error('댓글을 불러오는 중 오류 발생:', error.message);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버에서 댓글을 가져오는 중 오류 발생');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                const { accessUser } = data;
+                displayComments(data.comment.content, accessUser);
+                const commentUsernameElement = document.getElementById('comment-username');
+                const commentUsername = commentUsernameElement.textContent.trim();
+                resolve({accessUser, commentUsername});
+            })
+            .catch(error => reject(error.message));
+    });
 }
 
+
 // 댓글을 화면에 표시
-function displayComments(comments) {
+function displayComments(comments, accessUser) {
     const commentsList = document.getElementById('comments-list');
     commentsList.innerHTML = ''; // 기존 댓글 내용 초기화
 
         comments.forEach(comment => {
+            const commentUsername = comment.username;
             const commentElement = document.createElement('div');
             commentElement.classList.add('comment');
 
             commentElement.id = 'comment-' + comment.id;
-
+            console.log("accessUser3: ",accessUser);
             // 수정/삭제 버튼 생성
             let buttonsHTML = '';
-            if (isAuthor(comment.username)) {
+            if (isAuthor(accessUser, commentUsername)) {
                 buttonsHTML = `
                <button class="comment-button" onclick="editComment(${comment.id})">  수정</button>
                <button class="comment-button" onclick="deleteComment(${comment.id})">  삭제</button>

@@ -58,6 +58,10 @@ public class ReviewService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 음식점을 찾을 수 없습니다.");
         Restaurant restaurant = optionalRestaurant.get();
 
+        log.info("---------------------------------------------------------------");
+        log.info("image list size {}", request.getImageList().size());
+        log.info("list is empty {}", CollectionUtils.isEmpty(request.getImageList()));
+        log.info("list first item {}", request.getImageList().get(0));
         // 첨부한 이미지가 존재하지 않는 경우
         if (CollectionUtils.isEmpty(request.getImageList()) || request.getImageList().get(0).isEmpty()) {
             reviewRepository.save(

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
-
 <head>
     <meta charset="UTF-8">
     <title>인플루언서 맛집 찾기</title>
@@ -10,21 +9,67 @@
     <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=aaidwic796"></script>
 </head>
-
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+    }
+    .--header {
+        display:flex;
+        justify-content : space-between;
+        align-items : center;
+        padding :10px;
+        font-family: "Black Han Sans";
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .--logo-image{
+        font-size :30px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .--login-container a{
+        margin-left :20px;
+    }
+    .--footer{
+        text-align:center;
+        padding :10px;
+        background-color:#f2f2f2;
+    }
+    .btn.btn-primary {
+        background-color: #8C8C8C;
+        border-radius: 5px;
+        border: none;
+        color:white;
+        box-shadow:0px 5px 10px rgba(0,0,0,0.2);
+        font-weight: bold;
+    }
+</style>
 <body>
-<br/>
-
+<header class="--header">
+    <div class="--logo">
+        <div class="--logo-image" onclick="location.href='/'">🍔 맛자국</div>
+    </div>
+    <!-- 로그인/로그아웃과 마이페이지 링크 -->
+    <div class="--login-container">
+        <!-- 마이페이지와 로그아웃 링크 -->
+        <a href="/myPage">마이 페이지</a>
+        <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
+    </div>
+    <!-- 로그인 링크 -->
+    <div class="--not-login-container" style="display: none;">
+        <a href="/login">로그인</a>
+    </div>
+</header>
 <div class="container">
-
     <style>
         .category-link {
             font-size: 18px;
         }
-
         .detail-link {
             font-size: 18px;
         }
-
         .category-section {
             display:flex;
             justify-content : space-between;
@@ -35,16 +80,14 @@
             font-weight: bold;
             margin-bottom: 60px;
         }
-
         #map-container {
             display: flex;
             flex-direction: row;
+            margin-top: 30px;
         }
-
         #map-container-inner {
             flex-grow: 1;
         }
-
         .vertical-buttons {
             display: flex;
             flex-direction: column;
@@ -53,54 +96,41 @@
             padding: 20px;
             background-color: #fff;
         }
-
         /* Styling for the map */
         #map {
             width: 100%;
-            height: 700px;
+            height: 600px;
         }
-
         #result-list-container {
             max-height: 450px;
             overflow-y: auto;
             width: 100%;
             margin-bottom: 150px;
         }
-
         .list-group-item {
             white-space: normal;
             word-wrap: break-word;
         }
-
         #sorting-buttons {
             margin-top: 30px;
             display: none;
         }
-
-        .--footer{
-            text-align:center;
-            padding :10px;
-            background-color:#f2f2f2;
-        }
-
     </style>
-
     <!-- Categories Section -->
-    <div class="row category-section">
-        <div class="col-3">
-            <a href="#mainSection" class="category-link" id="mainSectionLink">🦁 메인 페이지</a>
-        </div>
-        <div class="col-3">
-            <a href="#localSection" class="category-link" id="localSectionLink">🔍 지역별 맛집 검색</a>
-        </div>
-        <div class="col-3">
-            <a href="#mateSection" class="category-link" id="mateSectionLink">🙋‍ 동행 찾기</a>
-        </div>
-        <div class="col-3">
-            <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>
-        </div>
-    </div>
-
+<!--    <div class="row category-section">-->
+<!--        <div class="col-3">-->
+<!--            <a href="#mainSection" class="category-link" id="mainSectionLink">🦁 메인 페이지</a>-->
+<!--        </div>-->
+<!--        <div class="col-3">-->
+<!--            <a href="#localSection" class="category-link" id="localSectionLink">🔍 지역별 맛집 검색</a>-->
+<!--        </div>-->
+<!--        <div class="col-3">-->
+<!--            <a href="#mateSection" class="category-link" id="mateSectionLink">🙋‍ 동행 찾기</a>-->
+<!--        </div>-->
+<!--        <div class="col-3">-->
+<!--            <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>-->
+<!--        </div>-->
+<!--    </div>-->
     <!-- Map and Buttons -->
     <div id="map-container">
         <div class="col-md-8" id="map-container-inner">
@@ -113,7 +143,6 @@
             <!-- Add more buttons as needed -->
         </div>
     </div>
-
 
     <!-- search result -->
     <div id="search-result-container">
@@ -165,6 +194,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 
+<script src="/js/users.js"></script>
 <script src="/js/named.js"></script>
 </body>
 

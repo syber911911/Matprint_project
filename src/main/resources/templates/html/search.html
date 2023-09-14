@@ -10,25 +10,74 @@
     <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=aaidwic796"></script>
 </head>
-
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+    }
+    .--header {
+        display:flex;
+        justify-content : space-between;
+        align-items : center;
+        padding :10px;
+        font-family: "Black Han Sans";
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .--logo-image{
+        font-size :30px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .--login-container a{
+        margin-left :20px;
+    }
+    .--footer{
+        text-align:center;
+        padding :10px;
+        background-color:#f2f2f2;
+    }
+    .btn.btn-primary {
+        background-color: #8C8C8C;
+        border-radius: 5px;
+        border: none;
+        color:white;
+        box-shadow:0px 5px 5px rgba(0,0,0,0.2);
+        font-weight: bold;
+    }
+</style>
 <body>
-    <br/>
-
+<header class="--header">
+    <div class="--logo">
+        <div class="--logo-image" onclick="location.href='/'">🍔 맛자국</div>
+    </div>
+    <!-- 로그인/로그아웃과 마이페이지 링크 -->
+    <div class="--login-container">
+        <!-- 마이페이지와 로그아웃 링크 -->
+        <a href="/myPage">마이 페이지</a>
+        <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
+    </div>
+    <!-- 로그인 링크 -->
+    <div class="--not-login-container" style="display: none;">
+        <a href="/login">로그인</a>
+    </div>
+</header>
     <div class="container">
-
         <style>
             .category-link {
                 font-size: 18px;
             }
-
             .search-box{
                 margin-bottom: 50px;
+                margin-top: 60px;
             }
-
+            .row.search-box{
+                margin-left: 100px;
+            }
             .detail-link {
                 font-size: 18px;
             }
-
             .category-section {
                 display:flex;
                 justify-content : space-between;
@@ -39,47 +88,37 @@
                 font-weight: bold;
                 margin-bottom: 60px;
             }
-
-
             #result-list {
                 max-height: 700px;
                 overflow-y: auto;
             }
-
-            .--footer{
-                text-align:center;
-                padding :10px;
-                background-color:#f2f2f2;
-            }
-
         </style>
 
-        <!-- Categories Section -->
-        <div class="row category-section">
-            <div class="col-3">
-                <a href="#mainSection" class="category-link" id="mainSectionLink">🦁 메인 페이지</a>
-            </div>
-            <div class="col-3">
-                <a href="#influencerSection" class="category-link" id="influencerSectionLink">🔍 인플루언서 맛집 찾기</a>
-            </div>
-            <div class="col-3">
-                <a href="#mateSection" class="category-link" id="mateSectionLink">🙋‍ 동행 찾기</a>
-            </div>
-            <div class="col-3">
-                <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>
-            </div>
-        </div>
+<!--        &lt;!&ndash; Categories Section &ndash;&gt;-->
+<!--        <div class="row category-section">-->
+<!--            <div class="col-3">-->
+<!--                <a href="#mainSection" class="category-link" id="mainSectionLink">🦁 메인 페이지</a>-->
+<!--            </div>-->
+<!--            <div class="col-3">-->
+<!--                <a href="#influencerSection" class="category-link" id="influencerSectionLink">🔍 인플루언서 맛집 찾기</a>-->
+<!--            </div>-->
+<!--            <div class="col-3">-->
+<!--                <a href="#mateSection" class="category-link" id="mateSectionLink">🙋‍ 동행 찾기</a>-->
+<!--            </div>-->
+<!--            <div class="col-3">-->
+<!--                <a href="#myPageSection" class="category-link" id="myPageLink">😸 마이 페이지</a>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <!-- search -->
         <div class="row search-box">
             <div class="col-sm-8 col-md-8">
-                <input id="searchBox" style="width:80%; height: 46px" class="form-control form-control-lg" type="text" placeholder="맛집을 검색해주세요 (지역명이나 음식점으로 검색해주세요)" >
+                <input id="searchBox" style="width:90%; height: 46px; box-shadow:0px 5px 5px rgba(0,0,0,0.2);" class="form-control form-control-lg" type="text" placeholder="🔎 맛집을 검색해주세요 (지역명이나 음식점으로 검색해주세요)" >
             </div>
             <div class="col-sm-4 col-md-4">
                 <button id="searchButton" type="button" class="btn btn-primary btn-lg" style="width: 30%">검색</button>
             </div>
         </div>
-
 
         <!-- search result -->
         <div class="row">
@@ -122,6 +161,7 @@
 <!-- 개발버전, 도움되는 콘솔 경고를 포함. -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+<script src="/js/users.js"></script>
 <script src="/js/search.js"></script>
 
 </html>

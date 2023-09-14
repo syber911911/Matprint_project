@@ -5,8 +5,8 @@ window.onload = function() {
 // 현재 페이지의 URL 가져오기
 const currentUrl = window.location.href;
 // URL에서 컨텍스트 경로를 제외한 나머지 경로 가져오기
-// const pathWithoutContext = currentUrl.replace("http://localhost:8080", "");
-const pathWithoutContext = currentUrl.replace("https://matprint.site", "");
+const pathWithoutContext = currentUrl.replace("http://localhost:8080", "");
+// const pathWithoutContext = currentUrl.replace("https://matprint.site", "");
 // 경로에서 게시글 ID를 추출
 const postId = currentUrl.split('/').pop();
 console.log('게시글 ID:', postId);
@@ -17,7 +17,9 @@ function fetchPostDetail() {
             reject('게시글 ID가 유효하지 않습니다.');
             return;
         }
-        fetch(`/api/mate/${postId}`)
+        fetch(`/api/mate/${postId}`, {
+            headers: headers
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('서버에서 게시글을 가져오는 중 오류 발생');
@@ -30,10 +32,12 @@ function fetchPostDetail() {
                 }
                 // 게시글 정보를 동적으로 표시
                 displayPostDetail(data.postDto);
+                const { accessUser } = data;
+                console.log("accessUser1: ",accessUser);
                 // 게시글 정보가 화면에 표시된 후에 글쓴이 확인
                 const postUsernameElement = document.getElementById('post-username');
                 const postUsername = postUsernameElement.textContent.trim();
-                resolve(postUsername);
+                resolve({accessUser, postUsername});
             })
             .catch(error => {
                 console.error('게시글을 불러오는 중 오류 발생:', error.message);
@@ -58,7 +62,16 @@ function displayPostDetail(post) {
     usernameElement.textContent = post ? post.username || '' : '';
     ageElement.textContent = post ? post.age || '' : '';
     genderElement.textContent = post ? post.gender || '' : '';
-    visitDateElement.textContent = post ? post.visitDate || '' : '';
+    // visitDateElement.textContent = post ? post.visitDate || '' : '';
+
+    // 방문 날짜 포맷 변경
+    if (post && post.visitDate) {
+        const dateParts = new Date(post.visitDate).toLocaleDateString('ko-KR').split('.');
+        visitDateElement.textContent =
+            `${dateParts[0]}.${dateParts[1]}.${dateParts[2]}`;
+    } else {
+        visitDateElement.textContent = '';
+    }
     statusElement.textContent = post ? post.status || '' : '';
 
     if (post && post.username) {

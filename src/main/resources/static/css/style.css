@@ -25,6 +25,7 @@ a {
 
 
 button {
+    background-color: #8C8C8C;
     margin-bottom: 10px;
     padding: 10px 20px;
 }
@@ -52,12 +53,12 @@ input:active {
     display: flex;
 }
 
-.header {
+.header{
     justify-content: space-between;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f2f2f2;
+    /*background-color: #f2f2f2;*/
     padding: 10px 20px;
 }
 
@@ -94,7 +95,6 @@ input:active {
     align-items: center; /* 수직 중앙 정렬 */
     justify-content: center; /* 수평 중앙 정렬 */
 }
-
 
 
 .buttons {

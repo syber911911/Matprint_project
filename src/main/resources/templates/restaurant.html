@@ -158,10 +158,10 @@
             });
             let data = await response.json();
 
-            if (localStorage.getItem('token')) {
+            if (localStorage.getItem('autoLogin') === "T") {
                 localStorage.removeItem('token');
                 localStorage.setItem('token', data.accessToken);
-            } else if (sessionStorage.getItem('token')) {
+            } else if (localStorage.getItem('autoLogin') === "F") {
                 sessionStorage.removeItem('token');
                 sessionStorage.setItem('token', data.accessToken);
             }

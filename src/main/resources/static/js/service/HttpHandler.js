@@ -2,14 +2,17 @@ export class HttpHandler {
     constructor(token) {
         this.token = token;
         this.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : ''
+            'Content-Type': 'application/json'
         };
+        if (token) {
+            this.headers = {
+                ...this.headers,
+                'Authorization': `Bearer ${token}`
+            }
+        }
     }
-
     async request(url) {
         try {
-            console.log(this.headers);
             const response = await fetch(url, {
                 method: 'GET',
                 headers: this.headers,

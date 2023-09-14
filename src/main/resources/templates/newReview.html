@@ -90,24 +90,10 @@
 
   async function newReview() {
     await reissueToken();
-
-    let token;
-    if (localStorage.getItem('token')) {
-      token = localStorage.getItem('token');
-    } else if (sessionStorage.getItem('token')) {
-      token = sessionStorage.getItem('token');
-    }
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     const content = document.getElementById('content').value;
     const fileInput = document.getElementById('imageInput');
-    const file = fileInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imageList.push(e.target.result);
-      }
-      reader.readAsDataURL(file);
-    }
 
     const formData = new FormData();
     formData.append('content', content);
@@ -115,6 +101,14 @@
     imageList.forEach((image, index) => {
       formData.append(`addImageList[${index}]`, image);
     });
+
+    const file = fileInput.files[0];
+    if (file) {
+      formData.append("imageList", file);
+      for (let i = 0; i < files.length; i++) {
+        formData.append("imageList", files[i]);
+      }
+    }
 
     await fetch(`/api/${localStorage.getItem('rsId')}/review`, {
       method: 'POST',
@@ -124,22 +118,11 @@
             .then(response => response.json())
             .then(data => {
               console.log('리뷰가 성공적으로 등록되었습니다.', data);
-              backToRestaurantPage();
+              //backToRestaurantPage();
             })
             .catch(error => {
               console.error('리뷰 등록 중 오류가 발생했습니다.', error);
             });
-  }
-
-  function uploadImage() {
-    const fileInput = document.getElementById('imageInput');
-    const file = fileInput.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) { imgList.push(e.target.result); }
-      reader.readAsDataURL(file);
-    }
   }
 
   function editRatings (star) { ratings = star; }

@@ -21,11 +21,8 @@ function createPost(title, content, visitDate, prefer) {
         .then(response => response.json())
         .then(data => {
             // 게시글 생성 성공 여부 확인
-            if (data && data.success) { // 응답 데이터의 구조를 확인
-                window.location.href = '/mate';
-            } else {
-                window.location.href = '/mate';
-            }
+            alert('게시글이 생성되었습니다.');
+            window.location.href = '/mate';
         })
         .catch(error => {
             alert('게시글 생성에 실패했습니다.');

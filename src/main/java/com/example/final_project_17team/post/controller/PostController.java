@@ -75,7 +75,7 @@ public class PostController {
             @RequestParam(defaultValue = "20") Integer limit,
             @AuthenticationPrincipal String username
     ) {
-        return postService.readCommentPage(postId, page, limit, username);
+        return postService.readAllCommentPage(postId, page, limit, username);
     }
 
     @PutMapping("/{postId}/comment/{commentId}")
