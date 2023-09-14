@@ -125,7 +125,7 @@
             })
                 .then(res => {
                     if (!res.ok) {
-                        alert(res.json().message);
+                        console.log(res.json());
                     } else {
                         if (status) alert("즐겨찾기에 추가되었습니다.");
                         else alert("즐겨찾기에서 삭제되었습니다.");
