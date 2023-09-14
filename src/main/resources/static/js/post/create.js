@@ -13,25 +13,6 @@ function createPost(title, content, visitDate, prefer) {
         prefer
     };
 
-    // return fetch('/api/mate', {
-    //     method: 'POST',
-    //     headers: headers,
-    //     body: JSON.stringify(data)
-    // })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         // 게시글 생성 성공 여부 확인
-    //         if (data.success) {
-    //             window.location.href = '/mate';
-    //         } else {
-    //             alert('게시글 생성에 실패했습니다.');
-    //             window.location.href = '/mate';
-    //         }
-    //     })
-    //     .catch(error => {
-    //         alert('게시글 생성에 실패했습니다.');
-    //         console.error('게시글 생성 중 오류 발생:', error);
-    //     })
     return fetch('/api/mate', {
         method: 'POST',
         headers: headers,
