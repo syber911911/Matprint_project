@@ -8,7 +8,7 @@ const currentUrl = window.location.href;
 // const pathWithoutContext = currentUrl.replace("http://localhost:8080", "");
 const pathWithoutContext = currentUrl.replace("https://matprint.site", "");
 // 경로에서 게시글 ID를 추출
-const postId = pathWithoutContext.split('/')[2];
+const postId = currentUrl.split('/').pop();
 console.log('게시글 ID:', postId);
 
 function fetchPostDetail() {
