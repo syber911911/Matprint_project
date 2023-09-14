@@ -110,8 +110,8 @@ window.onload = function() {
     fetchPostDetail()
         .then(data => {
             const { postUsername, accessUser } = data;
-            console.log("Post author: ", postUsername);
-            console.log("accessUser: ", postUsername);
+            console.log("Post author!: ", postUsername);
+            console.log("accessUser!: ", postUsername);
             if (isAuthor(accessUser, postUsername)) {
                 const postButtons = document.getElementById('post-buttons');
                 postButtons.style.display = 'block';

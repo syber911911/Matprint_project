@@ -33,11 +33,11 @@ function fetchPostDetail() {
                 // 게시글 정보를 동적으로 표시
                 displayPostDetail(data.postDto);
                 const { accessUser } = data;
-                console.log("accessUser: ",accessUser);
+                console.log("accessUser1: ",accessUser);
                 // 게시글 정보가 화면에 표시된 후에 글쓴이 확인
                 const postUsernameElement = document.getElementById('post-username');
                 const postUsername = postUsernameElement.textContent.trim();
-                resolve(postUsername);
+                resolve({accessUser, postUsername});
             })
             .catch(error => {
                 console.error('게시글을 불러오는 중 오류 발생:', error.message);

@@ -142,7 +142,7 @@ public class PostService {
         return responseDto;
     }
 
-    public CommentDto.CommentWithUser readCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
+    public CommentDto.CommentWithUser readAllCommentPage(Long postId, Integer pageNumber, Integer pageSize, String username) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 동행 글이 존재하지 않습니다.");
