@@ -90,6 +90,7 @@ window.onload=function(){
     });
 };
 
+
 // 게시물 표시
 function displayPosts(postsPage) {
     const posts = postsPage.content; // content 속성을 가져옴
