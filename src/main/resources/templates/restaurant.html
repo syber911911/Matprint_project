@@ -136,7 +136,6 @@
 
     async function isWishList() {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-
         let response = await fetch(`/api/wishlist/${restaurantId}`, {
             method: 'GET',
             headers: {
@@ -151,7 +150,7 @@
     /* refreshToken으로 accessToken 재발급 */
     async function reissueToken() {
         if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
-            document.getElementById('wish').prop("disabled", true);
+            document.getElementById('wish').checked = false;
             console.log("user: anonymous");
         } else {
             let response = await fetch(`/api/reissue`, {
@@ -166,33 +165,9 @@
                 sessionStorage.removeItem('token');
                 sessionStorage.setItem('token', data.accessToken);
             }
-
-           /* if (getCookie('AUTO_LOGIN') === 'T') {
-                localStorage.removeItem('token');
-                localStorage.setItem('token', data.accessToken);
-            } else {
-                sessionStorage.removeItem('token');
-                sessionStorage.setItem('token', data.accessToken);
-            }*/
             getUsername(data.accessToken);
         }
     }
-
-/*    export function getCookie(cookieName) {
-        cookieName = `${cookieName}=`;
-        let cookieData = document.cookie;
-
-        let cookieValue = "";
-        let start = cookieData.indexOf(cookieName);
-
-        if (start !== -1) {
-            start += cookieName.length;
-            let end = cookieData.indexOf(";", start);
-            if (end === -1) end = cookieData.length;
-            cookieValue = cookieData.substring(start, end);
-        }
-        return decodeURI(cookieValue);
-    }*/
 
     async function getUsername(token) {
         let response = await fetch(`/api/username`, {

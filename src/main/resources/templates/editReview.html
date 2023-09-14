@@ -89,22 +89,18 @@
   let addImageList = [];
 
   window.onload = function () {
-    const params = new URL(location.href).searchParams;
     reissueToken();
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    const params = new URL(location.href).searchParams;
     localStorage.setItem('rsId', params.get("restaurantId"));
     localStorage.setItem('rvId', params.get("reviewId"));
-    getReviewInfo(params.get("restaurantId"), params.get("reviewId"), localStorage.getItem('token'));
+    getReviewInfo(params.get("restaurantId"), params.get("reviewId"), token);
   }
 
   async function editReview() {
     await reissueToken();
-
-    let token;
-    if (localStorage.getItem('token')) {
-      token = localStorage.getItem('token');
-    } else if (sessionStorage.getItem('token')) {
-      token = sessionStorage.getItem('token');
-    }
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     const content = document.getElementById('content').value;
     const fileInput = document.getElementById('imageInput');
@@ -173,7 +169,7 @@
   }
 
   async function deleteReview () {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     fetch(`/api/${localStorage.getItem('rsId')}/review/${localStorage.getItem('rvId')}`, {
       method: 'DELETE',
