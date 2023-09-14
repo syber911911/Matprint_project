@@ -1,8 +1,6 @@
 package com.example.final_project_17team.global.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +9,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @Controller
-@RequestMapping("/matprint")
 public class PageController {
     @GetMapping("/check")
     public void check() {
@@ -38,17 +35,17 @@ public class PageController {
         return new ModelAndView("html/myPage");
     }
 
-    @GetMapping("/main")
+    @GetMapping("/")
     public ModelAndView main () {
         return new ModelAndView("main");
     }
 
-    @GetMapping("/login")
+    @GetMapping("/login-page")
     public ModelAndView login () {
         return new ModelAndView("login");
     }
 
-    @GetMapping("/join")
+    @GetMapping("/join-page")
     public ModelAndView join () {
         return new ModelAndView("join");
     }
@@ -75,8 +72,8 @@ public class PageController {
         return new ModelAndView("editReview");
     }
 
-    @GetMapping("/detail")
-    public ModelAndView postDetail (
+    @GetMapping("/restaurant/detail")
+    public ModelAndView restaurantDetail (
             @RequestParam String name,
             @RequestParam String address
     ){
