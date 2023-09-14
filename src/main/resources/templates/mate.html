@@ -14,17 +14,22 @@
             overflow: auto;
         }
         .--header {
+            background-color:white;
+            position: fixed; /* 위치 고정 */
+            top: 0;
+            width: 100%;
             display:flex;
             justify-content : space-between;
             align-items : center;
             padding :10px;
-            background-color:#FFE08C;
+            /*background-color:#FFE08C;*/
             font-family: "Black Han Sans";
             font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         .container {
             width: auto;
-            min-height: calc(90vh - (40px + (10px * 2)));
+            min-height: calc(70vh - (40px + (10px * 2)));
             display:flex;
             flex-direction : column;
             height: 90vh;
@@ -34,7 +39,7 @@
             font-size :30px;
         }
         .--login-container a{
-            margin-left :10px;
+            margin-right: 20px;
         }
         .--main{
             padding :20px;
@@ -62,14 +67,15 @@
             padding-top :20px;
         }
         nav {
-            background-color: #FAECC5;
+            margin-top:60px;
+            background-color: #FFE08C;
             color: white;
             padding: 20px;
             align-items: center;
         }
         nav a {
             color: white;
-            text-decoration: none; /* 링크 텍스트에 밑줄 제거 */
+            text-decoration: none;
             margin-right: 20px;
             font-size: 14px;
         }
@@ -81,13 +87,13 @@
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 5px;
-            text-decoration: none; /* 텍스트에 밑줄 제거 */
+            text-decoration: none;
             font-weight: bold;
             vertical-align: middle;
-            margin-top: -7px;
+            margin-top: -3px;
         }
         #create-post-button:hover {
-            background-color: #555; /* 마우스 호버 시 배경색 변경 */
+            background-color: #555;
         }
         .pagination {
             text-align: center;
@@ -108,6 +114,14 @@
         #page-numbers {
             font-size: 16px;
             font-weight: bold;
+        }
+        #search-button {
+            margin-left: 12px;
+            padding :9px;
+            border: none;
+            background-color: #8C8C8C;
+            border-radius:5px;
+            color:white;
         }
     </style>
 </head>

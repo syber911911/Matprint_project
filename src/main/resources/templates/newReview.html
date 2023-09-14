@@ -6,27 +6,8 @@
     @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
     body { margin: 0; padding: 0; overflow: auto; }
-    .--header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      background-color: #FFE08C;
-      font-family: "Black Han Sans", ui-rounded;
-      font-weight: bold;
-    }
-    .container {
-      width: auto;
-      height: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 35px;
-      margin: 50px 100px 50px 100px;
-      background-color: #f9f9f9;
-      border-radius: 5px;
-      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
-    }
+    .--header {display: flex;justify-content: space-between;align-items: center;padding: 10px;background-color: #FFE08C;font-family: "Black Han Sans", ui-rounded;font-weight: bold;}
+    .container {width: auto;height: auto;display: flex;flex-direction: column;align-items: center;padding: 35px;margin: 50px 100px 50px 100px;background-color: #f9f9f9;border-radius: 5px;box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;}
     .--logo-image { font-size: 30px; }
     .--login-container a { margin-left: 10px;}
     .--main { padding: 20px; }
@@ -34,44 +15,18 @@
     .form-group { margin-bottom: 10px; }
     .form-group label { display: block; font-weight:bold; display:flex; }
     .form-group textarea { width :100%; height:150px; padding :5px; }
-    .buttons {
-      width :100%;
-      padding-top :10px;
-      font-weight:bold;
-      border:none;
-      display:flex;
-      justify-content: flex-end;
-    }
-    #img {
-      display: flex;
-      postiion : relative;
-    }
-    .imgDiv {
-      width: 100px;
-      height: 100px;
-    }
-
-    /* Ratings */
+    .buttons {width :100%;padding-top :10px;font-weight:bold;border:none;display:flex;justify-content: flex-end;}
 
     .rate { display: inline-block; border: 0; margin-left: 0px; }
     .rate > input { display: none; }
     .rate > label { float: right; color: #ddd; }
-    .rate > label:before {
-      display: inline-block;
-      font-size: 2rem;
-      padding: .3rem .2rem;
-      margin: 0;
-      cursor: pointer;
-      font-family: FontAwesome;
-      content: "\f005 ";
-    }
+    .rate > label:before {display: inline-block;font-size: 2rem;padding: .3rem .2rem;margin: 0;cursor: pointer;font-family: FontAwesome;content: "\f005 ";}
     .rate input:checked ~ label,
     .rate label:hover,.rate label:hover ~ label { color: #D7DF01 !important;  }
     .rate input:checked + .rate label:hover,
     .rate input input:checked ~ label:hover,
     .rate input:checked ~ .rate label:hover ~ label,
     .rate label:hover ~ input:checked ~ label { color: #D7DF01 !important;  }
-    /* ----------------- */
   </style>
 </head>
 
@@ -83,12 +38,12 @@
   <!-- 로그인/로그아웃과 마이페이지 링크 -->
   <div class="--login-container">
     <!-- 마이페이지와 로그아웃 링크 -->
-    <a href="/matprint/myPage">마이 페이지</a>
+    <a href="/myPage">마이 페이지</a>
     <a href="#" id="logout-button" onclick="logout()">로그아웃</a>
   </div>
   <!-- 로그인 링크 -->
   <div class="--not-login-container" style="display: none;">
-    <a href="/matprint/login">로그인</a>
+    <a href="/login">로그인</a>
   </div>
 </header>
 
@@ -104,7 +59,6 @@
     </fieldset><br>
     <div id="images">
       <input id="imageInput" type="file" name="image" accept="image/*">
-      <button onclick="uploadImage()">업로드</button>
     </div><br>
     <div style="width: 500px;">
       <div class ="form-group">
@@ -136,17 +90,21 @@
 
   async function newReview() {
     await reissueToken();
-    const token = localStorage.getItem('token');
-    const content = document.getElementById('content').value;
 
+    let token;
+    if (localStorage.getItem('token')) {
+      token = localStorage.getItem('token');
+    } else if (sessionStorage.getItem('token')) {
+      token = sessionStorage.getItem('token');
+    }
+
+    const content = document.getElementById('content').value;
     const fileInput = document.getElementById('imageInput');
     const file = fileInput.files[0];
     if (file) {
       const reader = new FileReader();
-
       reader.onload = function(e) {
-        const imageData = e.target.result;
-        imageList.push(imageData);
+        imageList.push(e.target.result);
       }
       reader.readAsDataURL(file);
     }
@@ -158,11 +116,9 @@
       formData.append(`addImageList[${index}]`, image);
     });
 
-    await fetch(`/${localStorage.getItem('rsId')}/review`, {
+    await fetch(`/api/${localStorage.getItem('rsId')}/review`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
+      headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
     })
             .then(response => response.json())
@@ -176,17 +132,12 @@
   }
 
   function uploadImage() {
-    var fileInput = document.getElementById('imageInput');
-    var file = fileInput.files[0];
+    const fileInput = document.getElementById('imageInput');
+    const file = fileInput.files[0];
 
     if (file) {
-      var reader = new FileReader();
-
-      reader.onload = function(e) {
-        var imageData = e.target.result;
-        imgList.push(imageData);
-      }
-      alert(imageData);
+      const reader = new FileReader();
+      reader.onload = function(e) { imgList.push(e.target.result); }
       reader.readAsDataURL(file);
     }
   }
@@ -195,28 +146,32 @@
 
   /* refreshToken으로 accessToken 재발급 */
   async function reissueToken () {
-    let response = await fetch(`/reissue`, {
+    let response = await fetch(`/api/reissue`, {
       method: 'POST', headers: {'Content-Type': 'application/json'}
     });
     let data = await response.json();
-    localStorage.removeItem('token');
-    localStorage.setItem('token', data.accessToken);
+
+    if (localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      localStorage.setItem('token', data.accessToken);
+    } else if (sessionStorage.getItem('token')) {
+      sessionStorage.removeItem('token');
+      sessionStorage.setItem('token', data.accessToken);
+    }
   }
 
   function backToRestaurantPage() {
-    fetch(`/restaurant/detail/id?restaurantId=${localStorage.getItem('rsId')}`, {
+    fetch(`/api/restaurant/detail/id?restaurantId=${localStorage.getItem('rsId')}`, {
       method: 'GET', headers: {'Content-Type': 'application/json'}
     })
             .then(response => response.json())
-            .then(data =>
-                    window.location.href = `/matprint/restaurant?name=${data.name}&address=${data.address}`
-            );
+            .then(data => window.location.href = `/restaurant?name=${data.name}&address=${data.address}`);
   }
 
   function logout() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
-    return fetch(`/logout`, {
+    return fetch(`/api/logout`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -225,12 +180,21 @@
             .then(response => {
               if (response.ok) {
                 localStorage.removeItem('token');
-                window.location.href = "/matprint/main"; // 메인 페이지로 이동
+                localStorage.removeItem('autoLogin');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('autoLogin');
+                // 로그아웃 성공 시 메인 페이지로 이동하고 뒤로가기 막기
+                window.location.replace("/");
+                // 브라우저의 페이지 이동 기록을 제거
+                window.history.pushState({}, '', '/');
               } else {
                 console.error('로그아웃 실패:', response.statusText);
                 // 오류 발생 시에도 토큰 삭제 후 리다이렉트
                 localStorage.removeItem('token');
-                window.location.href = '/matprint/main';
+                localStorage.removeItem('autoLogin');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('autoLogin');
+                window.location.href = '/';
               }
             })
             .catch(error => console.error('로그아웃 중 오류 발생:', error));

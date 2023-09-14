@@ -30,7 +30,7 @@ searchButton.addEventListener('click', function(event) {
     fetchPosts(currentPage);
 });
 
-function fetchPosts(pageNumber=0 , pageSize=10 ) {
+function fetchPosts(pageNumber=0 , pageSize=13 ) {
 
     let {searchType, keyword, gender, ageRange: age , status}
         =currentSearchConditions;
