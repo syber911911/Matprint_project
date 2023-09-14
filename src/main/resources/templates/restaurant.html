@@ -252,7 +252,7 @@
                 else {
                     restaurantId = data.id;
                     reissueToken();
-                    if (localStorage.getItem('token')) isWishList();
+                    if (localStorage.getItem('token') || sessionStorage.getItem('token')) isWishList();
                     else {
                         document.getElementById('addReviewBtn').style.display = 'none';
                         getReviewsPaged(0);
