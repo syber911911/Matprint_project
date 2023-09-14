@@ -18,19 +18,28 @@ export const profileTemplate = async (HttpHandler, paint) => {
                 </div>
     `)
 }
+
 export const likePostTemplate = async (HttpHandler, paint) => {
-    const posts = await HttpHandler.request('/api/profile/wishlist');
+    const posts = await HttpHandler.request('api/profile/wishlist');
     posts.map(post => {
-        const { restaurantName, address, roadAddress } = post;
+        const { restaurantName, address } = post;
+        const formatUrl = (restaurantName, address) => {
+            const baseUrl = "/restaurant/detail";
+            const queryParams = new URLSearchParams();
+            queryParams.set("name", restaurantName);
+            queryParams.set("address", address);
+            return `${baseUrl}?${queryParams.toString()}`;
+        }
+        const url = formatUrl(restaurantName, address);
+        console.log(url);
         paint(`
 
         <ul class="" style="list-style: none;">
-            <li><h3>가게명:</h3><span>${restaurantName}</span></li>
-            <li><h3>주소:</h3><span>${address}</span></li>
-            <li><h3>도로주소:</h3><span>${roadAddress}</span></li>
-            <li> </li>
-            <li> </li>
-            <li> </li>
+            <li>
+            <h3>가게명:
+            <a href=${url}>
+                </h3><span>${restaurantName}</span></li>
+            </a>
         </ul>
 
     `)
@@ -60,7 +69,7 @@ export const postTemplate = async (HttpHandler, paint) => {
                     <tr>
                         <td>${title}</td>
                         <td>${status}</td>
-                        <td>${visitDate}</td>
+                        <td>${formatTime(visitDate)}</td>
                     </tr>
                 </table>
     `)

@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const httpModule = await import("./service/HttpHandler.js");
     const userModule = await import("./service/User.js");
     const templateModule = await import("./service/Template.js");
-
     const myInfoBtn = document.getElementById("myInfo");
     const likePostBtn = document.getElementById("likePost");
     const myPostBtn = document.getElementById("myPost");
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const uploadBtn = document.getElementById("upload");
     const changeContentBox = document.getElementById('changecontentBox');
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    console.log(token);
     const HttpHandler = new httpModule.HttpHandler(token);
     const User = new userModule.User(token);
     const { likePostTemplate, postTemplate, profileTemplate, uploadTemplate, updateFormTemplate } = templateModule;
@@ -46,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.replace('/');
     }
     goBackBtn.addEventListener('click', handleGoback);
+
     const showProfile = async () => {
         clear();
         profileTemplate(HttpHandler, paint);
@@ -54,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (token) {
         showProfile(token)
     } else {
+        window.location.replace('/login');
         console.error('토큰이 없습니다.');
     }
     const showInfo = (e) => {

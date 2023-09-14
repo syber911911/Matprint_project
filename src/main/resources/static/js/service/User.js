@@ -1,22 +1,29 @@
 export class User {
     constructor(token) {
         this.token = token;
-        this.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : ''
-        };
+        if (token) {
+            this.headers = {
+                ...this.headers,
+                'Authorization': `Bearer ${token}`
+            }
+        } else {
+            this.headers;
+        }
     }
 
     async logout(url) {
         try {
             const response = await fetch(url, {
                 method: 'POST',
-                headers: this.headers,
+                headers: {
+                    ...this.headers,
+                    'Content-Type': 'application/json'
+                },
             });
 
             if (response.status === 200) {
                 localStorage.removeItem('token');
-                window.location.replace('/login');
+                window.location.replace('/');
             } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);
             }
@@ -28,7 +35,10 @@ export class User {
         try {
             const response = await fetch(url, {
                 method: 'PUT',
-                headers: this.headers,
+                headers: {
+                    ...this.headers,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(FormData)
                 ,
             });
@@ -46,12 +56,14 @@ export class User {
         try {
             const response = await fetch(url, {
                 method: 'DELETE',
-                headers: this.headers,
+                headers: {
+                    ...this.headers,
+                    'Content-Type': 'application/json'
+                },
             });
 
             if (response.status === 200) {
-                window.location.replace('/login');
-                console.dir(response);
+                window.location.replace('/');
             } else {
                 console.error('Authentication failed: Token may be invalid or expired.');
                 console.error(`failed to request on ${url} api ${response.statusText}`);
@@ -65,14 +77,11 @@ export class User {
         try {
             const response = await fetch(url, {
                 method: 'PUT',
-                headers: {
-                    'Authorization': this.token ? `Bearer ${this.token}` : ''
-                },
+                headers: this.headers,
                 body: formData
             });
 
             if (response.status === 200) {
-                console.log(response);
                 window.location.replace('/myPage');
             } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);

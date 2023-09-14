@@ -23,7 +23,7 @@ spring:
           max-idle: 10
           min-idle: 2
       port: 6379
-      host: redis
+      host: localhost
   thymeleaf:
     check-template-location: false
     prefix: classpath:templates/
