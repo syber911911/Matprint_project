@@ -47,7 +47,6 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
  토큰 재발급 | POST | /api/reissue
  로그아웃 | POST | /api/logout
  
-
 #### 회원 가입
 사용자의 정보를 기반으로 회원가입 진행.
 최초 사용자의 프로필 이미지는 S3 에 저장된 기본 이미지로 셋팅
@@ -102,7 +101,6 @@ access token 만료 시 refresh token 으로 토큰 재발급
  --- | ----------- | ---
  검색 맛집 페이지 이동 | GET | /search
  맛집 조회 | GET | /search?target={target}
- 상세페이지에서 즐겨찾기 | POST | /wishlist
 
 #### RestaurantDto
 프론트에서 간단히 보여줄 정보가 담긴 DTO    
@@ -110,7 +108,7 @@ access token 만료 시 refresh token 으로 토큰 재발급
 #### RestaurantDetailDto
 음식점 상세 페이지에서 보여줄 정보가 담긴 DTO
 
-#### 맛집 검색, 상세 페이지 
+#### 맛집 검색 
 - 검색
   - 사용자가 searchBox에 target을 입력하면 "target + 음식점" 형태로 질의문을 만듦
   - 네이버 지역 검색 페이지에 질의어(ex. 강남역 음식점)로 검색된 결과(식당 이름, 메뉴, 영업시간, 좌표 등)를 크롤링하여 데이터를 받아옴
@@ -119,19 +117,33 @@ access token 만료 시 refresh token 으로 토큰 재발급
 
 ![맛집 검색 페이지 ](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/96a83b85-da67-42ed-a327-a94f5df61ecd)
 
-- 상세 페이지
-  - 음식점 이름을 클릭하면 상세 페이지로 넘어감
-  - 식당 사진, 주소, 영업 시간, 전화번호, 메뉴 등의 정보가 있고, 리뷰 조회, 위시리스트 등록 기능, 로그인 한 사용자에 한해 리뷰 작성 기능 제공
- ![image](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/850031a3-fd07-4cc7-a696-30c242a7a69d)
 
+#### 음식점 상세페이지
+ 기능 | HTTP METHOD | URL
+ --- | ----------- | ---
+ 상세페이지 불러오기 | GET | matprint/detail?name={name}&address={address}
+ 위시리스트 판단 | GET | /api/wishlist/{restaurantId}
+ 위시리스트 버튼 | POST | /api/wishlist/{restaurantId}
+
+#### WishlistDto
+마이페이지에서 위시리스트를 조회를 할때 필요한 DTO
+
+#### 상세 페이지 
+- 상세 페이지
+  - 검색 맛집 페이지나 인플루언서 맛집 페이지에서 나오는 음식점 이름을 클릭하면 상세 페이지로 넘어감
+  - 식당 사진, 주소, 영업 시간, 전화번호, 메뉴 등의 정보가 있고, 리뷰 조회, 위시리스트 등록 기능, 로그인 한 사용자에 한해 리뷰 작성 기능 제공
+- 위시리스트
+  - isMyWish 함수를 통해 음식점 상세 페이지에 진입한 사용자가 현재 식당을 위시리스트에 등록했는지 판단 후, 프론트 페이지에서 버튼을 어떻게 보여줄지 정함
+  - 위시리스트 등록 버튼은 이미 위시리스트에 담겨져 있는데 버튼을 누르면 위시리스트에서 해제되고, 안 담겨져 있을 때 누르면 위시리스트에 등록됨
+ ![image](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/850031a3-fd07-4cc7-a696-30c242a7a69d)
 
 ### 리뷰
  기능 | HTTP METHOD | URL
  --- | ----------- | ---
- 리뷰 작성 | POST | /review/post
- 리뷰 수정 | PUT | /review/edit
- 리뷰 조회 | GET | /review
- 리뷰 삭제 | DELETE | /review
+ 리뷰 작성 | POST | /api/{restaurantId}/review/
+ 리뷰 수정 | PUT | /api/{restaurantId}/review/edit
+ 리뷰 조회 | GET | /api/{restaurantId}/review/{reviewId}
+ 리뷰 삭제 | DELETE | /api/{restaurantId}/review/{reviewId}
 
 #### CreateReviewDto
 사용자가 리뷰 작성한 내용을 받아오는 DTO. 리뷰 내용과 평점은 필수로 들어가야 함
@@ -159,9 +171,9 @@ access token 만료 시 refresh token 으로 토큰 재발급
 ### 인플루언서 맛집 찾기
  기능 | HTTP METHOD | URL
  --- | ----------- | ---
- 인플루언서 맛집 찾기 페이지 이동 | GET | /named
+ 인플루언서 맛집 찾기 페이지 이동 | GET | matprint/named
  카테고리 선택 조회 | GET | api/named
- 카테고리 선택 정렬 조회 | GET |  api/named/sort
+ 카테고리 선택 정렬 조회 | GET |  api/named&category={categry}&sortBy={sortBy}
 
  #### RestaurantDto
  인플루언서 맛집 찾기 페이지에서 보여줄 간단한 정보들만 있는 DTO
