@@ -102,7 +102,7 @@
                   localStorage.setItem('autoLogin', autoLogin);
                 } else {
                   sessionStorage.setItem('token', data.accessToken);
-                  sessionStorage.setItem('autoLogin', autoLogin);
+                  localStorage.setItem('autoLogin', autoLogin);
                 }
                 window.location.href = "/";
               } else {
