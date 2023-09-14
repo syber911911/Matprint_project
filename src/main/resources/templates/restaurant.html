@@ -32,7 +32,7 @@
 
 <body>
 <header class="--header">
-    <div class="--logo">
+    <div class="--logo" style="cursor: pointer" onclick="window.location.href = '/'">
         <div class="--logo-image">🍔 맛자국</div>
     </div>
     <!-- 로그인/로그아웃과 마이페이지 링크 -->
@@ -101,7 +101,6 @@
 
 <script>
     let restaurantId;
-    let username;
 
     window.onload = function () {
         const params = new URL(location.href).searchParams;
@@ -151,17 +150,18 @@
     async function reissueToken() {
         if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
             document.getElementById('wish').checked = false;
-            console.log("user: anonymous");
         } else {
-            let response = await fetch(`/api/reissue`, {
+            const localAutoLogin = localStorage.getItem('autoLogin');
+
+            let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}
             });
             let data = await response.json();
 
-            if (localStorage.getItem('autoLogin') === "T") {
+            if (localAutoLogin === "T") {
                 localStorage.removeItem('token');
                 localStorage.setItem('token', data.accessToken);
-            } else if (localStorage.getItem('autoLogin') === "F") {
+            } else if (localAutoLogin === "F") {
                 sessionStorage.removeItem('token');
                 sessionStorage.setItem('token', data.accessToken);
             }
@@ -177,11 +177,12 @@
                 'Authorization': `Bearer ${token}`
             }
         });
-        username = await response.text();
+        localStorage.setItem('username', await response.text());
         getReviewsPaged(0);
     }
 
     function getReviewsPaged(page) {
+        const username = localStorage.getItem('username');
         fetch(`/api/${restaurantId}/review?page=${page}&limit=5`, {
             method: 'GET', headers: {'Content-Type': 'application/json'}
         })
@@ -227,6 +228,7 @@
                 else {
                     restaurantId = data.id;
                     reissueToken();
+
                     if (localStorage.getItem('token') || sessionStorage.getItem('token')) isWishList();
                     else {
                         document.getElementById('addReviewBtn').style.display = 'none';
@@ -248,7 +250,7 @@
 
                     const menuList = data.menuInfo.split("|");
                     let menuStr = '';
-                    menuList.forEach((elm) => (menuStr += `<br><div style="background-color: #ddd; border-radius:10px; padding: 10px;">${elm}</div>`));
+                    menuList.forEach(elm => (menuStr += `<br><div style="background-color: #ddd; border-radius:10px; padding: 10px;">${elm}</div>`));
                     document.getElementById('menus').innerHTML = menuStr;
                 }
             })
@@ -264,22 +266,21 @@
             }
         })
             .then(response => {
+                localStorage.removeItem('autoLogin');
+
                 if (response.ok) {
                     localStorage.removeItem('token');
-                    localStorage.removeItem('autoLogin');
                     sessionStorage.removeItem('token');
-                    sessionStorage.removeItem('autoLogin');
                     // 로그아웃 성공 시 메인 페이지로 이동하고 뒤로가기 막기
                     window.location.replace("/");
                     // 브라우저의 페이지 이동 기록을 제거
                     window.history.pushState({}, '', '/');
-                } else {
+                }
+                else {
                     console.error('로그아웃 실패:', response.statusText);
                     // 오류 발생 시에도 토큰 삭제 후 리다이렉트
                     localStorage.removeItem('token');
-                    localStorage.removeItem('autoLogin');
                     sessionStorage.removeItem('token');
-                    sessionStorage.removeItem('autoLogin');
                     window.location.href = '/';
                 }
             })

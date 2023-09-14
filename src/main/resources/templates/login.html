@@ -97,13 +97,14 @@
             .then(response => response.json()) // 추가된 부분
             .then(data => {
               if (data.accessToken) { // token이 반환되면 성공적으로 로그인된 것임.
-                if(autoLogin === 'T') {
+                if (autoLogin === 'T') {
                   localStorage.setItem('token', data.accessToken);
                   localStorage.setItem('autoLogin', autoLogin);
                 } else {
                   sessionStorage.setItem('token', data.accessToken);
-                  localStorage.setItem('autoLogin', autoLogin);
+                  sessionStorage.setItem('autoLogin', autoLogin);
                 }
+                localStorage.setItem('autoLogin', autoLogin);
                 window.location.href = "/";
               } else {
                 alert(data.message);
@@ -118,7 +119,7 @@
     const password = document.querySelector("#password").value;
     let autoLogin;
 
-    if(document.getElementById("autoLogin").checked){
+    if (document.getElementById("autoLogin").checked) {
       autoLogin='T';
     }else{
       autoLogin='F';

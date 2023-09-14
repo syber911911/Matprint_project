@@ -63,6 +63,7 @@ public class UserService implements UserDetailsManager {
                     .secure(true)
                     .sameSite("Lax")
                     .domain("matprint.site")
+                    .domain("localhost")
                     .path("/")
                     .maxAge(3600 * 24 * 14)
                     .build();
@@ -72,10 +73,32 @@ public class UserService implements UserDetailsManager {
                     .secure(true)
                     .sameSite("Lax")
                     .domain("matprint.site")
+                    .domain("localhost")
                     .path("/")
                     .build();
         }
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+    }
+
+    public void setAutoLoginCookie(String autoLogin, HttpServletResponse response) {
+        ResponseCookie autoLoginCookie = null;
+        if (autoLogin.equals("T")) {
+            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "T")
+                    .sameSite("Lax")
+                    .domain("matprint.site")
+                    .domain("localhost")
+                    .path("/")
+                    .maxAge(3600 * 24 * 14)
+                    .build();
+        } else {
+            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "F")
+                    .sameSite("Lax")
+                    .domain("matprint.site")
+                    .domain("localhost")
+                    .path("/")
+                    .build();
+        }
+        response.addHeader("Set-Cookie", autoLoginCookie.toString());
     }
 
     public JwtTokenInfoDto loginUser(LoginDto request) {

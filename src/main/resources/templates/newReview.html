@@ -32,7 +32,7 @@
 
 <body>
 <header class="--header">
-  <div class="--logo">
+  <div class="--logo" style="cursor: pointer" onclick="window.location.href = '/'">
     <div class="--logo-image">🍔 맛자국</div>
   </div>
   <!-- 로그인/로그아웃과 마이페이지 링크 -->
@@ -58,7 +58,7 @@
       <input type="radio" id="rating1" name="rating" value="1" onclick="editRatings(1)"><label for="rating1" title="1점" id="rt1"></label>
     </fieldset><br>
     <div id="images">
-      <input id="imageInput" type="file" name="image" accept="image/*">
+      <input id="imageInput" type="file" name="image" accept="image/*" multiple>
     </div><br>
     <div style="width: 500px;">
       <div class ="form-group">
@@ -103,12 +103,7 @@
     });
 
     const file = fileInput.files[0];
-    if (file) {
-      formData.append("imageList", file);
-      for (let i = 0; i < files.length; i++) {
-        formData.append("imageList", files[i]);
-      }
-    }
+    if (file) formData.append("imageList", file);
 
     await fetch(`/api/${localStorage.getItem('rsId')}/review`, {
       method: 'POST',
@@ -118,7 +113,7 @@
             .then(response => response.json())
             .then(data => {
               console.log('리뷰가 성공적으로 등록되었습니다.', data);
-              //backToRestaurantPage();
+              backToRestaurantPage();
             })
             .catch(error => {
               console.error('리뷰 등록 중 오류가 발생했습니다.', error);
@@ -128,18 +123,24 @@
   function editRatings (star) { ratings = star; }
 
   /* refreshToken으로 accessToken 재발급 */
-  async function reissueToken () {
-    let response = await fetch(`/api/reissue`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}
-    });
-    let data = await response.json();
+  async function reissueToken() {
+    if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
+      alert("로그인 된 유저만 리뷰 작성 가능합니다.");
+      backToRestaurantPage();
+    } else {
+      const localAutoLogin = localStorage.getItem('autoLogin');
+      let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}
+      });
+      let data = await response.json();
 
-    if (localStorage.getItem('token')) {
-      localStorage.removeItem('token');
-      localStorage.setItem('token', data.accessToken);
-    } else if (sessionStorage.getItem('token')) {
-      sessionStorage.removeItem('token');
-      sessionStorage.setItem('token', data.accessToken);
+      if (localAutoLogin === "T") {
+        localStorage.removeItem('token');
+        localStorage.setItem('token', data.accessToken);
+      } else if (localAutoLogin === "F") {
+        sessionStorage.removeItem('token');
+        sessionStorage.setItem('token', data.accessToken);
+      }
     }
   }
 
@@ -161,22 +162,21 @@
       },
     })
             .then(response => {
+              localStorage.removeItem('autoLogin');
+
               if (response.ok) {
                 localStorage.removeItem('token');
-                localStorage.removeItem('autoLogin');
                 sessionStorage.removeItem('token');
-                sessionStorage.removeItem('autoLogin');
                 // 로그아웃 성공 시 메인 페이지로 이동하고 뒤로가기 막기
                 window.location.replace("/");
                 // 브라우저의 페이지 이동 기록을 제거
                 window.history.pushState({}, '', '/');
-              } else {
+              }
+              else {
                 console.error('로그아웃 실패:', response.statusText);
                 // 오류 발생 시에도 토큰 삭제 후 리다이렉트
                 localStorage.removeItem('token');
-                localStorage.removeItem('autoLogin');
                 sessionStorage.removeItem('token');
-                sessionStorage.removeItem('autoLogin');
                 window.location.href = '/';
               }
             })

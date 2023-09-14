@@ -34,7 +34,7 @@
 
 <body>
 <header class="--header">
-  <div class="--logo">
+  <div class="--logo" style="cursor: pointer" onclick="window.location.href = '/'">
     <div class="--logo-image">🍔 맛자국</div>
   </div>
   <!-- 로그인/로그아웃과 마이페이지 링크 -->
@@ -58,7 +58,7 @@
       <input type="radio" id="rating3" name="rating" value="3" onclick="editRatings(3)"><label for="rating3" title="3점" id="rt3"></label>
       <input type="radio" id="rating2" name="rating" value="2" onclick="editRatings(2)"><label for="rating2" title="2점" id="rt2"></label>
       <input type="radio" id="rating1" name="rating" value="1" onclick="editRatings(1)"><label for="rating1" title="1점" id="rt1"></label>
-    </fieldset><br>
+    </fieldset>
     <form id="imgUpload">
       <input id="imageInput" type="file" name="image" accept="image/*">
     </form><br>
@@ -86,7 +86,6 @@
 <script>
   let ratings = 0;
   let deleteImageList = [];
-  let addImageList = [];
 
   window.onload = function () {
     reissueToken();
@@ -103,25 +102,16 @@
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     const content = document.getElementById('content').value;
-    const fileInput = document.getElementById('imageInput');
-
     const formData = new FormData();
     formData.append('content', content);
     formData.append('ratings', ratings);
-    addImageList.forEach((image, index) => {
-      formData.append(`addImageList[${index}]`, image);
-    });
     deleteImageList.forEach((image, index) => {
       formData.append(`deleteImageList[${index}]`, image);
     });
 
+    const fileInput = document.getElementById('imageInput');
     const file = fileInput.files[0];
-    if (file) {
-      formData.append("imageList", file);
-      for (let i = 0; i < files.length; i++) {
-        formData.append("imageList", files[i]);
-      }
-    }
+    if (file) formData.append("addImageList", file);
 
     fetch(`/api/${localStorage.getItem('rsId')}/review/${localStorage.getItem('rvId')}`, {
       method: 'PUT',
@@ -143,18 +133,24 @@
   function editRatings (star) { ratings = star; }
 
   /* refreshToken으로 accessToken 재발급 */
-  async function reissueToken () {
-    let response = await fetch(`/api/reissue`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}
-    });
-    let data = await response.json();
+  async function reissueToken() {
+    if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
+      console.log("로그인 된 유저만 리뷰 수정 가능합니다.");
+      backToRestaurantPage();
+    } else {
+      const localAutoLogin = localStorage.getItem('autoLogin');
+      let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}
+      });
+      let data = await response.json();
 
-    if (localStorage.getItem('autoLogin') === "T") {
-      localStorage.removeItem('token');
-      localStorage.setItem('token', data.accessToken);
-    } else if (localStorage.getItem('autoLogin') === "F") {
-      sessionStorage.removeItem('token');
-      sessionStorage.setItem('token', data.accessToken);
+      if (localAutoLogin === "T") {
+        localStorage.removeItem('token');
+        localStorage.setItem('token', data.accessToken);
+      } else if (localAutoLogin === "F") {
+        sessionStorage.removeItem('token');
+        sessionStorage.setItem('token', data.accessToken);
+      }
     }
   }
 
