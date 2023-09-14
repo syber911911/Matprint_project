@@ -17,7 +17,9 @@ function fetchPostDetail() {
             reject('게시글 ID가 유효하지 않습니다.');
             return;
         }
-        fetch(`/api/mate/${postId}`)
+        fetch(`/api/mate/${postId}`, {
+            headers: headers
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('서버에서 게시글을 가져오는 중 오류 발생');
@@ -30,6 +32,8 @@ function fetchPostDetail() {
                 }
                 // 게시글 정보를 동적으로 표시
                 displayPostDetail(data.postDto);
+                const { accessUser } = data;
+                console.log("accessUser: ",accessUser);
                 // 게시글 정보가 화면에 표시된 후에 글쓴이 확인
                 const postUsernameElement = document.getElementById('post-username');
                 const postUsername = postUsernameElement.textContent.trim();

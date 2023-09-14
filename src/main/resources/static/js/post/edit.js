@@ -1,14 +1,5 @@
-function isAuthor(postUsername) {
-    const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-
-    if (!currentToken) {
-        return false;
-    }
-
-    const payload = decodeJwtToken(currentToken);
-    const currentUsername = payload.sub; // 토큰에서 username 추출
-
-    return postUsername === currentUsername;
+function isAuthor(accessUser, postUsername) {
+    return accessUser == postUsername;
 }
 
 // 수정 버튼 클릭 시 동작
@@ -117,18 +108,13 @@ backButton.addEventListener('click', function() {
 window.onload = function() {
     checkLogin();
     fetchPostDetail()
-        .then(postUsername => {
+        .then(data => {
+            const { postUsername, accessUser } = data;
             console.log("Post author: ", postUsername);
-            const currentToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-            if (currentToken) {
-                const payload = decodeJwtToken(currentToken);
-                const currentUsername = payload.sub; // 토큰에서 username 추출
-                console.log("Logged in user: ", currentUsername);
-
-                if (isAuthor(postUsername)) {
-                    const postButtons = document.getElementById('post-buttons');
-                    postButtons.style.display = 'block';
-                }
+            console.log("accessUser: ", postUsername);
+            if (isAuthor(accessUser, postUsername)) {
+                const postButtons = document.getElementById('post-buttons');
+                postButtons.style.display = 'block';
             }
         })
         .catch(error => console.log(error));
