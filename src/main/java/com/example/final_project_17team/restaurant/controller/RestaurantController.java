@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("restaurant")
+@RequestMapping("/api/restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
     private final CategoryUpdate categoryUpdate;

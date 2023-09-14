@@ -24,7 +24,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/{restaurantId}/review")
+@RequestMapping("/api/{restaurantId}/review")
 public class ReviewController {
     private ReviewService reviewService;
 

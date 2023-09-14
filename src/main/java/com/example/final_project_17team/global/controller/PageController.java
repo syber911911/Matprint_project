@@ -40,12 +40,12 @@ public class PageController {
         return new ModelAndView("main");
     }
 
-    @GetMapping("/login-page")
+    @GetMapping("/login")
     public ModelAndView login () {
         return new ModelAndView("login");
     }
 
-    @GetMapping("/join-page")
+    @GetMapping("/join")
     public ModelAndView join () {
         return new ModelAndView("join");
     }

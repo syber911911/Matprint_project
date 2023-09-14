@@ -31,6 +31,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api")
 public class UserController {
     private final UserService userService;
     private final WishlistService wishlistService;
