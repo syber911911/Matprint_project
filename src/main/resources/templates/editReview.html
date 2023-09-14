@@ -207,7 +207,7 @@
             .then(response => response.json())
             .then(data => {
               console.log(data);
-              if (!data.content) alert("not found");
+              if (!data.content) backToRestaurantPage();
               else {
                 document.getElementById('content').innerHTML = data.content;
                 document.getElementById(`rating${data.ratings}`).checked = true;
