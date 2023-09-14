@@ -92,8 +92,8 @@ input:active {
     border-radius: 5px;
     background-color: #ffffff;
     display: flex; /* 부모 요소를 Flex 컨테이너로 설정 */
-    align-items: center; /* 수직 중앙 정렬 */
-    justify-content: center; /* 수평 중앙 정렬 */
+    /*align-items: center; !* 수직 중앙 정렬 *!*/
+    /*justify-content: center; !* 수평 중앙 정렬 *!*/
 }
 
 
@@ -111,6 +111,7 @@ button {
     width: 100%;
 
 }
+
 
 .changecontentBox__user__image {
     flex-basis: 33.333333%;

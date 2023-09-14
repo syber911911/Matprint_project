@@ -21,6 +21,9 @@ export const profileTemplate = async (HttpHandler, paint) => {
 
 export const likePostTemplate = async (HttpHandler, paint) => {
     const posts = await HttpHandler.request('api/profile/wishlist');
+
+    let postListHtml = '<h3>가게명:</h3><ul class="" style="list-style: none;">';
+
     posts.map(post => {
         const { restaurantName, address } = post;
         const formatUrl = (restaurantName, address) => {
@@ -31,20 +34,21 @@ export const likePostTemplate = async (HttpHandler, paint) => {
             return `${baseUrl}?${queryParams.toString()}`;
         }
         const url = formatUrl(restaurantName, address);
-        console.log(url);
-        paint(`
 
-        <ul class="" style="list-style: none;">
-            <li>
-                <h3>가게명:</h3>
-                <a href=${url}>
-                    <span>${restaurantName}</span>
-                </a>
-            </li>
-        </ul>
-
-    `)
+        // 각 가게 이름을 리스트로 추가
+        postListHtml += `
+              <li>
+                  <a href=${url}>
+                      <span>${restaurantName}</span>
+                  </a>
+              </li>`;
     })
+
+    // 모든 리스트 항목 추가 후 ul 태그 닫음
+    postListHtml += '</ul>';
+
+    // 최종 HTML 구조를 한 번에 그림
+    paint(postListHtml);
 }
 
 
