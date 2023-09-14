@@ -78,25 +78,6 @@ public class UserService implements UserDetailsManager {
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
     }
 
-    public void setAutoLoginCookie(String autoLogin, HttpServletResponse response) {
-        ResponseCookie autoLoginCookie = null;
-        if (autoLogin.equals("T")) {
-            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "T")
-                    .sameSite("Lax")
-                    .domain("matprint.site")
-                    .path("/")
-                    .maxAge(3600 * 24 * 14)
-                    .build();
-        } else {
-            autoLoginCookie = ResponseCookie.from("AUTO_LOGIN", "F")
-                    .sameSite("Lax")
-                    .domain("matprint.site")
-                    .path("/")
-                    .build();
-        }
-        response.addHeader("Set-Cookie", autoLoginCookie.toString());
-    }
-
     public JwtTokenInfoDto loginUser(LoginDto request) {
         CustomUserDetails user = this.loadUserByUsername(request.getUsername());
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
