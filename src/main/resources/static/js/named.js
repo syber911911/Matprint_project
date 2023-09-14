@@ -7,7 +7,7 @@
         },
         methods: {
             sortResults: function (category, sortBy) {
-                $.get(`/named?category=${category}&sortBy=${sortBy}&page=0&limit=300`, function (response) {
+                $.get(`/api/named?category=${category}&sortBy=${sortBy}&page=0&limit=300`, function (response) {
                     search_result.search_result = response.content;
                 });
             }
@@ -38,7 +38,7 @@
     });
 
     function performSearch(category, icon) {
-        $.get(`/named?category=${category}&page=0&limit=300`, function (response) {
+        $.get(`/api/named?category=${category}&page=0&limit=300`, function (response) {
             search_result.search_result = response.content;
             initializeMap(category, icon);
         });

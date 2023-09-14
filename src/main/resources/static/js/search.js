@@ -9,7 +9,7 @@
 
     $("#searchButton").click(function () {
         const query = $("#searchBox").val();
-        $.get(`/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
+        $.get(`/api/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
 
             search_result.search_result = response.content;
 
@@ -20,7 +20,7 @@
     $("#searchBox").keydown(function (key) {
         if (key.keyCode === 13) {
             const query = $("#searchBox").val();
-            $.get(`/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
+            $.get(`/api/restaurant/search?target=${query}&page=0&limit=400`, function (response) {
                 // Update the search_result data property with the search results
                 search_result.search_result = response.content;
 
