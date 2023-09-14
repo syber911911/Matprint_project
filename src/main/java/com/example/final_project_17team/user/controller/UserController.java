@@ -46,29 +46,25 @@ public class UserController {
     public JwtTokenInfoDto login(@RequestBody @Valid LoginDto request, @RequestParam(value = "autoLogin") String autoLogin, HttpServletResponse response) {
         JwtTokenInfoDto jwtTokenInfoDto = userService.loginUser(request);
         userService.setRefreshCookie(jwtTokenInfoDto.getRefreshToken(), autoLogin, response);
-        userService.setAutoLoginCookie(autoLogin, response);
         return jwtTokenInfoDto;
     }
 
     @PostMapping("/reissue")
-    public JwtTokenInfoDto reissue(HttpServletRequest request, HttpServletResponse response) {
+    public JwtTokenInfoDto reissue(@RequestParam("autoLogin") String autoLogin, HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = null;
-        String autoLogin = null;
         try {
             for (Cookie cookie : request.getCookies()) {
-                switch (cookie.getName()) {
-                    case "REFRESH_TOKEN" -> refreshToken = cookie.getValue();
-                    case "AUTO_LOGIN" -> autoLogin = cookie.getValue();
+                if (cookie.getName().equals("REFRESH_TOKEN")) {
+                    refreshToken = cookie.getValue();
                 }
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
-        if (refreshToken == null || autoLogin == null)
+        if (refreshToken == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "재로그인 필요");
         JwtTokenInfoDto jwtTokenInfoDto = jwtTokenUtils.regenerateToken(refreshToken);
         userService.setRefreshCookie(jwtTokenInfoDto.getRefreshToken(), autoLogin, response);
-        userService.setAutoLoginCookie(autoLogin, response);
         return jwtTokenInfoDto;
     }
 
