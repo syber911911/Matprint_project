@@ -135,5 +135,40 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
 
 
 ### 동행찾기
+  기능 | HTTP METHOD | URL
+  --- | ----------- | ---
+  동행 찾기 페이지 이동 | GET | /mate
+  사용자 동행 글 전체조회 | GET | api/user/posts
+  동행 글 작성 | POST |  api/mate
+  동행 글 수정 | PUT |  api/mate
+  동행 글 삭제 | DELETE |  api/mate/post/
+  동행 글 단일 조회 | GET | api/mate/{postId}
+  동행 글 전체 조회 | GET | api/mate
+  동행 글 검색 | GET | api/mate/search?
+  댓글 생성 | POST | api/mate/{postId}/comment
+  댓글 조회 | GET | api/{postId}/comment
+  댓글 수정 | PUT | api/mate/{postId}/comment/{commentId}
+  댓글 삭제 | DELETE | api/mate/{postId}/comment/{commentId}
+
+
+  #### PostDto
+  특정 유저가 작성한 동행글 조회를 위한 DTO
+
+  #### CreatePostDto
+  동행글 작성을 위한 DTO  
    
+  #### ReadPostDto
+  검색어를 통해 동행 글을 찾기 위해 작성한 DTO
+ 
+  #### UpdatePostDto
+  동행글 수정을 위한 DTO. 이전의 것과 비교해서 수정된 것이 없으면 업데이트 하지 않는다.
+
+  #### CommentDto
+  특정 동행글의 댓글 조회를 위한 DTO
+ 
+  #### CreateCommentDto
+  댓글 작성을 위한 DTO
+ 
+  #### UpdateCommentDto
+  댓글 수정을 위한 DTO
 
