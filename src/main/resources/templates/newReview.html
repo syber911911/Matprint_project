@@ -90,17 +90,21 @@
 
   async function newReview() {
     await reissueToken();
-    const token = localStorage.getItem('token');
-    const content = document.getElementById('content').value;
 
+    let token;
+    if (localStorage.getItem('token')) {
+      token = localStorage.getItem('token');
+    } else if (sessionStorage.getItem('token')) {
+      token = sessionStorage.getItem('token');
+    }
+
+    const content = document.getElementById('content').value;
     const fileInput = document.getElementById('imageInput');
     const file = fileInput.files[0];
     if (file) {
       const reader = new FileReader();
-
       reader.onload = function(e) {
-        const imageData = e.target.result;
-        imageList.push(imageData);
+        imageList.push(e.target.result);
       }
       reader.readAsDataURL(file);
     }
@@ -114,9 +118,7 @@
 
     await fetch(`/api/${localStorage.getItem('rsId')}/review`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
+      headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
     })
             .then(response => response.json())
@@ -130,17 +132,12 @@
   }
 
   function uploadImage() {
-    var fileInput = document.getElementById('imageInput');
-    var file = fileInput.files[0];
+    const fileInput = document.getElementById('imageInput');
+    const file = fileInput.files[0];
 
     if (file) {
-      var reader = new FileReader();
-
-      reader.onload = function(e) {
-        var imageData = e.target.result;
-        imgList.push(imageData);
-      }
-      alert(imageData);
+      const reader = new FileReader();
+      reader.onload = function(e) { imgList.push(e.target.result); }
       reader.readAsDataURL(file);
     }
   }
@@ -153,8 +150,14 @@
       method: 'POST', headers: {'Content-Type': 'application/json'}
     });
     let data = await response.json();
-    localStorage.removeItem('token');
-    localStorage.setItem('token', data.accessToken);
+
+    if (localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      localStorage.setItem('token', data.accessToken);
+    } else if (sessionStorage.getItem('token')) {
+      sessionStorage.removeItem('token');
+      sessionStorage.setItem('token', data.accessToken);
+    }
   }
 
   function backToRestaurantPage() {

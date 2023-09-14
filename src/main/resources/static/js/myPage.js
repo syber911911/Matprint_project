@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const handleLogout = (e) => {
         e.preventDefault();
-        User.logout('/login');
+        User.logout('api/logout');
     }
     logoutBtn.addEventListener('click', handleLogout);
 
