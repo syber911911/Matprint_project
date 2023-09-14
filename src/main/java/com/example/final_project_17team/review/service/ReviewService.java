@@ -238,10 +238,10 @@ public class ReviewService {
         return objectMetadata;
     }
 
-    public ReadReviewDto readAReview(Long reviewId) {
-        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+    public ReadReviewDto readAReview(Long reviewId, Long restaurantId) {
+        Optional<Review> optionalReview = reviewRepository.findByIdAndRestaurantId(reviewId, restaurantId);
         if (optionalReview.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰 아이디가 유효하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 항목이 존재하지 않습니다.");
         return ReadReviewDto.fromEntity(optionalReview.get());
     }
 }

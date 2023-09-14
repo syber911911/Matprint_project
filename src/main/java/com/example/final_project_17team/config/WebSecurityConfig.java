@@ -44,7 +44,33 @@ public class WebSecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .logout(LogoutConfigurer::disable)
                 .authorizeHttpRequests(authHttpRequest -> authHttpRequest
-                        .requestMatchers("/logout", "/profile")
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/mate", "/api/mate/{postId}/comment",
+                                "/api/{restaurantId}/review", "/api/logout",
+                                "/api/wishlist/{restaurantId}"
+
+                        )
+                        .authenticated()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/profile/wishlist", "/api/profile/post",
+                                "/api/profile/review", "/api/profile",
+                                "/api/username"
+                        )
+                        .authenticated()
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/mate/{postId}", "/api/mate/{postId}/comment/{commentId}",
+                                "/api/{restaurantId}/review/{reviewId}", "/api/profile",
+                                "/api/profile/image"
+                        )
+                        .authenticated()
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/mate/{postId}", "/{postId}/comment/{commentId}",
+                                "/api/{restaurantId}/review/{reviewId}", "/api/profile"
+                        )
                         .authenticated()
                         .anyRequest()
                         .permitAll()

@@ -41,8 +41,8 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}")
-    public ReadReviewDto readAReviews(@PathVariable("reviewId") Long reviewId){
-        return reviewService.readAReview(reviewId);
+    public ReadReviewDto readAReviews(@PathVariable("reviewId") Long reviewId, @PathVariable("restaurantId") Long restaurantId){
+        return reviewService.readAReview(reviewId, restaurantId);
     }
 
     @DeleteMapping("/{reviewId}")
