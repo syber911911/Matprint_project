@@ -104,14 +104,6 @@
 
     const content = document.getElementById('content').value;
     const fileInput = document.getElementById('imageInput');
-    const file = fileInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imageList.push(e.target.result);
-      }
-      reader.readAsDataURL(file);
-    }
 
     const formData = new FormData();
     formData.append('content', content);
@@ -122,6 +114,14 @@
     deleteImageList.forEach((image, index) => {
       formData.append(`deleteImageList[${index}]`, image);
     });
+
+    const file = fileInput.files[0];
+    if (file) {
+      formData.append("imageList", file);
+      for (let i = 0; i < files.length; i++) {
+        formData.append("imageList", files[i]);
+      }
+    }
 
     fetch(`/api/${localStorage.getItem('rsId')}/review/${localStorage.getItem('rvId')}`, {
       method: 'PUT',
@@ -149,10 +149,10 @@
     });
     let data = await response.json();
 
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('autoLogin') === "T") {
       localStorage.removeItem('token');
       localStorage.setItem('token', data.accessToken);
-    } else if (sessionStorage.getItem('token')) {
+    } else if (localStorage.getItem('autoLogin') === "F") {
       sessionStorage.removeItem('token');
       sessionStorage.setItem('token', data.accessToken);
     }
