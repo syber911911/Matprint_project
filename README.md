@@ -51,6 +51,7 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
  --- | ----------- | ---
  검색 맛집 페이지 이동 | GET | /search
  맛집 조회 | GET | /search?target={target}
+ 상세페이지에서 즐겨찾기 | POST | /wishlist
 
 #### RestaurantDto
 프론트에서 간단히 보여줄 정보가 담긴 DTO    
@@ -132,9 +133,6 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
 
 ![image](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/078f349f-f81c-4b86-add4-df0a8430f20b)
 
-     
-
-### 맛집 상세 정보
 
 ### 동행찾기
    
