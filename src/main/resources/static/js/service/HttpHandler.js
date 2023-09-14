@@ -3,12 +3,10 @@ export class HttpHandler {
         this.token = token;
         this.headers = {
             'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
         };
-
-        if (token !== "null") {
-            this.headers['Authorization'] = `Bearer ${token}`;
-        }
     }
+
     async request(url) {
         try {
             console.log(this.headers);

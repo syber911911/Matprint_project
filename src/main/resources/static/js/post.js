@@ -35,7 +35,7 @@ function fetchPosts(pageNumber=0 , pageSize=10 ) {
     let {searchType, keyword, gender, ageRange: age , status}
         =currentSearchConditions;
 
-    fetch(`/mate/search?type=${searchType}&target=${keyword}&gender=${gender}&age=${age}&status=${status}&page=${pageNumber}&limit=${pageSize}`)
+    fetch(`/api/mate/search?type=${searchType}&target=${keyword}&gender=${gender}&age=${age}&status=${status}&page=${pageNumber}&limit=${pageSize}`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -117,7 +117,7 @@ function displayPosts(postsPage) {
 
         row.innerHTML = `
             <td>${post.id}</td>
-            <td><a href="/matprint/mate/${post.id}" class="post-link">${post.title}</a></td>
+            <td><a href="/mate/${post.id}" class="post-link">${post.title}</a></td>
             <td>${post.status}</td>
             <td>${visitDate}</td>
             <td>${post.username}</td>

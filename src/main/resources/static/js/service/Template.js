@@ -1,5 +1,5 @@
 export const profileTemplate = async (HttpHandler, paint) => {
-    const user = await HttpHandler.request('/profile');
+    const user = await HttpHandler.request('/api/profile');
     const { username, gender, email, age, phone, imgUrl } = user;
     paint(`
     <div class="flex changecontentBox__user">
@@ -19,7 +19,7 @@ export const profileTemplate = async (HttpHandler, paint) => {
     `)
 }
 export const likePostTemplate = async (HttpHandler, paint) => {
-    const posts = await HttpHandler.request('/profile/wishlist');
+    const posts = await HttpHandler.request('/api/profile/wishlist');
     posts.map(post => {
         const { restaurantName, address, roadAddress } = post;
         paint(`
@@ -47,7 +47,7 @@ const formatTime = (utc) => {
 }
 
 export const postTemplate = async (HttpHandler, paint) => {
-    const posts = await HttpHandler.request('/profile/post');
+    const posts = await HttpHandler.request('/api/profile/post');
     posts.map(post => {
         const { title, status, visitDate } = post;
         paint(`
@@ -85,14 +85,14 @@ export const uploadTemplate = async (User, paint) => {
         e.preventDefault();
         var formData = new FormData();
         formData.append('multipartFile', fileInput.files[0]);
-        User.uploadProfile('/profile/image', formData);
+        User.uploadProfile('/api/profile/image', formData);
     }
 
     uploadForm.addEventListener('submit', handleSubmit);
 }
 
 export const updateFormTemplate = async (HttpHandler, User, paint) => {
-    const profile = await HttpHandler.request('/profile');
+    const profile = await HttpHandler.request('/api/profile');
     const { phone, age, gender, email } = profile;
     paint(`
     <form id="submitForm" action="/profile">
@@ -144,7 +144,7 @@ export const updateFormTemplate = async (HttpHandler, User, paint) => {
             age,
             gender: checked
         };
-        User.updateUser('/profile', formData);
+        User.updateUser('/api/profile', formData);
     }
     submitForm.addEventListener('submit', handleSubmit);
 }

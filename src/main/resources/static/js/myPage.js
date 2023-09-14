@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.preventDefault();
         const confirmed = confirm("정말 회원 탈퇴하시겠습니까??");
         if (confirmed) {
-            User.deleteUser('/profile');
+            User.deleteUser('/api/profile');
         } else {
             console.log("회원 탈퇴가 취소되었습니다.");
         }
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const handleGoback = (e) => {
         e.preventDefault();
-        window.location.replace('/matprint/main');
+        window.location.replace('/');
     }
     goBackBtn.addEventListener('click', handleGoback);
     const showProfile = async () => {
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const handleLogout = (e) => {
         e.preventDefault();
-        User.logout('/matprint/login');
+        User.logout('/login');
     }
     logoutBtn.addEventListener('click', handleLogout);
 
