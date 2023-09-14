@@ -11,17 +11,42 @@ const pathWithoutContext = currentUrl.replace("http://localhost:8080", "");
 const postId = currentUrl.split('/').pop();
 console.log('게시글 ID:', postId);
 
+// async function reissueToken() {
+//     const token = localStorage.getItem('token')||sessionStorage.getItem('token');
+//     const autoLogin = localStorage.getItem('autoLogin');
+//     if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
+//         document.getElementById('wish').checked = false;
+//         console.log("user: anonymous");
+//     } else {
+//         let response = await fetch(`/api/reissue?autoLogin=${autoLogin}`, {
+//             method: 'POST', headers: {'Content-Type': 'application/json'}
+//         });
+//         let data = await response.json();
+//
+//         if (localStorage.getItem('autoLogin') === "T") {
+//             localStorage.removeItem('token');
+//             localStorage.setItem('token', data.accessToken);
+//         } else if (localStorage.getItem('autoLogin') === "F") {
+//             sessionStorage.removeItem('token');
+//             sessionStorage.setItem('token', data.accessToken);
+//         }
+//         getUsername(data.accessToken);
+//     }
+// }
+
 async function reissueToken() {
-    const token = localStorage.getItem('token')||sessionStorage.getItem('token');
     const autoLogin = localStorage.getItem('autoLogin');
     if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
-        document.getElementById('wish').checked = false;
+        // document.getElementById('wish').checked = false;
         console.log("user: anonymous");
+        return null;  // No token to reissue
     } else {
-        let response = await fetch(`/api/reissue/${autoLogin}`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'}
+        let response = await fetch(`/api/reissue?autoLogin=${autoLogin}`, {
+            method: 'POST', headers: {'Content-Type': 'application/json',
+                credentials: 'include'}
         });
         let data = await response.json();
+        console.log(data);
 
         if (localStorage.getItem('autoLogin') === "T") {
             localStorage.removeItem('token');
@@ -30,15 +55,9 @@ async function reissueToken() {
             sessionStorage.removeItem('token');
             sessionStorage.setItem('token', data.accessToken);
         }
-        getUsername(data.accessToken);
+
+        return data.accessToken;  // Return the new token
     }
-}
-async function getUsername(token) {
-    let response = await fetch(`/api/username`, {
-        method: 'GET',
-        headers: headers
-    });
-    username = await response.text();
 }
 
 // function fetchPostDetail() {
@@ -83,9 +102,10 @@ function fetchPostDetail() {
             return;
         }
         try {
+            const newToken = await reissueToken();
+            console.log("New Token:", newToken);
             let response = await fetch(`/api/mate/${postId}`, { headers: headers });
             // 401 Unauthorized 오류가 발생했을 경우 토큰 재발급
-            await reissueToken();
             // if (response.status === 401) {
             //     await reissueToken();
             //     // 토큰 재발급 후 다시 요청
