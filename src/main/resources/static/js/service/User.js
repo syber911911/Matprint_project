@@ -23,6 +23,7 @@ export class User {
 
             if (response.status === 200) {
                 localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
                 window.location.replace('/');
             } else {
                 console.error(`failed to request on ${url} api ${response.statusText}`);
