@@ -47,56 +47,97 @@ editForm.addEventListener('submit', (event) => {
     const updatedStatus = editStatusSelect.value;
     const updatedVisitDate = editVisitDateInput.value;
 
-    // 서버로 수정된 데이터 전송
-    fetch(`/api/mate/${postId}`, {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify({
-            title: updatedTitle,
-            content: updatedContent,
-            status: updatedStatus,
-            visitDate: updatedVisitDate
-        })
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-            location.reload();
+    updatePost(postId, updatedTitle, updatedContent, updatedStatus, updatedVisitDate)
+        .then(() => {
+            console.log("Post has been successfully updated.");
         })
         .catch((error) => {
             console.error('Error:', error);
         });
 });
 
+function updatePost(postId, title, content, status, visitDate) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const newToken = await reissueToken();
+            console.log("New Token:", newToken);
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            let headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            let response = await fetch(`/api/mate/${postId}`, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify({
+                    title,
+                    content,
+                    status,
+                    visitDate
+                })
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            let data = await response.json();
+            console.log(data);
+            // 페이지 새로 고침
+            location.reload();
+            resolve();
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+
 // 삭제 버튼 클릭 시 동작
 const deleteButton = document.getElementById('delete-button');
 deleteButton.addEventListener('click', () => {
     const confirmation = confirm("게시글을 삭제하시겠습니까?");
     if (confirmation) {
-        fetch(`/api/mate/${postId}`, {
-            method: 'DELETE',
-            headers: headers,
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data.message);
-                window.location.href = "/mate";
+        deletePost(postId)
+            .then(() => {
+                console.log("Post has been successfully deleted.");
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     }
 });
+
+function deletePost(postId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const newToken = await reissueToken();
+            console.log("New Token:", newToken);
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            let headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            let response = await fetch(`/api/mate/${postId}`, {
+                method: 'DELETE',
+                headers: headers,
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            let data = await response.json();
+            console.log(data.message);
+            // 페이지 이동
+            window.location.href = "/mate";
+            resolve();
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 
 // 뒤로 가기 버튼 클릭 시 이벤트 처리
 const backButton = document.getElementById('back-button');

@@ -6,7 +6,8 @@
     @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
     body { margin: 0; padding: 0; overflow: auto; }
-    .--header {display: flex;justify-content: space-between;align-items: center;padding: 10px;background-color: #FFE08C;font-family: "Black Han Sans", ui-rounded;font-weight: bold;}
+    .--header {display: flex;justify-content: space-between;align-items: center;padding: 10px;background-color: #FFE08C;font-family: "Black Han Sans", ui-rounded;font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);}
     .container {width: auto;height: auto;display: flex;flex-direction: column;align-items: center;padding: 35px;margin: 50px 100px 50px 100px;background-color: #f9f9f9;border-radius: 5px;box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;}
     .--logo-image { font-size: 30px; }
     .--login-container a { margin-left: 10px;}
@@ -29,11 +30,12 @@
     .rate label:hover ~ input:checked ~ label { color: #D7DF01 !important;  }
   </style>
 </head>
-
 <body>
 <header class="--header">
   <div class="--logo" style="cursor: pointer" onclick="window.location.href = '/'">
     <div class="--logo-image">🍔 맛자국</div>
+  <div class="--logo">
+    <div class="--logo-image" onclick="location.href='/'">🍔 맛자국</div>
   </div>
   <!-- 로그인/로그아웃과 마이페이지 링크 -->
   <div class="--login-container">
@@ -46,7 +48,6 @@
     <a href="/login">로그인</a>
   </div>
 </header>
-
 <main class="--main">
   <div class="container">
     <h1 id="name">리뷰 작성</h1>

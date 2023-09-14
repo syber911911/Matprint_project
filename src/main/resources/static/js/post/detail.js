@@ -11,43 +11,24 @@ const pathWithoutContext = currentUrl.replace("http://localhost:8080", "");
 const postId = currentUrl.split('/').pop();
 console.log('게시글 ID:', postId);
 
-// async function reissueToken() {
-//     const token = localStorage.getItem('token')||sessionStorage.getItem('token');
-//     const autoLogin = localStorage.getItem('autoLogin');
-//     if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
-//         document.getElementById('wish').checked = false;
-//         console.log("user: anonymous");
-//     } else {
-//         let response = await fetch(`/api/reissue?autoLogin=${autoLogin}`, {
-//             method: 'POST', headers: {'Content-Type': 'application/json'}
-//         });
-//         let data = await response.json();
-//
-//         if (localStorage.getItem('autoLogin') === "T") {
-//             localStorage.removeItem('token');
-//             localStorage.setItem('token', data.accessToken);
-//         } else if (localStorage.getItem('autoLogin') === "F") {
-//             sessionStorage.removeItem('token');
-//             sessionStorage.setItem('token', data.accessToken);
-//         }
-//         getUsername(data.accessToken);
-//     }
-// }
-
 async function reissueToken() {
     const autoLogin = localStorage.getItem('autoLogin');
     if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
-        // document.getElementById('wish').checked = false;
         console.log("user: anonymous");
-        return null;  // No token to reissue
+        return null;
     } else {
         let response = await fetch(`/api/reissue?autoLogin=${autoLogin}`, {
-            method: 'POST', headers: {'Content-Type': 'application/json',
-                credentials: 'include'}
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include'
         });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         let data = await response.json();
-        console.log(data);
-
+        if (data.error) {
+            throw new Error(data.error);
+        }
         if (localStorage.getItem('autoLogin') === "T") {
             localStorage.removeItem('token');
             localStorage.setItem('token', data.accessToken);
@@ -55,45 +36,9 @@ async function reissueToken() {
             sessionStorage.removeItem('token');
             sessionStorage.setItem('token', data.accessToken);
         }
-
-        return data.accessToken;  // Return the new token
+        return data.accessToken;
     }
 }
-
-// function fetchPostDetail() {
-//     return new Promise((resolve, reject) => {
-//         if (!postId) {
-//             reject('게시글 ID가 유효하지 않습니다.');
-//             return;
-//         }
-//         fetch(`/api/mate/${postId}`, {
-//             headers: headers
-//         })
-//             .then(response => {
-//                 if (!response.ok) {
-//                     throw new Error('서버에서 게시글을 가져오는 중 오류 발생');
-//                 }
-//                 return response.json();
-//             })
-//             .then(data => {
-//                 if (data.error) {
-//                     throw new Error(data.error);
-//                 }
-//                 // 게시글 정보를 동적으로 표시
-//                 displayPostDetail(data.postDto);
-//                 const { accessUser } = data;
-//                 console.log("accessUser1: ",accessUser);
-//                 // 게시글 정보가 화면에 표시된 후에 글쓴이 확인
-//                 const postUsernameElement = document.getElementById('post-username');
-//                 const postUsername = postUsernameElement.textContent.trim();
-//                 resolve({accessUser, postUsername});
-//             })
-//             .catch(error => {
-//                 console.error('게시글을 불러오는 중 오류 발생:', error.message);
-//                 reject(error.message);
-//             });
-//     });
-// }
 
 function fetchPostDetail() {
     return new Promise(async (resolve, reject) => {
@@ -104,13 +49,14 @@ function fetchPostDetail() {
         try {
             const newToken = await reissueToken();
             console.log("New Token:", newToken);
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            let headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             let response = await fetch(`/api/mate/${postId}`, { headers: headers });
-            // 401 Unauthorized 오류가 발생했을 경우 토큰 재발급
-            // if (response.status === 401) {
-            //     await reissueToken();
-            //     // 토큰 재발급 후 다시 요청
-            //     response = await fetch(`/api/mate/${postId}`, { headers: headers });
-            // }
             if (!response.ok) {
                 throw new Error('서버에서 게시글을 가져오는 중 오류 발생');
             }
@@ -124,7 +70,7 @@ function fetchPostDetail() {
             const postUsernameElement = document.getElementById('post-username');
             const postUsername = postUsernameElement.textContent.trim();
             resolve({accessUser, postUsername});
-        } catch(error) {
+        }catch(error) {
             console.error('게시글을 불러오는 중 오류 발생:', error.message);
             reject(error.message);
         }
@@ -163,7 +109,7 @@ function displayPostDetail(post) {
     if (post && post.username) {
         usernameElement.innerHTML =
             `<div style="display: flex; align-items: center;">
-            <img src="${post.imgUrl}" style="border-radius: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, .5); width:40px;">
+            <img src="${post.imgUrl}" style="border-radius: 50%; object-fit: cover; width:40px; height:40px; box-shadow: 0px 0px 10px rgba(0, 0, 0, .5); width:40px;">
             <b style="margin-left:10px;">${post.username}</b>
          </div>`;
     } else {
