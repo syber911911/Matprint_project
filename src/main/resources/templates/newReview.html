@@ -119,24 +119,23 @@
 
   /* refreshToken으로 accessToken 재발급 */
   async function reissueToken() {
-    const localAutoLogin = localStorage.getItem('autoLogin');
-    let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}
-    });
-    let data = await response.json();
-    if (!response.ok) {
-      alert("로그인 된 유저만 리뷰 작성 가능합니다.");
-      backToRestaurantPage();
-    }
+    if ((!localStorage.getItem('token') && !sessionStorage.getItem('token')) || localStorage.getItem('autoLogin') === 'undefined') {
+      document.getElementById('wish').prop("disabled", true);
+      console.log("user: anonymous");
+    } else {
+      let response = await fetch(`/api/reissue?autoLogin=${localStorage.getItem('autoLogin')}`, {
+        method: 'POST', headers: {'Content-Type': 'application/json'}
+      });
+      let data = await response.json();
 
-    if (localAutoLogin === "T") {
-      localStorage.removeItem('token');
-      localStorage.setItem('token', data.accessToken);
-    } else if (localAutoLogin === "F") {
-      sessionStorage.removeItem('token');
-      sessionStorage.setItem('token', data.accessToken);
+       if (localStorage.getItem('autoLogin') === 'T') {
+           localStorage.removeItem('token');
+           localStorage.setItem('token', data.accessToken);
+       } else {
+           sessionStorage.removeItem('token');
+           sessionStorage.setItem('token', data.accessToken);
+       }
     }
-    backToRestaurantPage();
   }
 
   function backToRestaurantPage() {
