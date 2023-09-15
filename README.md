@@ -29,7 +29,7 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
 <img width="1000" height="600" alt="프로젝트 구조도" src="https://github.com/syber911911/Matprint_project/assets/64578367/6a3dafac-a832-4df8-8bfd-085000721fe6">
 
 ### DB ERD
-![erd](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/1686e5bb-de1c-4c53-9682-d10892d7be72)
+<img width="1000" height="600" alt="ERD" src="https://github.com/syber911911/Matprint_project/assets/64578367/eee4742e-7c1c-4cfd-a738-de2f5e4f3b12">
 
 ### 회원
  기능 | HTTP METHOD | URL
