@@ -143,22 +143,22 @@
         let data = await response.text();
         if (data.includes("true")) document.getElementById('wish').checked = true;
     }
+
     /* refreshToken으로 accessToken 재발급 */
     async function reissueToken() {
-        if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
-            document.getElementById('wish').checked = false;
+        if ((!localStorage.getItem('token') && !sessionStorage.getItem('token')) || localStorage.getItem('autoLogin') === 'undefined') {
+            document.getElementById('wish').prop("disabled", true);
+            console.log("user: anonymous");
         } else {
-            const localAutoLogin = localStorage.getItem('autoLogin');
-
-            let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
+            let response = await fetch(`/api/reissue?autoLogin=${localStorage.getItem('autoLogin')}`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}
             });
             let data = await response.json();
 
-            if (localAutoLogin === "T") {
+            if (localStorage.getItem('autoLogin') === 'T') {
                 localStorage.removeItem('token');
                 localStorage.setItem('token', data.accessToken);
-            } else if (localAutoLogin === "F") {
+            } else {
                 sessionStorage.removeItem('token');
                 sessionStorage.setItem('token', data.accessToken);
             }
@@ -166,10 +166,9 @@
         }
     }
 
-    결
-
     function getReviewsPaged(page) {
         const username = localStorage.getItem('username');
+
         fetch(`/api/${restaurantId}/review?page=${page}&limit=5`, {
             method: 'GET', headers: {'Content-Type': 'application/json'}
         })
@@ -203,6 +202,19 @@
 
     function toNewReview () {
         window.location.href =`/review?restaurantId=${restaurantId}`;
+    }
+
+    async function getUsername(token) {
+        let response = await fetch(`/api/username`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const username = await response.text();
+        localStorage.setItem('username', username);
+        await getReviewsPaged(0);
     }
 
     function getRestaurantInfo(name, address) {
