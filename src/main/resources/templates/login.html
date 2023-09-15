@@ -97,13 +97,9 @@
             .then(response => response.json()) // 추가된 부분
             .then(data => {
               if (data.accessToken) { // token이 반환되면 성공적으로 로그인된 것임.
-                if (autoLogin === 'T') {
+                if (autoLogin === 'T')
                   localStorage.setItem('token', data.accessToken);
-                  localStorage.setItem('autoLogin', autoLogin);
-                } else {
-                  sessionStorage.setItem('token', data.accessToken);
-                  sessionStorage.setItem('autoLogin', autoLogin);
-                }
+                else sessionStorage.setItem('token', data.accessToken);
                 localStorage.setItem('autoLogin', autoLogin);
                 window.location.href = "/";
               } else {
