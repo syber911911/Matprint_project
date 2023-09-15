@@ -26,7 +26,7 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
 ## ⚙️ 구현 기능
 
 ### 프로젝트 구조
-<img width="1030" height="600" alt="구조도" src="https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/c2ab52ef-d6aa-4bcd-b162-0925e2f767fb">
+<img width="1000" height="600" alt="프로젝트 구조도" src="https://github.com/syber911911/Matprint_project/assets/64578367/6a3dafac-a832-4df8-8bfd-085000721fe6">
 
 ### DB ERD
 ![erd](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/1686e5bb-de1c-4c53-9682-d10892d7be72)
