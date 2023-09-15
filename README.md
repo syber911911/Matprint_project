@@ -115,8 +115,7 @@ access token 만료 시 refresh token 으로 토큰 재발급
   - 수십만 개의 음식점 공공 데이터를 사용하기보다 이러한 방식을 사용하여 자체적인 DB를 구축 하였음
   - 네이버 지도 api를 활용하여 마커를 찍어주고, 검색했을 때 지도의 첫 화면은 결과 리스트들의 평균 좌표를 구해주어 한눈에 보이게 하였음 
 
-![맛집 검색 페이지 ](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/96a83b85-da67-42ed-a327-a94f5df61ecd)
-
+<img width="1000" height="600" alt="맛집 검색" src="https://github.com/syber911911/Matprint_project/assets/64578367/e4cc1e01-11ae-4115-a2e5-52744c4024af">
 
 #### 음식점 상세페이지
  기능 | HTTP METHOD | URL
