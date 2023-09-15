@@ -102,9 +102,7 @@
                 else sessionStorage.setItem('token', data.accessToken);
                 localStorage.setItem('autoLogin', autoLogin);
                 window.location.href = "/";
-              } else {
-                alert(data.message);
-              }
+              } else alert(data.message);
             })
   }
 

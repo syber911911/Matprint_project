@@ -134,23 +134,22 @@
 
   /* refreshToken으로 accessToken 재발급 */
   async function reissueToken() {
-    if (!localStorage.getItem('token') && !sessionStorage.getItem('token')) {
+    const localAutoLogin = localStorage.getItem('autoLogin');
+    let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'}
+    });
+    let data = await response.json();
+    if (!response.ok) {
       console.log("로그인 된 유저만 리뷰 수정 가능합니다.");
       backToRestaurantPage();
-    } else {
-      const localAutoLogin = localStorage.getItem('autoLogin');
-      let response = await fetch(`/api/reissue?autoLogin=${localAutoLogin}`, {
-        method: 'POST', headers: {'Content-Type': 'application/json'}
-      });
-      let data = await response.json();
+    }
 
-      if (localAutoLogin === "T") {
-        localStorage.removeItem('token');
-        localStorage.setItem('token', data.accessToken);
-      } else if (localAutoLogin === "F") {
-        sessionStorage.removeItem('token');
-        sessionStorage.setItem('token', data.accessToken);
-      }
+    if (localAutoLogin === "T") {
+      localStorage.removeItem('token');
+      localStorage.setItem('token', data.accessToken);
+    } else if (localAutoLogin === "F") {
+      sessionStorage.removeItem('token');
+      sessionStorage.setItem('token', data.accessToken);
     }
   }
 
