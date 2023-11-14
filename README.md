@@ -26,10 +26,10 @@ Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
 ## ⚙️ 구현 기능
 
 ### 프로젝트 구조
-<img width="1030" height="600" alt="구조도" src="https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/c2ab52ef-d6aa-4bcd-b162-0925e2f767fb">
+<img width="1000" height="600" alt="프로젝트 구조도" src="https://github.com/syber911911/Matprint_project/assets/64578367/6a3dafac-a832-4df8-8bfd-085000721fe6">
 
 ### DB ERD
-![erd](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/1686e5bb-de1c-4c53-9682-d10892d7be72)
+<img width="1000" height="600" alt="ERD" src="https://github.com/syber911911/Matprint_project/assets/64578367/eee4742e-7c1c-4cfd-a738-de2f5e4f3b12">
 
 ### 회원
  기능 | HTTP METHOD | URL
@@ -115,8 +115,7 @@ access token 만료 시 refresh token 으로 토큰 재발급
   - 수십만 개의 음식점 공공 데이터를 사용하기보다 이러한 방식을 사용하여 자체적인 DB를 구축 하였음
   - 네이버 지도 api를 활용하여 마커를 찍어주고, 검색했을 때 지도의 첫 화면은 결과 리스트들의 평균 좌표를 구해주어 한눈에 보이게 하였음 
 
-![맛집 검색 페이지 ](https://github.com/likelion-backend-5th/Final_Project_17team/assets/86220874/96a83b85-da67-42ed-a327-a94f5df61ecd)
-
+<img width="1000" height="600" alt="맛집 검색" src="https://github.com/syber911911/Matprint_project/assets/64578367/e4cc1e01-11ae-4115-a2e5-52744c4024af">
 
 #### 음식점 상세페이지
  기능 | HTTP METHOD | URL
