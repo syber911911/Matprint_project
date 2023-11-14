@@ -25,7 +25,7 @@ public class ReviewController {
     public ResponseDto create(
             @AuthenticationPrincipal String username,
             @PathVariable("restaurantId") Long restaurantId,
-            @ModelAttribute("review") CreateReviewDto dto
+            @Valid @ModelAttribute("review") CreateReviewDto dto
     ) throws IOException {
         return reviewService.createReview(username, restaurantId, dto);
     }

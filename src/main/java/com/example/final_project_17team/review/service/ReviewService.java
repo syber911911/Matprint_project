@@ -30,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,14 @@ public class ReviewService {
         if (optionalRestaurant.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 음식점을 찾을 수 없습니다.");
         Restaurant restaurant = optionalRestaurant.get();
-
+        try {
+            log.info("image list empty : {}", CollectionUtils.isEmpty(request.getImageList()));
+            log.info("image list size : {}", request.getImageList().size());
+            log.info("image list first index : {}", request.getImageList().get(0));
+            log.info("image list first index empty : {}", request.getImageList().get(0).isEmpty());
+        } catch (Exception e) {
+            log.info("message : {}", e.getMessage());
+        }
         // 첨부한 이미지가 존재하지 않는 경우
         if (CollectionUtils.isEmpty(request.getImageList()) || request.getImageList().get(0).isEmpty()) {
             reviewRepository.save(

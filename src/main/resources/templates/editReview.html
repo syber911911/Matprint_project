@@ -60,7 +60,7 @@
       <input type="radio" id="rating1" name="rating" value="1" onclick="editRatings(1)"><label for="rating1" title="1점" id="rt1"></label>
     </fieldset>
     <form id="imgUpload">
-      <input id="imageInput" type="file" name="image" accept="image/*">
+      <input id="imageInput" type="file" name="image" accept="image/*" multiple>
     </form><br>
     <div id="images"></div>
     <br>
@@ -110,8 +110,12 @@
     });
 
     const fileInput = document.getElementById('imageInput');
-    const file = fileInput.files[0];
-    if (file) formData.append("addImageList", file);
+    const file = fileInput.files;
+    if (file) {
+      for (let i = 0; i < file.length; i++) {
+        formData.append("addImageList", file[i]);
+      }
+    }
 
     fetch(`/api/${localStorage.getItem('rsId')}/review/${localStorage.getItem('rvId')}`, {
       method: 'PUT',

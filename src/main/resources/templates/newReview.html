@@ -97,8 +97,13 @@
     formData.append('content', content);
     formData.append('ratings', ratings);
 
-    const file = fileInput.files[0];
-    if (file) formData.append("imageList", file);
+    const file = fileInput.files;
+
+    if (file) {
+      for (let i = 0; i < file.length; i++) {
+        formData.append("imageList", file[i]);
+      }
+    }
 
     await fetch(`/api/${localStorage.getItem('rsId')}/review`, {
       method: 'POST',
