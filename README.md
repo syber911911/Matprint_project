@@ -1,5 +1,3 @@
-# Final_Project_17team
-# 멋쟁이 사자처럼 백엔트 스쿨 5기 - JDK17 팀
 # 👣 맛자국
 Spring Boot Team Project - 맛집 추천 및 동행 찾기 사이트
 
